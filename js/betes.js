@@ -1,6 +1,7 @@
 var app = app || {};
 
 $( function( $ ) {
+    
 
 	var Entry = Backbone.Model.extend({
 		defaults: {
@@ -96,7 +97,6 @@ $( function( $ ) {
 			'click .update': 'edit',
 			'click .save-entry': 'updateOnEnter',
 			'click .close-entry': 'close',
-			'blur .edit':   'save',
 			'click .remove':  'clear'
 		},
 
@@ -104,8 +104,7 @@ $( function( $ ) {
 			this.model.on( 'change', this.render, this );
 		},
 		// Re-render the titles of the todo item.
-		render: function() {
-			
+		render: function() {			
 			this.$el.html( this.template( this.model.toJSON() ) );
 			this.editSection = this.$('.edit');
 			return this;
@@ -130,15 +129,14 @@ $( function( $ ) {
 			});			
 
 			this.close();
+			this.render();
 		},
 		close: function() {	
 			this.$el.removeClass('editing');
 		},
 		// If you hit `enter`, we're through editing the item.
-		updateOnEnter: function( e ) {
-			if ( e.which === ENTER_KEY ) {
-				this.save();
-			}
+		updateOnEnter: function( e ) {			
+				this.save();			
 		},
 		clear: function() {
 			this.model.destroy();
@@ -253,7 +251,7 @@ $( function( $ ) {
 				.x(function(d) { return x(d.when); })
 				.y(function(d) { return y(d.bsLevel); });
 
-			var svg = d3.select("body").append("preview")
+			var svg = d3.select("#summary").append("preview")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
 			  .append("g")
@@ -317,7 +315,6 @@ $( function( $ ) {
 			window.app.LogBookEntries.on( 'reset', this.addAll, this );
 			window.app.LogBookEntries.on( 'all', this.render, this );
 			window.app.LogBookEntries.fetch();
-			
 		},
 		render: function() {			
 			$(this.el).hide();

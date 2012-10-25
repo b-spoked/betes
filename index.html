@@ -7,7 +7,8 @@
 		<link rel="stylesheet" href="css/base.css">
 		<link rel="stylesheet" href="css/skeleton.css">
 		<link rel="stylesheet" href="css/layout.css">
-		<link rel="stylesheet" href="css/font-awesome.css" />
+		<link rel="stylesheet" href="css/font-awesome.css" />		
+		<link rel="stylesheet" href="css/mobiscroll-2.1-beta.custom.min.css" />		
 	</head>
 	  
 	<body>
@@ -51,7 +52,7 @@
 					
 						<h4>Basics</h4>							
 						<input type="text" id="edit-entry-name" value="<%= name %>" autofocus>
-						<input type="datetime" id="edit-entry-date" value="<%= when %>">
+						<input class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
 						<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
 						<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
 					</div>
@@ -72,7 +73,7 @@
 					<div class="one-third column alpha">
 						<label for="entry-name">Basics</label>
 						<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
-						<input type="datetime" placeholder="When?" id="entry-date" >
+						<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
 						<input type="text" id="entry-level" placeholder="Your Blood Sugar">
 					</div>
 					<div class="one-third column omega">
@@ -155,7 +156,7 @@
 					<button class="graph full-width">Graph</button>
 					<button class="publish full-width">Publish</button>
 				</div>
-				<div class="sixteen columns preview"></div>
+				<div id="summary" class="sixteen columns"></div>
 				<div class="clear"></div>
 			</div>
 		</script>
@@ -166,5 +167,19 @@
 		<script src="js/betes.js"></script>
 		<script src="js/dropdownmenu.js"></script>
 		<script src="js/d3.v2.min.js"></script>
+		<script src="js/mobiscroll-2.1-beta.custom.min.js"></script>	
+		<script>
+			$(function(){
+    var now = new Date();
+
+    $('.when-picker').scroller({
+        preset: 'datetime',
+        minDate: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        theme: 'sense-ui',
+        display: 'bubble',
+        mode: 'clickpick'
+    }); 
+});
+		</script>			
 	</body>
 </html>

@@ -231,7 +231,7 @@ $( function( $ ) {
 				width = 960 - margin.left - margin.right,
 				height = 500 - margin.top - margin.bottom;
 
-			var parseDate = d3.time.format("%d-%b-%y").parse;
+			//var parseDate = d3.time.format("%c").parse;
 
 			var x = d3.time.scale()
 				.range([0, width]);
@@ -245,13 +245,9 @@ $( function( $ ) {
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.orient("left");
+				.orient("left");			
 
-			var line = d3.svg.line()
-				.x(function(d) { return x(d.when); })
-				.y(function(d) { return y(d.bsLevel); });
-
-			var svg = d3.select("#summary").append("preview")
+			var svg = d3.select("#summary").append("svg")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
 			  .append("g")
@@ -262,15 +258,18 @@ $( function( $ ) {
 			
 			data.forEach(function(entry) {
 			  
-				console.log(entry.when);
-				console.log(entry.bsLevel);
+				//console.log(entry.when);
+				//console.log(entry.bsLevel);
 			  
-				entry.when = parseDate(entry.when);
+				entry.when = new Date(entry.when);
+				//console.log(entry.when);
 				entry.bsLevel = +entry.bsLevel;
-			  });
+			});
+			  
+			x.domain(d3.extent(data, function(entry) { return new Date(entry.when); }));
+			y.domain([0, d3.max(data, function(entry) { return entry.bsLevel; })]);
 
-			  x.domain(d3.extent(data, function(entry) { return entry.when; }));
-			  y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+			
 
 			  svg.append("g")
 				  .attr("class", "x axis")
@@ -285,12 +284,16 @@ $( function( $ ) {
 				  .attr("y", 6)
 				  .attr("dy", ".71em")
 				  .style("text-anchor", "end")
-				  .text("Reading (mmol)");
-
-			  svg.append("path")
-				  .datum(data)
-				  .attr("class", "line")
-				  .attr("d", line);
+				  .text("Reading (mmol)");			  
+			  
+				svg.selectAll(".bar")
+					  .data(data)
+					.enter().append("rect")
+					  .attr("class", "bar")
+					  .attr("x", function(entry) { return x( new Date(entry.when)); })
+					  .attr("width", 20)
+					  .attr("y", function(entry) { return y(entry.bsLevel); })
+					  .attr("height", function(entry) { return height - y(entry.bsLevel); });			  
 					
 		},
 		printResults : function(e) {

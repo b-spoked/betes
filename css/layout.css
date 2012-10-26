@@ -216,6 +216,22 @@ ul#events-list {
 	margin-bottom: -1px;
 }
 
+/* Graph */
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
+
 /* Goals */
 .goals-meet{
 	background-color : rgba(103, 230, 103, 0.3);

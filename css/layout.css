@@ -224,12 +224,14 @@ ul#events-list {
   shape-rendering: crispEdges;
 }
 
-.bar {
-  fill: steelblue;
-}
-
 .x.axis path {
   display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
 
 /* Goals */

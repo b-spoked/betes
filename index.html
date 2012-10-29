@@ -8,17 +8,17 @@
 		<link rel="stylesheet" href="css/skeleton.css">
 		<link rel="stylesheet" href="css/layout.css">
 		<link rel="stylesheet" href="css/font-awesome.css" />		
-		<link rel="stylesheet" href="css/mobiscroll-2.1-beta.custom.min.css" />		
+		<link rel="stylesheet" href="css/mobiscroll-2.1-beta.custom.min.css" />
 	</head>
 	  
 	<body>
 		<div class="band navigation">
 			<nav class="container primary">
 				<div class="sixteen columns">
-					<header><i class="icon-tint"></i> Betes Log</header>
+					<header><i class="icon-tint icon-large"></i>  Betes Log</header>
 					<ul>
 						<li><a href="#/">Log Book</a></li>	
-						<li><a href="#/summary">Entries Summery</a></li>						
+						<li><a href="#/summary">Summary</a></li>						
 						<li><a href="#/goals">Goals</a></li>
 						<li><a href="#/account">Account</a></li>
 					</ul>
@@ -48,11 +48,10 @@
 			</div>			
 			<div class="clear"></div>
 			<section class="edit">
-					<div class="one-third column alpha">
-					
+					<div class="one-third column alpha">					
 						<h4>Basics</h4>							
 						<input type="text" id="edit-entry-name" value="<%= name %>" autofocus>
-						<input class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
+						<input type="text" class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
 						<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
 						<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
 					</div>
@@ -69,6 +68,7 @@
 		</script>
 		<script type="text/template" id="logbook-template">
 			<div class="sixteen columns">
+				<blockquote>Add a new log book entry</blockquote>
 				<section id="add-log">	
 					<div class="one-third column alpha">
 						<label for="entry-name">Basics</label>
@@ -97,6 +97,7 @@
 		</script>		
 		<script type="text/template" id="account-template">
 			<div class="view">
+				<blockquote>Your account settings</blockquote>
 				<div class="one-third column">
 					<form id="profile">
 					<input type="text" id="account-user-name" placeholder="Name">
@@ -113,7 +114,8 @@
 			</div>
 		</script>
 		<script type="text/template" id="goals-template">
-			<div class="view">				
+			<div class="view">	
+				<blockquote>Set any goals that you would like to track</blockquote>			
 				<div class="one-third column">
 					<form id="goals">
 					<label for="bs-lower">Goal Blood Sugar Range</label>
@@ -134,29 +136,40 @@
 			</div>
 		</script>
 		<script type="text/template" id="summary-template">
-			<div class="view">
-				<div class="one-third column alpha">
-					<label for="date-range">Quick Select</label>
-					<select name="date-range" id="date-range">
-						<option value="today">Today</option>
-						<option value="seven-days">Last Seven Days</option>
-						<option value="month">Last Month</option>
-						<option value="three-months">Last Three Months</option>
-						<option value="six-months">Last Sixth Months</option>
-					</select>
-					<h4>Or ...</h4>
-					<label for="from-date">From Date</label>
-					<input type="date" id="from-date" >
-					<label for="to-date">To Date</label>
-					<input type="date" id="to-date" >
-				</div>
-				<div class="two-thirds columns omega">
-					<button class="email full-width">Email</button>
-					<button class="print full-width">Print</button>
-					<button class="graph full-width">Graph</button>
-					<button class="publish full-width">Publish</button>
-				</div>
-				<div id="summary" class="sixteen columns"></div>
+			<div class="view">				
+				<div class="sixteen columns">									
+					<blockquote>Select your log book entries below and then choose what to do with them.</blockquote>
+						<div class="six columns">
+							<label for="date-range">Quick Select</label>
+							<select name="date-range" id="date-range">
+								<option value="today">Today</option>
+								<option value="seven-days">Last Seven Days</option>
+								<option value="month">Last Month</option>
+								<option value="three-months">Last Three Months</option>
+								<option value="six-months">Last Sixth Months</option>
+							</select>
+						</div>
+						<div class="two columns">
+							<h4>Or ...</h4>
+						</div>
+						<div class="six columns">
+							<label for="from-date">From Date</label>
+							<input type="date" id="from-date" >
+							<label for="to-date">To Date</label>
+							<input type="date" id="to-date" >
+						</div>
+						<div class="clear"></div>
+						<div class="six columns">
+							<button class="graph">Graph Summary</button>
+							<button class="email">Email Summary</button>
+						<div>
+				</div>			
+					  <div class="sixteen columns" id="graph">						
+						<div id="summary">
+						</div>						
+					  </div>
+					</div>
+				</div>							
 				<div class="clear"></div>
 			</div>
 		</script>
@@ -167,19 +180,19 @@
 		<script src="js/betes.js"></script>
 		<script src="js/dropdownmenu.js"></script>
 		<script src="js/d3.v2.min.js"></script>
-		<script src="js/mobiscroll-2.1-beta.custom.min.js"></script>	
+		<script src="js/mobiscroll-2.1-beta.custom.min.js"></script>
 		<script>
-			$(function(){
-    var now = new Date();
+		$(function(){
+			var now = new Date();
 
-    $('.when-picker').scroller({
-        preset: 'datetime',
-        minDate: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
-        theme: 'sense-ui',
-        display: 'bubble',
-        mode: 'clickpick'
-    }); 
-});
+			$('.when-picker').scroller({
+				preset: 'datetime',
+				minDate: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+				theme: 'sense-ui',
+				display: 'bubble',
+				mode: 'clickpick'
+			}); 
+		});
 		</script>			
 	</body>
 </html>

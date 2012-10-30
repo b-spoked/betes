@@ -206,9 +206,10 @@ $( function( $ ) {
 
 		events: {
 			'click .email': 'emailResults',
-			'click .print': 'printResults',
-			'click .graph': 'graphResults',
-			'click .publish': 'pubishResults'
+			'click .graph-results': 'graphResults',
+			'click .graph-goals': 'graphGoals',
+			'click .graph-excercise': 'graphExcercise',
+			'click .share': 'shareGraph'
 		},
 
 		render: function() {
@@ -221,9 +222,6 @@ $( function( $ ) {
 		},
 		onShow: function() {
 			$(this.el).show(500);
-		},
-		pubishResults : function(e) {
-			alert('publish');
 		},
 		graphResults : function(e) {
 		
@@ -249,7 +247,7 @@ $( function( $ ) {
 				.x(function(entry) { return x(entry.when); })
 				.y(function(entry) { return y(entry.bsLevel); });	
 
-			var svg = d3.select("#summary").append("svg")
+			var svg = d3.select("#results-graph").append("svg")
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom)
 			  .append("g")
@@ -287,11 +285,136 @@ $( function( $ ) {
 				.attr("d", line);	  
 					
 		},
-		printResults : function(e) {
-			alert('print');
+		graphGoals : function(e) {
+		
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+				width = 960 - margin.left - margin.right,
+				height = 500 - margin.top - margin.bottom;
+
+			var x = d3.time.scale()
+				.range([0, width]);
+
+			var y = d3.scale.linear()
+				.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left");	
+
+			var line = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y(entry.bsLevel); });	
+
+			var svg = d3.select("#goals-graph").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			app.LogBookEntries.fetch();			
+			var data = app.LogBookEntries.toJSON();	
+			
+			data.forEach(function(entry) {			  
+				entry.when = new Date(entry.when);
+				entry.bsLevel = +entry.bsLevel;
+			});
+			  
+			x.domain(d3.extent(data, function(entry) { return entry.when; }));
+			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+
+			  svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height + ")")
+				  .call(xAxis);
+
+			  svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Reading (mmol)");			  
+			  
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line);	  
+					
+		},
+		graphExcercise : function(e) {
+		
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+				width = 960 - margin.left - margin.right,
+				height = 500 - margin.top - margin.bottom;
+
+			var x = d3.time.scale()
+				.range([0, width]);
+
+			var y = d3.scale.linear()
+				.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left");	
+
+			var line = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y(entry.bsLevel); });	
+
+			var svg = d3.select("#excercise-graph").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			app.LogBookEntries.fetch();			
+			var data = app.LogBookEntries.toJSON();	
+			
+			data.forEach(function(entry) {			  
+				entry.when = new Date(entry.when);
+				entry.bsLevel = +entry.bsLevel;
+			});
+			  
+			x.domain(d3.extent(data, function(entry) { return entry.when; }));
+			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+
+			  svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height + ")")
+				  .call(xAxis);
+
+			  svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Reading (mmol)");			  
+			  
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line);	  
+					
 		},
 		emailResults : function(e) {
 			alert('email');
+		},
+		shareGraph : function(e){
+			var graphCanvas = document.getElementById("mycanvas");
+			var graphImg = graphCanvas.toDataURL("image/png");
 		}
 	});
 

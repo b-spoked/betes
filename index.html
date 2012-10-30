@@ -75,16 +75,16 @@
 						<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
 						<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
 						<input type="text" id="entry-level" placeholder="Your Blood Sugar">
-					</div>
-					<div class="one-third column omega">
 						<input type="text" id="entry-insulin" placeholder="Insulin Given">
+					</div>
+					<div class="one-third column omega">						
 						<label for="entry-excercise-duration">Excercise</label>
 						<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
-						<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">				
-					</div>
-					<div class="one-third column">
+						<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
 						<label for="entry-labels">Labels</label>
-						<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">
+						<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">						
+					</div>
+					<div class="one-third column">						
 						<button class="add-entry"><i class="icon-check"></i> Add</button>					
 					</div>	
 				</section>
@@ -97,15 +97,18 @@
 		</script>		
 		<script type="text/template" id="account-template">
 			<div class="view">
-				<blockquote>Your account settings</blockquote>
+				<blockquote>Your account</blockquote>
 				<div class="one-third column">
 					<form id="profile">
 					<input type="text" id="account-user-name" placeholder="Name">
-					<input type="email" id="account-user-email" placeholder="Email">
 					<input type="text" id="account-user-public-name" placeholder="User Name (that others will see)">
+					<input type="email" id="account-user-email" placeholder="Email">
+					<input type="password" id="account-user-pw" placeholder="Password">
+				</div>
+				<div class="one-third column">
 					<select name="account-goals-public" id="account-goals-public">
-						<option value="false">Keep my goals to myself</option>
-						<option value="true">Show my goals</option>
+						<option value="false">Keep my goals private</option>
+						<option value="true">Show others my goals</option>
 					</select>
 					<input type="submit" value="Save Profile"/>
 					</form>
@@ -115,21 +118,35 @@
 		</script>
 		<script type="text/template" id="goals-template">
 			<div class="view">	
-				<blockquote>Set any goals that you would like to track</blockquote>			
+				<blockquote>Short term goal that you would like to track</blockquote>			
 				<div class="one-third column">
 					<form id="goals">
-					<label for="bs-lower">Goal Blood Sugar Range</label>
+					<label for="bs-lower">Blood Sugar Range</label>
 					<input type="number" id="goal-bs-lower" placeholder="lower">
 					<input type="number" id="goal-bs-upper" placeholder="upper">		
 					<label for="goal-bs-frequency">Testing Frequency</label>					
 					<input type="number" id="goal-bs-frequency" placeholder="times per day">
 				</div>
 				<div class="one-third column">
-					<label for="goal-excercise-duration">Average excercise duration</label>
+					<label for="goal-excercise-duration">Average Excercise Duration</label>
 					<input type="number" id="goal-excercise-duration" placeholder="mins per day">
 					<label for="goal-excercise-frequency">Excercise Frequency</label>
 					<input type="number" id="goal-excercise-frequency" placeholder="times per week">
-					<input type="submit" value="Save Goals"/>
+					<input type="submit" value="Save Daily Goals"/>
+					</form>				
+				</div>
+				<div class="clear"/>
+				<blockquote>Do you have a long term goal you are aiming for?</blockquote>
+				<div class="one-third column">
+					<form id="goals">
+						<label for="goal-excercise-duration">Long Term Goal</label>
+						<textarea id="goal-long-term" />	
+										
+				</div>
+				<div class="one-third column">
+						<label for="goal-long-term-date">When do you aim to achive this?</label>						
+						<input type="date" id="goal-long-term-date" >
+						<input type="submit" value="Save Long Term Goals"/>
 					</form>				
 				</div>
 				<div class="clear"></div>
@@ -139,39 +156,31 @@
 			<div class="view">				
 				<div class="sixteen columns">									
 					<blockquote>Select your log book entries below and then choose what to do with them.</blockquote>
-						<div class="six columns">
-							<label for="date-range">Quick Select</label>
-							<select name="date-range" id="date-range">
-								<option value="today">Today</option>
-								<option value="seven-days">Last Seven Days</option>
-								<option value="month">Last Month</option>
-								<option value="three-months">Last Three Months</option>
-								<option value="six-months">Last Sixth Months</option>
-							</select>
-						</div>
-						<div class="two columns">
-							<h4>Or ...</h4>
-						</div>
-						<div class="six columns">
-							<label for="from-date">From Date</label>
-							<input type="date" id="from-date" >
-							<label for="to-date">To Date</label>
-							<input type="date" id="to-date" >
-						</div>
-						<div class="clear"></div>
-						<div class="six columns">
-							<button class="graph">Graph Summary</button>
-							<button class="email">Email Summary</button>
-						<div>
+				</div>
+				<div class="one-third column alpha">													
+					<label for="from-date">From Date</label>
+					<input type="date" id="from-date" >
+				</div>
+				<div class="one-third column omega">			
+					<label for="to-date">To Date</label>
+					<input type="date" id="to-date" >
+				</div>				
+				<div class="one-third column">
+					<button class="graph-results full-width">Graph Results</button>
+					<button class="graph-goals full-width">Graph Goals</button>
+					<button class="graph-excercise full-width">Graph Excercise</button>
+					<button class="email full-width">Email Summary</button>				
 				</div>			
-					  <div class="sixteen columns" id="graph">						
-						<div id="summary">
-						</div>						
-					  </div>
+				<div class="sixteen columns" id="graph">						
+					<div id="results-graph">
 					</div>
-				</div>							
-				<div class="clear"></div>
-			</div>
+					<div id="goals-graph">
+					</div>
+					<div id="excercise-graph">
+					</div>					
+				</div>				
+			</div>							
+			<div class="clear"></div>			
 		</script>
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/underscore-min.js"></script>

@@ -9,7 +9,7 @@ $( function( $ ) {
 			bsLevel: 0,
 			insulinAmount: 0,
 			when: new Date(),
-			excerciseDuration: 'na',
+			excerciseDuration: 0,
 			excerciseIntensity: 'na',
 			labels: '',
 			goals : ''
@@ -304,10 +304,18 @@ $( function( $ ) {
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left");	
+				
+			var yAxisRight = d3.svg.axis()
+				.scale(y)
+				.orient("right");		
 
 			var line = d3.svg.line()
 				.x(function(entry) { return x(entry.when); })
 				.y(function(entry) { return y(entry.bsLevel); });	
+				
+			var line2 = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y(entry.excerciseDuration); });		
 
 			var svg = d3.select("#goals-graph").append("svg")
 				.attr("width", width + margin.left + margin.right)
@@ -321,10 +329,12 @@ $( function( $ ) {
 			data.forEach(function(entry) {			  
 				entry.when = new Date(entry.when);
 				entry.bsLevel = +entry.bsLevel;
+				entry.excerciseDuration = entry.excerciseDuration;
 			});
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
 			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+			y.domain(d3.extent(data, function(entry) { return entry.excerciseDuration; }));
 
 			  svg.append("g")
 				  .attr("class", "x axis")
@@ -339,25 +349,43 @@ $( function( $ ) {
 				  .attr("y", 6)
 				  .attr("dy", "1em")
 				  .style("text-anchor", "end")
-				  .text("Reading (mmol)");			  
+				  .text("Reading (mmol)");	
+
+			 svg.append("g")
+				  .attr("class", "y axis axisRight")
+				  .call(yAxisRight)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Excercise (mins)");			
 			  
 			  svg.append("path")
 				.datum(data)
 				.attr("class", "line")
-				.attr("d", line);	  
+				.attr("d", line);
+
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line2);			
 					
 		},
 		graphExcercise : function(e) {
 		
+			/* scatter plot */
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 				width = 960 - margin.left - margin.right,
 				height = 500 - margin.top - margin.bottom;
 
-			var x = d3.time.scale()
+			var x = d3.scale.linear()
 				.range([0, width]);
 
 			var y = d3.scale.linear()
 				.range([height, 0]);
+				
+			var color = d3.scale.category10();	
 
 			var xAxis = d3.svg.axis()
 				.scale(x)
@@ -366,10 +394,6 @@ $( function( $ ) {
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left");	
-
-			var line = d3.svg.line()
-				.x(function(entry) { return x(entry.when); })
-				.y(function(entry) { return y(entry.bsLevel); });	
 
 			var svg = d3.select("#excercise-graph").append("svg")
 				.attr("width", width + margin.left + margin.right)
@@ -381,33 +405,63 @@ $( function( $ ) {
 			var data = app.LogBookEntries.toJSON();	
 			
 			data.forEach(function(entry) {			  
-				entry.when = new Date(entry.when);
+				entry.excerciseDuration = entry.excerciseDuration;
 				entry.bsLevel = +entry.bsLevel;
 			});
 			  
-			x.domain(d3.extent(data, function(entry) { return entry.when; }));
+			x.domain(d3.extent(data, function(entry) { return entry.excerciseDuration; }));
 			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
 
-			  svg.append("g")
-				  .attr("class", "x axis")
-				  .attr("transform", "translate(0," + height + ")")
-				  .call(xAxis);
-
-			  svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(xAxis)
 				.append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 6)
-				  .attr("dy", "1em")
-				  .style("text-anchor", "end")
-				  .text("Reading (mmol)");			  
-			  
-			  svg.append("path")
-				.datum(data)
-				.attr("class", "line")
-				.attr("d", line);	  
-					
+				.attr("class", "label")
+				.attr("x", width)
+				.attr("y", -6)
+				.style("text-anchor", "end")
+				.text("Excercise (mins)");
+
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
+				.append("text")
+				.attr("class", "label")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 6)
+				.attr("dy", ".71em")
+				.style("text-anchor", "end")
+				.text("Blood Sugar (mmol)")
+
+			svg.selectAll(".dot")
+				.data(data)
+				.enter().append("circle")
+				.attr("class", "dot")
+				.attr("r", 3.5)
+				.attr("cx", function(entry) { return x(entry.excerciseDuration); })
+				.attr("cy", function(entry) { return y(entry.bsLevel); })
+				.style("fill", function(entry) { return color(entry.excerciseDuration); });
+				
+			var legend = svg.selectAll(".legend")
+				.data(color.domain())
+				.enter().append("g")
+				.attr("class", "legend")
+				.attr("transform", function(entry, i) { return "translate(0," + i * 20 + ")"; });
+
+			legend.append("rect")
+				.attr("x", width - 18)
+				.attr("width", 18)
+				.attr("height", 18)
+				.style("fill", color);
+
+			legend.append("text")
+				.attr("x", width - 24)
+				.attr("y", 9)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text(function(entry) { return entry; });	
+				
 		},
 		emailResults : function(e) {
 			alert('email');

@@ -285,6 +285,7 @@ $( function( $ ) {
 				.attr("d", line);	  
 					
 		},
+		
 		graphGoals : function(e) {
 		
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -293,20 +294,21 @@ $( function( $ ) {
 
 			var x = d3.time.scale()
 				.range([0, width]);
-
-			var y = d3.scale.linear()
-				.range([height, 0]);
+			//blood sugars
+			var y = d3.scale.linear().range([height, 0]);
+			//excercise
+			var y2 = d3.scale.linear().range([height, 0]);			
 
 			var xAxis = d3.svg.axis()
 				.scale(x)
 				.orient("bottom");
 
-			var yAxis = d3.svg.axis()
+			var yAxisLeft = d3.svg.axis()
 				.scale(y)
 				.orient("left");	
 				
 			var yAxisRight = d3.svg.axis()
-				.scale(y)
+				.scale(y2)
 				.orient("right");		
 
 			var line = d3.svg.line()
@@ -315,7 +317,7 @@ $( function( $ ) {
 				
 			var line2 = d3.svg.line()
 				.x(function(entry) { return x(entry.when); })
-				.y(function(entry) { return y(entry.excerciseDuration); });		
+				.y(function(entry) { return y2(entry.excerciseDuration); });		
 
 			var svg = d3.select("#goals-graph").append("svg")
 				.attr("width", width + margin.left + margin.right)
@@ -334,7 +336,7 @@ $( function( $ ) {
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
 			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
-			y.domain(d3.extent(data, function(entry) { return entry.excerciseDuration; }));
+			y2.domain(d3.extent(data, function(entry) { return entry.excerciseDuration; }));
 
 			  svg.append("g")
 				  .attr("class", "x axis")
@@ -343,7 +345,7 @@ $( function( $ ) {
 
 			  svg.append("g")
 				  .attr("class", "y axis")
-				  .call(yAxis)
+				  .call(yAxisLeft)
 				.append("text")
 				  .attr("transform", "rotate(-90)")
 				  .attr("y", 6)
@@ -354,6 +356,7 @@ $( function( $ ) {
 			 svg.append("g")
 				  .attr("class", "y axis axisRight")
 				  .call(yAxisRight)
+				  .attr("transform", "translate("+(width-10)+",0)")
 				.append("text")
 				  .attr("transform", "rotate(-90)")
 				  .attr("y", 6)

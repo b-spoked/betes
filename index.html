@@ -4,35 +4,36 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<title>Diabetes Log</title>
-		<link rel="stylesheet" href="css/base.css">
+		<!--<link rel="stylesheet" href="css/base.css">-->
 		<link rel="stylesheet" href="css/skeleton.css">
-		<link rel="stylesheet" href="css/layout.css">
-		<link rel="stylesheet" href="css/font-awesome.css" />		
+		<!--<link rel="stylesheet" href="css/layout.css">-->
+		<link rel="stylesheet" href="css/bootstrap.min.css" />		
 		<link rel="stylesheet" href="css/mobiscroll-2.1-beta.custom.min.css" />
 	</head>
 	  
 	<body>
-		<div class="band navigation">
-			<nav class="container primary">
-				<div class="sixteen columns">
-					<header><i class="icon-tint icon-large"></i>  Betes Log</header>
-					<ul>
-						<li><a href="#/">Log Book</a></li>	
-						<li><a href="#/summary">Summary</a></li>						
-						<li><a href="#/goals">Goals</a></li>
-						<li><a href="#/account">Account</a></li>
-					</ul>
-				</div>
-			</nav><!--end container-->
+		<div class="navbar navbar-inverse">
+		<!--<div class="navbar navbar-inverse navbar-fixed-top">-->
+			<div class="navbar-inner">
+				<a class="brand" href="#"><i class="icon-tint icon-large"></i> Betes Log</a>
+				<ul class="nav">
+					<li class="active"><a href="#/">Log Book</a></li>
+					<li><a href="#/summary">Summary</a></li>						
+					<li><a href="#/goals">Goals</a></li>
+					<li><a href="#/account">Account</a></li>
+				</ul>
+			</div>
 		</div>
-		<div id="app" class="container">
-			<section id="main">			
-			</section>
+		<div class="container">
+			<div id="app" class="sixteen columns">
+				<section id="main">			
+				</section>
+			</div>
 		</div>
 		<!-- App Source -->	
 		<script type="text/template" id="item-template">
 			<div class="clear"></div>
-			<div class="fourteen columns alpha <%= goals %>">
+			<div class="twelve columns alpha <%= goals %>">
 				
 					<p>At <strong><em><%= name %></em></strong> your blood sugar was <strong><em><%= bsLevel %>mmol</em></strong> and you gave <strong><em><%= insulinAmount %>u</em></strong> of insulin.</p>
 					<% if (excerciseDuration != "") { %>
@@ -43,58 +44,60 @@
 					<% } %>
 			</div>		
 			<div class="two columns omega">									
-				<button class="update full-width"><i class="icon-edit icon-large"></i> Edit</button>
-				<button class="remove full-width"><i class="icon-trash icon-large"></i> Delete</button>
+				<button class="btn btn-small btn-block update"><i class="icon-edit icon-large"></i> Edit</button>
+				<button class="btn btn-small btn-block remove"><i class="icon-trash icon-large"></i> Delete</button>
 			</div>			
 			<div class="clear"></div>
-			<section class="edit">
-					<div class="one-third column alpha">					
-						<h4>Basics</h4>							
-						<input type="text" id="edit-entry-name" value="<%= name %>" autofocus>
-						<input type="text" class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
-						<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
-						<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
-					</div>
-					<div class="two-thirds column omega">	
-						<h4>Excercise</h4>
-						<input type="text" id="edit-entry-excercise-duration" value="<%= excerciseDuration %>">				
-						<input type="text" id="edit-entry-excercise-intensity" value="<%= excerciseIntensity %>">
-						<h4>Labels</h4>
-						<input type="text" id="edit-entry-labels" value="<%= labels %>">
-						<button class="save-entry" >Save</button>
-						<button class="close-entry" >Close</button>
-					</div>				
-				</section>
-		</script>
-		<script type="text/template" id="logbook-template">
-			<div class="sixteen columns">
-				<blockquote>Add a new log book entry</blockquote>
-				<section id="add-log">	
-					<div class="one-third column alpha">
-						<label for="entry-name">Basics</label>
-						<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
-						<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
-						<input type="text" id="entry-level" placeholder="Your Blood Sugar">
-						<input type="text" id="entry-insulin" placeholder="Insulin Given">
-					</div>
-					<div class="one-third column omega">						
-						<label for="entry-excercise-duration">Excercise</label>
-						<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
-						<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
-						<label for="entry-labels">Labels</label>
-						<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">						
-					</div>
-					<div class="one-third column">						
-						<button class="add-entry"><i class="icon-check"></i> Add</button>					
-					</div>	
-				</section>
-			</div>	
-			<div class="clear"></div>
-			<div class="sixteen columns">
-				<ul id="events-list"></ul>
-			</div>
-			<div class="clear"></div>
+			<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 id="myModalLabel">Editing Result</h3>
+				</div>
+				<div class="modal-body">
+					<h4>Basics</h4>							
+					<input type="text" id="edit-entry-name" value="<%= name %>" autofocus>
+					<input type="text" class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
+					<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
+					<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
+					<h4>Excercise</h4>
+					<input type="text" id="edit-entry-excercise-duration" value="<%= excerciseDuration %>">				
+					<input type="text" id="edit-entry-excercise-intensity" value="<%= excerciseIntensity %>">
+					<h4>Labels</h4>
+					<input type="text" id="edit-entry-labels" value="<%= labels %>">
+				</div>
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button class="btn btn-primary save-entry">Save changes</button>
+				</div>
+			</div>			
 		</script>		
+		<script type="text/template" id="logbook-template">
+			<button class="btn btn-primary create-new-entry">Create New Entry</button>
+			<div id="add-entry-dialog" class="modal hide fade">
+				  <div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3>Add a new log book entry</h3>
+				  </div>
+				  <div class="modal-body">
+					<label for="entry-name">Basics</label>
+					<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
+					<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
+					<input type="text" id="entry-level" placeholder="Your Blood Sugar">
+					<input type="text" id="entry-insulin" placeholder="Insulin Given">
+					<label for="entry-excercise-duration">Excercise</label>
+					<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
+					<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
+					<label for="entry-labels">Labels</label>
+					<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
+				  </div>
+				  <div class="modal-footer">
+					<a href="#" class="btn">Close</a>
+					<button class="btn btn-primary add-entry">Add entry</button>
+				  </div>
+			</div>
+			<ul id="events-list"></ul>			
+			<div class="clear"></div>
+		</script>			
 		<script type="text/template" id="account-template">
 			<div class="view">
 				<blockquote>Your account</blockquote>
@@ -166,10 +169,10 @@
 					<input type="date" id="to-date" >
 				</div>				
 				<div class="one-third column">
-					<button class="graph-results full-width">Graph Results</button>
-					<button class="graph-goals full-width">Graph Goals</button>
-					<button class="graph-excercise full-width">Graph Excercise</button>
-					<button class="email full-width">Email Summary</button>				
+					<button class="btn btn-small btn-block graph-results">Graph Results</button>
+					<button class="btn btn-small btn-block graph-goals">Graph Goals</button>
+					<button class="btn btn-small btn-block graph-excercise">Graph Excercise</button>
+					<button class="btn btn-small btn-block email">Email Summary</button>				
 				</div>			
 				<div class="sixteen columns" id="graph">						
 					<div id="results-graph">
@@ -185,7 +188,8 @@
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/underscore-min.js"></script>
 		<script src="js/backbone-min.js"></script>
-		<script src="js/backbone-localstorage.js"></script>
+		<script src="js/backbone-localstorage.js"></script>		
+		<script src="js/bootstrap.min.js"></script>
 		<script src="js/betes.js"></script>
 		<script src="js/dropdownmenu.js"></script>
 		<script src="js/d3.v2.min.js"></script>

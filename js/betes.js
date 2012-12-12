@@ -106,13 +106,13 @@ $( function( $ ) {
 		// Re-render the titles of the todo item.
 		render: function() {			
 			this.$el.html( this.template( this.model.toJSON() ) );
-			this.editSection = this.$('.edit');
 			return this;
 		},
 		
 		// Switch this view into `"editing"` mode, displaying the input field.
 		edit: function() {
-			this.$el.addClass('editing');
+			var editSection = "#edit_"+this.model.get('id');
+			$(editSection).modal('show');
 			this.editSection.focus();
 		},
 		// Close the `"editing"` mode, saving changes to the todo.
@@ -480,7 +480,8 @@ $( function( $ ) {
 
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
-			'click .add-entry': 'createOnEnter'
+			'click .save-entry': 'saveNewEntry',
+			'click .create-new-entry': 'showNewEntryDialog'
 		},
 
 		initialize: function() {
@@ -521,8 +522,11 @@ $( function( $ ) {
 				excerciseIntensity: $("#entry-excercise-intensity").val().trim(),
 				labels: $("#entry-labels").val().trim()
 			};
+		},		
+		showNewEntryDialog: function() {
+			$('#add-entry-dialog').modal('show');
 		},
-		createOnEnter: function( e ) {
+		saveNewEntry: function( e ) {
 			app.LogBookEntries.create( this.newAttributes() );
 		}
 	});

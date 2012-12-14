@@ -29,17 +29,14 @@
 		</div>
 		<!-- App Source -->	
 		<script type="text/template" id="item-template">
-			<td><%= name %></td>
+			<td><a class="update" href="#"><%= name %></a></td>
 			<td><%= bsLevel %>mmol</td>
 			<td><%= insulinAmount %>u</td>
-			<td><%= excerciseDuration %></td>
-			<td><%= excerciseIntensity %></td>
-			<td>....</td>
-			<td>									
-				<button class="btn btn-small btn-block update"><i class="icon-edit icon-large"></i></button>
-				<button class="btn btn-small btn-block remove"><i class="icon-trash icon-large"></i></button>
-			</td>			
-			<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<td><%= excerciseDuration %> mins</td>
+			<td><%= excerciseIntensity %> intensity</td>		
+		</script>
+		<script type="text/template" id="item-detail-template">
+		<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 					<h3 id="myModalLabel">Editing Result</h3>
@@ -58,10 +55,10 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-					<button class="btn btn-primary save-entry">Save changes</button>
+					<button class="btn btn-primary save-entry">Save</button>
 				</div>
-			</div>			
-		</script>		
+		</div>
+		</script>
 		<script type="text/template" id="logbook-template">
 			<button class="btn btn-primary create-new-entry">Add Entry</button>
 			<div id="add-entry-dialog" class="modal hide fade">
@@ -86,17 +83,15 @@
 					<button class="btn btn-primary add-entry">Add entry</button>
 				  </div>
 			</div>
-			<table class="table table-condensed">
-				<caption>Your log book of activity</caption>
+			<div id="modal-item-detail"></div>
+			<table class="table table-bordered table-condensed">
 				<thead>
 				  <tr>
 				    <th>At</th>
 				    <th>your blood sugar was</th>
 				    <th>you gave</th>
-				    <th>you did mins</th>
-				    <th>excercise at intensity</th>
-				    <th>and ...</th>
-				    <th>OPTIONS</th>
+				    <th>you did</th>
+				    <th>excercise at</th>
 				  </tr>
 				</thead>
 				<tbody id="events-list">

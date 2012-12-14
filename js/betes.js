@@ -89,10 +89,11 @@ $( function( $ ) {
 		//... is a list tag.
 		tagName:  'tr',
 		
-		className: 'warning',
+		className: 'success',
 
 		// Cache the template function for a single item.
-		template: _.template( $('#item-template').html() ),
+		rowTemplate: _.template( $('#item-template').html() ),
+		detailTemplate: _.template( $('#item-detail-template').html() ),
 
 		// The DOM events specific to an item.
 		events: {
@@ -107,15 +108,18 @@ $( function( $ ) {
 		},
 		// Re-render the titles of the todo item.
 		render: function() {			
-			this.$el.html( this.template( this.model.toJSON() ) );
+			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
 			return this;
 		},
 		
 		// Switch this view into `"editing"` mode, displaying the input field.
 		edit: function() {
-			var editSection = "#edit_"+this.model.get('id');
-			$(editSection).modal('show');
-			this.editSection.focus();
+			var itemDetail = "#modal-item-detail";
+			$(itemDetail).html( this.detailTemplate( this.model.toJSON() ) );
+			
+			var itemDetailDialog = "#edit_"+this.model.get('id');
+			
+			$(itemDetailDialog).modal('show');
 		},
 		// Close the `"editing"` mode, saving changes to the todo.
 		save: function() {

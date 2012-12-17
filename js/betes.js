@@ -493,6 +493,8 @@ $( function( $ ) {
 
 	app.LogBookView = Backbone.View.extend({
 		logBookTemplate: _.template( $('#logbook-template').html()),
+		addEntryTemplate: _.template( $('#add-item-template').html()),
+
 
 		events: {
 			'click .save-entry': 'saveNewEntry',
@@ -502,6 +504,7 @@ $( function( $ ) {
 
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
+			$("#modal-add-item").html(this.addEntryTemplate());
 			app.LogBookEntries.on( 'add', this.addOne, this );
 			app.LogBookEntries.on( 'reset', this.addAll, this );
 			app.LogBookEntries.on( 'all', this.render, this );

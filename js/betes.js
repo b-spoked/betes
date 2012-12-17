@@ -78,12 +78,13 @@ $( function( $ ) {
 			})
 		},
 		filterEntries : function(letters) {
+			
 			if(letters == "")
 				return this;
 
 			var pattern = new RegExp(letters,"gi");
 			return _(this.filter( function(data) {
-				return pattern.test(data.get("name")) ||pattern.test(data.get("labels"));
+				return pattern.test(data.get("name"));
 			}));
 		}
 	});
@@ -501,12 +502,12 @@ $( function( $ ) {
 
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
-			window.app.LogBookEntries.on( 'add', this.addOne, this );
-			window.app.LogBookEntries.on( 'reset', this.addAll, this );
-			window.app.LogBookEntries.on( 'all', this.render, this );
-			window.app.LogBookEntries.on( 'all', this.showBloodSugarGraph,this);
-			window.app.LogBookEntries.on( 'all', this.showBloodSugarVsExcerciseGraph,this);
-			window.app.LogBookEntries.fetch();
+			app.LogBookEntries.on( 'add', this.addOne, this );
+			app.LogBookEntries.on( 'reset', this.addAll, this );
+			app.LogBookEntries.on( 'all', this.render, this );
+			app.LogBookEntries.on( 'all', this.showBloodSugarGraph,this);
+			app.LogBookEntries.on( 'all', this.showBloodSugarVsExcerciseGraph,this);
+			app.LogBookEntries.fetch();
 		},
 		render: function() {			
 			$(this.el).hide();
@@ -525,9 +526,13 @@ $( function( $ ) {
 			});
 			this.$('#events-list').append( view.render().el );
 		},
-		addAll: function() {
+		addAll: function(entries) {
+			if(entries == null){
+				entries = app.LogBookEntries;
+			}
+			
 			this.$('#events-list').html('');
-			app.LogBookEntries.each(this.addOne, this);
+			entries.each(this.addOne, this);
 		},
 		newAttributes: function() {
 			return {

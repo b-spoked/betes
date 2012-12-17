@@ -15,9 +15,7 @@
 				<a class="brand" href="#"><i class="icon-tint icon-large"></i> Betes Log</a>
 				<ul class="nav">
 					<li class="active"><a href="#/">Log Book</a></li>
-					<li><a href="#/summary">Summary</a></li>						
-					<li><a href="#/goals">Goals</a></li>
-					<li><a href="#/account">Account</a></li>
+					<li><a href="#/account">You</a></li>
 				</ul>
 			</div>
 		</div>
@@ -59,9 +57,8 @@
 				</div>
 		</div>
 		</script>
-		<script type="text/template" id="logbook-template">
-			<button class="btn btn-primary create-new-entry">Add Entry</button>
-			<div id="add-entry-dialog" class="modal hide fade">
+		<script type="text/template" id="add-item-template">
+		<div id="add-entry-dialog" class="modal hide fade">
 				  <div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h3>Add a new log book entry</h3>
@@ -83,41 +80,132 @@
 					<button class="btn btn-primary add-entry">Add entry</button>
 				  </div>
 			</div>
-			<div id="modal-item-detail"></div>
-			<table class="table table-bordered table-condensed">
-				<thead>
-				  <tr>
-				    <th>At</th>
-				    <th>your blood sugar was</th>
-				    <th>you gave</th>
-				    <th>you did</th>
-				    <th>excercise at</th>
-				  </tr>
-				</thead>
-				<tbody id="events-list">
-				</tbody>
-			</table>		
+		</script>
+		<script type="text/template" id="logbook-template">
+		
+			<ul class="nav nav-tabs" id="myTab">
+				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
+				<li><a href="#bs-graph" data-toggle="tab">Sugars Graph</a></li>
+				<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Sugars and Excercise Graph</a></li>
+			</ul>
+		       
+			<div class="tab-content">
+				<div class="tab-pane active" id="logbook">
+					
+					<div class="row">
+						<div class="span2"><button class="btn create-new-entry">Add Result</button></div>
+						<div class="span2"><input type="text" placeholder="filter results ..." id="filter-logbook" ></div>
+					</div>
+					
+					<div id="modal-add-item"></div>
+					<div id="modal-item-detail"></div>
+					<table class="table table-bordered table-condensed">
+						<thead>
+						  <tr>
+						    <th>At</th>
+						    <th>your blood sugar was</th>
+						    <th>you gave</th>
+						    <th>you did</th>
+						    <th>excercise at</th>
+						  </tr>
+						</thead>
+						<tbody id="events-list">
+						</tbody>
+					</table>	
+				</div>
+				<div class="tab-pane" id="bs-graph">
+					<div class="row">
+						<div class="span4">
+							<label for="from-date">From Date</label>
+							<input type="date" id="from-date" >
+						</div>
+						<div class="span4">
+							<label for="to-date">To Date</label>
+							<input type="date" id="to-date" >
+						</div>
+					</div>
+				
+					<div id="bs-results">
+					</div>					
+				</div>
+				<div class="tab-pane" id="bs-vs-excercise-graph">
+					<div class="row">
+						<div class="span4">
+							<label for="from-date">From Date</label>
+							<input type="date" id="from-date" >
+						</div>
+						<div class="span4">
+							<label for="to-date">To Date</label>
+							<input type="date" id="to-date" >
+						</div>
+					</div>
+					<div id="bs-vs-excercise">
+					</div>					
+				</div>
+			</div>
+					
 		</script>			
 		<script type="text/template" id="account-template">
-			<div class="view">
-				<blockquote>Your account</blockquote>
-				<div class="one-third column">
-					<form id="profile">
-					<input type="text" id="account-user-name" placeholder="Name">
-					<input type="text" id="account-user-public-name" placeholder="User Name (that others will see)">
-					<input type="email" id="account-user-email" placeholder="Email">
-					<input type="password" id="account-user-pw" placeholder="Password">
+		<ul class="nav nav-tabs" id="user-tabs">
+			<li class="active"><a href="#user-info-tab" data-toggle="tab">Details</a></li>
+			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
+			<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
+		</ul>
+		<div class="tab-content">
+				<div class="tab-pane active" id="user-info-tab">
 				</div>
-				<div class="one-third column">
-					<select name="account-goals-public" id="account-goals-public">
-						<option value="false">Keep my goals private</option>
-						<option value="true">Show others my goals</option>
-					</select>
-					<input type="submit" value="Save Profile"/>
-					</form>
-				</div>				
-				<div class="clear"></div>
-			</div>
+				<div class="tab-pane" id="user-goals-tab">
+					<div class="row">
+						<div class="span6">
+							<form id="goals">
+							<label for="bs-lower">Blood Sugar Range</label>
+							<input type="number" id="goal-bs-lower" placeholder="lower">
+							<input type="number" id="goal-bs-upper" placeholder="upper">		
+							<label for="goal-bs-frequency">Testing Frequency</label>					
+							<input type="number" id="goal-bs-frequency" placeholder="times per day">
+						</div>
+						<div class="span6">
+							<label for="goal-excercise-duration">Average Excercise Duration</label>
+							<input type="number" id="goal-excercise-duration" placeholder="mins per day">
+							<label for="goal-excercise-frequency">Excercise Frequency</label>
+							<input type="number" id="goal-excercise-frequency" placeholder="times per week">
+							<input type="submit" value="Save Daily Goals"/>
+							</form>				
+						</div>
+					</div>
+					<div class="row">
+						<div class="span6">
+							<form id="goals">
+								<label for="goal-excercise-duration">Long Term Goal</label>
+								<textarea id="goal-long-term" />	
+												
+						</div>
+						<div class="span6">
+								<label for="goal-long-term-date">When do you aim to achive this?</label>						
+								<input type="date" id="goal-long-term-date" >
+								<input type="submit" value="Save Long Term Goals"/>
+							</form>				
+						</div>
+					</div>	
+				</div>
+				<div class="tab-pane" id="user-account-tab">
+					<div class="span6">
+						<form id="profile">
+						<input type="text" id="account-user-name" placeholder="Name">
+						<input type="text" id="account-user-public-name" placeholder="User Name (that others will see)">
+						<input type="email" id="account-user-email" placeholder="Email">
+						<input type="password" id="account-user-pw" placeholder="Password">
+					</div>
+					<div class="span6">
+						<select name="account-goals-public" id="account-goals-public">
+							<option value="false">Keep my goals private</option>
+							<option value="true">Show others my goals</option>
+						</select>
+						<input type="submit" value="Save Profile"/>
+						</form>
+					</div>
+				</div>
+		</div>
 		</script>
 		<script type="text/template" id="goals-template">
 			<div class="view">	

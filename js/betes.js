@@ -76,6 +76,15 @@ $( function( $ ) {
 				twoWeeksAgo = today.getDate() - 14;
 				return ( (item.get('when') <= today)&&(item.get('when') >= twoWeeksAgo))
 			})
+		},
+		filterEntries : function(letters) {
+			if(letters == "")
+				return this;
+
+			var pattern = new RegExp(letters,"gi");
+			return _(this.filter( function(data) {
+				return pattern.test(data.get("name")) ||pattern.test(data.get("labels"));
+			}));
 		}
 	});
 
@@ -484,10 +493,10 @@ $( function( $ ) {
 	app.LogBookView = Backbone.View.extend({
 		logBookTemplate: _.template( $('#logbook-template').html()),
 
-		// Delegated events for creating new items, and clearing completed ones.
 		events: {
 			'click .save-entry': 'saveNewEntry',
-			'click .create-new-entry': 'showNewEntryDialog'
+			'click .create-new-entry': 'showNewEntryDialog',
+			"keyup #filter-logbook" : "filterLogBook"
 		},
 
 		initialize: function() {
@@ -495,6 +504,8 @@ $( function( $ ) {
 			window.app.LogBookEntries.on( 'add', this.addOne, this );
 			window.app.LogBookEntries.on( 'reset', this.addAll, this );
 			window.app.LogBookEntries.on( 'all', this.render, this );
+			window.app.LogBookEntries.on( 'all', this.showBloodSugarGraph,this);
+			window.app.LogBookEntries.on( 'all', this.showBloodSugarVsExcerciseGraph,this);
 			window.app.LogBookEntries.fetch();
 		},
 		render: function() {			
@@ -534,6 +545,165 @@ $( function( $ ) {
 		},
 		saveNewEntry: function( e ) {
 			app.LogBookEntries.create( this.newAttributes() );
+		},
+		filterLogBook: function(e) {
+			var searchString = $("#filter-logbook").val();
+			this.addAll(app.LogBookEntries.filterEntries(searchString));
+		},
+		showBloodSugarGraph : function() {
+		
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+				width = 960 - margin.left - margin.right,
+				height = 500 - margin.top - margin.bottom;
+
+			var x = d3.time.scale()
+				.range([0, width]);
+
+			var y = d3.scale.linear()
+				.range([height, 0]);
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
+
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left");	
+
+			var line = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y(entry.bsLevel); });
+				
+			$("#bs-results").html('');	
+
+			var svg = d3.select("#bs-results").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			//app.LogBookEntries.fetch();			
+			var data = app.LogBookEntries.toJSON();	
+			
+			data.forEach(function(entry) {			  
+				entry.when = new Date(entry.when);
+				entry.bsLevel = +entry.bsLevel;
+			});
+			  
+			x.domain(d3.extent(data, function(entry) { return entry.when; }));
+			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+
+			  svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height + ")")
+				  .call(xAxis);
+
+			  svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxis)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Reading (mmol)");			  
+			  
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line);	  
+					
+		},
+		showBloodSugarVsExcerciseGraph : function() {
+		
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+				width = 960 - margin.left - margin.right,
+				height = 500 - margin.top - margin.bottom;
+
+			var x = d3.time.scale()
+				.range([0, width]);
+			//blood sugars
+			var y = d3.scale.linear().range([height, 0]);
+			//excercise
+			var y2 = d3.scale.linear().range([height, 0]);			
+
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
+
+			var yAxisLeft = d3.svg.axis()
+				.scale(y)
+				.orient("left");	
+				
+			var yAxisRight = d3.svg.axis()
+				.scale(y2)
+				.orient("right");		
+
+			var line = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y(entry.bsLevel); });	
+				
+			var line2 = d3.svg.line()
+				.x(function(entry) { return x(entry.when); })
+				.y(function(entry) { return y2(entry.excerciseDuration); });		
+
+			$("#bs-vs-excercise").html('');
+
+			var svg = d3.select("#bs-vs-excercise").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			//app.LogBookEntries.fetch();			
+			var data = app.LogBookEntries.toJSON();	
+			
+			data.forEach(function(entry) {			  
+				entry.when = new Date(entry.when);
+				entry.bsLevel = +entry.bsLevel;
+				entry.excerciseDuration = entry.excerciseDuration;
+			});
+			  
+			x.domain(d3.extent(data, function(entry) { return entry.when; }));
+			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+			y2.domain(d3.extent(data, function(entry) { return entry.excerciseDuration; }));
+
+			  svg.append("g")
+				  .attr("class", "x axis")
+				  .attr("transform", "translate(0," + height + ")")
+				  .call(xAxis);
+
+			  svg.append("g")
+				  .attr("class", "y axis")
+				  .call(yAxisLeft)
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Reading (mmol)");	
+
+			 svg.append("g")
+				  .attr("class", "y axis axisRight")
+				  .call(yAxisRight)
+				  .attr("transform", "translate("+(width-10)+",0)")
+				.append("text")
+				  .attr("transform", "rotate(-90)")
+				  .attr("y", 6)
+				  .attr("dy", "1em")
+				  .style("text-anchor", "end")
+				  .text("Excercise (mins)");			
+			  
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line);
+
+			  svg.append("path")
+				.datum(data)
+				.attr("class", "line")
+				.attr("d", line2);			
+					
 		}
 	});
 	
@@ -541,9 +711,9 @@ $( function( $ ) {
 
 		routes: {
 			"":"showLogBook",
-			"account" : "showAccount",
-			"goals" : "showGoals",
-			"summary" : "showSummary"
+			"account" : "showAccount"
+			//"goals" : "showGoals",
+			//"summary" : "showSummary"
 		},
 
 		/**

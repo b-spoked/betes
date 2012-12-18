@@ -188,35 +188,6 @@ $( function( $ ) {
 		}
 	});
 	
-	app.GoalsView = Backbone.View.extend({
-		goalsTemplate: _.template( $('#goals-template').html()),
-
-		events: {
-			'submit #goals': 'saveGoals'
-		},
-
-		render: function() {
-			$(this.el).html(this.goalsTemplate());
-			$(this.el).hide();
-		},
-		close: function() {
-			this.remove();
-			this.unbind();
-		},
-		onShow: function() {
-			$(this.el).show(500);
-		},
-		saveGoals : function(e) {
-			this.model.save({
-				bsLowerGoal: $('#goal-bs-lower').val().trim(),
-				bsUpperGoal: $('#goal-bs-upper').val().trim(),
-				bsTestFrequencyGoal: $('#goal-bs-frequency').val().trim(),
-				excerciseDurationGoal: $('#goal-excercise-duration').val().trim(),
-				excerciseFrequencyGoal: $('#goal-excercise-frequency').val().trim()
-			});		
-		}
-	});
-	
 	app.SummaryView = Backbone.View.extend({
 		summaryTemplate: _.template( $('#summary-template').html()),
 
@@ -499,7 +470,9 @@ $( function( $ ) {
 		events: {
 			'click .save-entry': 'saveNewEntry',
 			'click .create-new-entry': 'showNewEntryDialog',
-			"keyup #filter-logbook" : "filterLogBook"
+			"keyup #filter-logbook" : "filterLogBook",
+			'click .show-bs-graph' : "showBloodSugarGraph",
+			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph"
 		},
 
 		initialize: function() {
@@ -593,7 +566,6 @@ $( function( $ ) {
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
-			//app.LogBookEntries.fetch();			
 			var data = app.LogBookEntries.toJSON();	
 			
 			data.forEach(function(entry) {			  
@@ -666,7 +638,6 @@ $( function( $ ) {
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
-			//app.LogBookEntries.fetch();			
 			var data = app.LogBookEntries.toJSON();	
 			
 			data.forEach(function(entry) {			  
@@ -715,6 +686,10 @@ $( function( $ ) {
 				.attr("class", "line")
 				.attr("d", line2);			
 					
+		},
+		shareGraph : function(e){
+			var graphCanvas = document.getElementById("mycanvas");
+			var graphImg = graphCanvas.toDataURL("image/png");
 		}
 	});
 	
@@ -723,25 +698,13 @@ $( function( $ ) {
 		routes: {
 			"":"showLogBook",
 			"account" : "showAccount"
-			//"goals" : "showGoals",
-			//"summary" : "showSummary"
 		},
 
-		/**
-		 * Handle rendering the initial 'today' view for the application
-		 * @type function
-		 */
 		showLogBook: function() {
 			RegionManager.show(new app.LogBookView());	
 		},
 		showAccount: function( ) {
 			RegionManager.show(new app.AccountView());
-		},
-		showGoals: function( ) {
-			RegionManager.show(new app.GoalsView());
-		},
-		showSummary: function( ) {
-			RegionManager.show(new app.SummaryView());
 		}
 	});
 

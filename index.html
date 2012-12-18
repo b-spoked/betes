@@ -7,12 +7,13 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
 		<link rel="stylesheet" href="css/font-awesome.css" />
+		<link rel="stylesheet" href="css/layout.css" />
 	</head>
 	  
 	<body>
 		<div class="navbar navbar-inverse">
 			<div class="navbar-inner">
-				<a class="brand" href="#"><i class="icon-tint icon-large"></i> Betes Log</a>
+				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
 				<ul class="nav">
 					<li class="active"><a href="#/">Log Book</a></li>
 					<li><a href="#/account">You</a></li>
@@ -114,19 +115,16 @@
 					</table>	
 				</div>
 				<div class="tab-pane" id="bs-graph">
-					<div class="row">
-						<div class="span4">
-							<label for="from-date">From Date</label>
-							<input type="date" id="from-date" >
-						</div>
-						<div class="span4">
-							<label for="to-date">To Date</label>
-							<input type="date" id="to-date" >
-						</div>
+					<div class="span12">
+						<label for="from-date">From</label>
+						<input type="date" id="from-date" >
+						<label for="to-date">To</label>
+						<input type="date" id="to-date" >
+						<button class="btn show-bs-graph">Show</button>
+						
 					</div>
-				
 					<div id="bs-results">
-					</div>					
+					</div>
 				</div>
 				<div class="tab-pane" id="bs-vs-excercise-graph">
 					<div class="row">
@@ -136,11 +134,12 @@
 						</div>
 						<div class="span4">
 							<label for="to-date">To Date</label>
-							<input type="date" id="to-date" >
+							<input type="date" id="to-date" >	
+							<button class="btn show-bs-vs-excercise-graph">Show</button>
 						</div>
 					</div>
 					<div id="bs-vs-excercise">
-					</div>					
+					</div>
 				</div>
 			</div>
 					
@@ -278,8 +277,8 @@
 		<script src="js/backbone-min.js"></script>
 		<script src="js/backbone-localstorage.js"></script>		
 		<script src="js/bootstrap.min.js"></script>
-		<script src="js/betes.js"></script>
 		<script src="js/d3.v2.min.js"></script>
+		<script src="js/betes.js"></script>
 					
 	</body>
 </html>

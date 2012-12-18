@@ -472,7 +472,9 @@ $( function( $ ) {
 			'click .create-new-entry': 'showNewEntryDialog',
 			"keyup #filter-logbook" : "filterLogBook",
 			'click .show-bs-graph' : "showBloodSugarGraph",
-			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph"
+			"keyup #filter-bs-graph" : "filterBloodSugarGraph",
+			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph",
+			'keyup #filter-bs-vs-excercise-graph': "filterBloodSugarVsExcerciseGraph"
 		},
 
 		initialize: function() {
@@ -480,8 +482,6 @@ $( function( $ ) {
 			app.LogBookEntries.on( 'add', this.addOne, this );
 			app.LogBookEntries.on( 'reset', this.addAll, this );
 			app.LogBookEntries.on( 'all', this.render, this );
-			app.LogBookEntries.on( 'all', this.showBloodSugarGraph,this);
-			app.LogBookEntries.on( 'all', this.showBloodSugarVsExcerciseGraph,this);
 			app.LogBookEntries.fetch();
 		},
 		render: function() {			
@@ -534,7 +534,27 @@ $( function( $ ) {
 			var searchString = $("#filter-logbook").val();
 			this.addAll(app.LogBookEntries.filterEntries(searchString));
 		},
-		showBloodSugarGraph : function() {
+		filterBloodSugarGraph: function(e){
+			var searchString = $("#filter-bs-graph").val();
+			this.showBloodSugarGraph(e,app.LogBookEntries.filterEntries(searchString));
+		},
+		filterBloodSugarVsExcerciseGraph: function(e){
+			var searchString = $("#filter-bs-vs-excercise-graph").val();
+			this.showBloodSugarVsExcerciseGraph(e,app.LogBookEntries.filterEntries(searchString));
+		},
+		showBloodSugarGraph : function(e,entries) {
+			
+			var data = null;
+			
+			if(entries){
+				data = new Array(); 
+				entries.forEach(function(entry) {
+					data.push(entry.toJSON());
+				});
+			}
+			else{
+				data = app.LogBookEntries.toJSON();
+			}
 		
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 				width = 960 - margin.left - margin.right,
@@ -566,8 +586,6 @@ $( function( $ ) {
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
-			var data = app.LogBookEntries.toJSON();	
-			
 			data.forEach(function(entry) {			  
 				entry.when = new Date(entry.when);
 				entry.bsLevel = +entry.bsLevel;
@@ -597,8 +615,20 @@ $( function( $ ) {
 				.attr("d", line);	  
 					
 		},
-		showBloodSugarVsExcerciseGraph : function() {
-		
+		showBloodSugarVsExcerciseGraph : function(e,entries) {
+			
+			var data = null;
+			
+			if(entries){
+				data = new Array(); 
+				entries.forEach(function(entry) {
+					data.push(entry.toJSON());
+				});
+			}
+			else{
+				data = app.LogBookEntries.toJSON();
+			}
+			
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 				width = 960 - margin.left - margin.right,
 				height = 500 - margin.top - margin.bottom;
@@ -637,8 +667,6 @@ $( function( $ ) {
 				.attr("height", height + margin.top + margin.bottom)
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-			
-			var data = app.LogBookEntries.toJSON();	
 			
 			data.forEach(function(entry) {			  
 				entry.when = new Date(entry.when);

@@ -550,6 +550,7 @@ $( function( $ ) {
 		showNewEntryDialog: function() {
 			
 			$("#modal-item-add").html( this.addEntryTemplate() );
+			$('#entry-date').val(new Date().toJSON().substring(0,19).replace('T',' '));
 			$("#add-entry-dialog").modal('show');
 			
 		},

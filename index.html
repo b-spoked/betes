@@ -59,27 +59,27 @@
 		</script>
 		<script type="text/template" id="add-item-template">
 		<div id="add-entry-dialog" class="modal hide fade">
-				  <div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h3>Add a new log book entry</h3>
-				  </div>
-				  <div class="modal-body">
-					<label for="entry-name">Basics</label>
-					<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
-					<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
-					<input type="text" id="entry-level" placeholder="Your Blood Sugar">
-					<input type="text" id="entry-insulin" placeholder="Insulin Given">
-					<label for="entry-excercise-duration">Excercise</label>
-					<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
-					<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
-					<label for="entry-labels">Labels</label>
-					<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
-				  </div>
-				  <div class="modal-footer">
-					<a href="#" class="btn">Close</a>
-					<button class="btn btn-primary add-entry">Add entry</button>
-				  </div>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h3>Add a new log book entry</h3>
 			</div>
+			<div class="modal-body">
+				<label for="entry-name">Basics</label>
+				<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
+				<input type="text" placeholder="When?" class="when-picker" name="entry-date" id="entry-date" >
+				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
+				<input type="text" id="entry-insulin" placeholder="Insulin Given">
+				<label for="entry-excercise-duration">Excercise</label>
+				<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
+				<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
+				<label for="entry-labels">Labels</label>
+				<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn">Close</a>
+				<button class="btn btn-primary add-entry">Add entry</button>
+			</div>
+		</div>
 		</script>
 		<script type="text/template" id="logbook-template">
 		
@@ -97,7 +97,7 @@
 						<div class="span2"><input type="text" placeholder="filter results ..." id="filter-logbook" ></div>
 					</div>
 					
-					<div id="modal-add-item"></div>
+					<div id="modal-item-add"></div>
 					<div id="modal-item-detail"></div>
 					<table class="table table-bordered table-condensed">
 						<thead>

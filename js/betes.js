@@ -504,7 +504,6 @@ $( function( $ ) {
 
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
-			$("#modal-add-item").html(this.addEntryTemplate());
 			app.LogBookEntries.on( 'add', this.addOne, this );
 			app.LogBookEntries.on( 'reset', this.addAll, this );
 			app.LogBookEntries.on( 'all', this.render, this );
@@ -520,7 +519,7 @@ $( function( $ ) {
 			this.unbind();
 		},
 		onShow: function() {
-			$(this.el).show(500);		
+			$(this.el).show(500);
 		},
 		
 		addOne: function( entry ) {
@@ -549,7 +548,10 @@ $( function( $ ) {
 			};
 		},		
 		showNewEntryDialog: function() {
-			$('#add-entry-dialog').modal('show');
+			
+			$("#modal-item-add").html( this.addEntryTemplate() );
+			$("#add-entry-dialog").modal('show');
+			
 		},
 		saveNewEntry: function( e ) {
 			app.LogBookEntries.create( this.newAttributes() );

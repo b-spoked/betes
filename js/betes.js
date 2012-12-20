@@ -57,25 +57,12 @@ $( function( $ ) {
 	var Entries =  Backbone.Collection.extend({
 		model : Entry,
 		localStorage : new Store('logbook-entries'),
-		today : function() {
-			return this.filter( function(item) {
-				today = new Date();
-				return ( item.get('when') === today)
-			})
-		},
-		lastWeek : function() {
-			return this.filter( function(item) {
-				today = new Date();
-				weekAgo = today.getDate() - 7;
-				return ( (item.get('when') <= today)&&(item.get('when') >= weekAgo))
-			})
-		},
-		lastFortnight : function() {
-			return this.filter( function(item) {
-				today = new Date();
-				twoWeeksAgo = today.getDate() - 14;
-				return ( (item.get('when') <= today)&&(item.get('when') >= twoWeeksAgo))
-			})
+		goalPercentageForDay : function() {
+			
+			
+			return .25;
+			
+			
 		},
 		filterEntries : function(letters) {
 			
@@ -474,7 +461,9 @@ $( function( $ ) {
 			'click .show-bs-graph' : "showBloodSugarGraph",
 			"keyup #filter-bs-graph" : "filterBloodSugarGraph",
 			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph",
-			'keyup #filter-bs-vs-excercise-graph': "filterBloodSugarVsExcerciseGraph"
+			'keyup #filter-bs-vs-excercise-graph': "filterBloodSugarVsExcerciseGraph",
+			'click .show-goals-graph' : "showGoalsGraph",
+			'keyup #filter-goals-graph': "filterGoalsGraph"
 		},
 
 		initialize: function() {
@@ -711,10 +700,108 @@ $( function( $ ) {
 
 			  svg.append("path")
 				.datum(data)
-				.attr("class", "line")
+				.attr("class", "line2")
 				.attr("d", line2);			
 					
 		},
+		showGoalsGraph : function(e,entries){
+			
+			var data = null;
+			
+			if(entries){
+				data = new Array(); 
+				entries.forEach(function(entry) {
+					data.push(entry.toJSON());
+				});
+			}
+			else{
+				data = app.LogBookEntries.toJSON();
+			}
+		
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+				width = 960,
+				height = 137,
+				cellSize = 17; // cell size
+	
+		    
+			var day = d3.time.format("%w"),
+			    week = d3.time.format("%U"),
+			    percent = d3.format(".1%"),
+			    format = d3.time.format("%Y-%m-%d");
+		    
+			var color = d3.scale.quantize()
+			    .domain([-.05, .05])
+			    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+		    
+			var svg = d3.select("body").selectAll("svg")
+			    .data(d3.range(2012, 2013))
+			  .enter().append("svg")
+			    .attr("width", width)
+			    .attr("height", height)
+			    .attr("class", "RdYlGn")
+			  .append("g")
+			    .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
+			
+			svg.append("text")
+			    .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
+			    .style("text-anchor", "middle")
+			    .text(function(d) { return d; });
+		    
+			var rect = svg.selectAll(".day")
+			    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+			  .enter().append("rect")
+			    .attr("class", "day")
+			    .attr("width", cellSize)
+			    .attr("height", cellSize)
+			    .attr("x", function(d) { return week(d) * cellSize; })
+			    .attr("y", function(d) { return day(d) * cellSize; })
+			    .datum(format);
+		    
+			rect.append("title")
+			    .text(function(d) { return d; });
+		    
+			svg.selectAll(".month")
+			    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+			  .enter().append("path")
+			    .attr("class", "month")
+			    .attr("d", monthPath);
+		    
+		    
+			//data
+			  
+			  //roll up goals for the day
+			  var goalsData = d3.nest()
+			    .key(function(d) {
+				var day = new Date(d.when);
+				return day.toDateString();
+				})
+			    .rollup(function(d) { return .25; })
+			    .map(data);
+			
+			  rect.filter(function(d) { return d in goalsData; })
+			      .attr("class", function(d) { return "day " + color(goalsData[d]); })
+			    .select("title")
+			      .text(function(d) { return d + ": " + percent(goalsData[d]); });
+			
+			function monthPath(t0) {
+			  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+			      d0 = +day(t0), w0 = +week(t0),
+			      d1 = +day(t1), w1 = +week(t1);
+			  return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+			      + "H" + w0 * cellSize + "V" + 7 * cellSize
+			      + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+			      + "H" + (w1 + 1) * cellSize + "V" + 0
+			      + "H" + (w0 + 1) * cellSize + "Z";
+			}
+			
+			d3.select(self.frameElement).style("height", "2910px");
+
+		},
+		filterGoalsGraph: function(e){
+			var searchString = $("#filter-goals-graph").val();
+			this.showGoalsGraph(e,app.LogBookEntries.filterEntries(searchString));
+		},
+		
 		shareGraph : function(e){
 			var graphCanvas = document.getElementById("mycanvas");
 			var graphImg = graphCanvas.toDataURL("image/png");

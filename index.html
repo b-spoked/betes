@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
 		<link rel="stylesheet" href="css/font-awesome.css" />
-		<link rel="stylesheet" href="css/layout.css" />
+		<link rel="stylesheet" href="css/graphs.css" />
 	</head>
 	  
 	<body>
@@ -16,7 +16,7 @@
 				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
 				<ul class="nav">
 					<li class="active"><a href="#/">Log Book</a></li>
-					<li><a href="#/account">You</a></li>
+					<li><a href="#/account">Settings</a></li>
 				</ul>
 			</div>
 		</div>
@@ -86,6 +86,7 @@
 		
 			<ul class="nav nav-tabs" id="myTab">
 				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
+				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
 				<li><a href="#bs-graph" data-toggle="tab">Sugars Graph</a></li>
 				<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Sugars and Excercise Graph</a></li>
 			</ul>
@@ -113,6 +114,19 @@
 						<tbody id="events-list">
 						</tbody>
 					</table>	
+				</div>
+				<div class="tab-pane" id="goals-graph">
+					<form class="form-inline">
+						<label for="from-date">From:</label>
+						<input type="date" id="from-date" >
+						<label for="to-date">To:</label>
+						<input type="date" id="to-date" >
+						<button class="btn show-goals-graph">Show</button>
+						<label for="filter-goals-graph">Filter Shown:</label>
+						<input type="text" placeholder="filter results ..." id="filter-goals-grap" >
+					</form>
+					<div id="goals">
+					</div>
 				</div>
 				<div class="tab-pane" id="bs-graph">
 					<form class="form-inline">

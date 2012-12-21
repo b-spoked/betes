@@ -772,16 +772,21 @@ $( function( $ ) {
 			  //roll up goals for the day
 			  var goalsData = d3.nest()
 			    .key(function(d) {
-				var day = new Date(d.when);
-				return day.toDateString();
+				var fullDate = new Date(d.when);
+				var formattedDate = fullDate.getFullYear() + "-" + (fullDate.getMonth() + 1) + "-" + fullDate.getDate();			
+				return formattedDate;
 				})
-			    .rollup(function(d) { return .25; })
+			    .rollup(function(d) { return .05; })
 			    .map(data);
 			
 			  rect.filter(function(d) { return d in goalsData; })
-			      .attr("class", function(d) { return "day " + color(goalsData[d]); })
+			      .attr("class", function(d) {
+				return "day " + color(goalsData[d]);
+				})
 			    .select("title")
-			      .text(function(d) { return d + ": " + percent(goalsData[d]); });
+			      .text(function(d) {
+				return d + ": " + percent(goalsData[d]);
+				});
 			
 			function monthPath(t0) {
 			  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),

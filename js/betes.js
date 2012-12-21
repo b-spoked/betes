@@ -455,7 +455,7 @@ $( function( $ ) {
 
 
 		events: {
-			'click .save-entry': 'saveNewEntry',
+			'click .add-entry': 'saveNewEntry',
 			'click .create-new-entry': 'showNewEntryDialog',
 			"keyup #filter-logbook" : "filterLogBook",
 			'click .show-bs-graph' : "showBloodSugarGraph",
@@ -518,6 +518,8 @@ $( function( $ ) {
 		},
 		saveNewEntry: function( e ) {
 			app.LogBookEntries.create( this.newAttributes() );
+			
+			$("#add-entry-dialog").modal('hide');
 		},
 		filterLogBook: function(e) {
 			var searchString = $("#filter-logbook").val();
@@ -776,8 +778,11 @@ $( function( $ ) {
 				var formattedDate = fullDate.getFullYear() + "-" + (fullDate.getMonth() + 1) + "-" + fullDate.getDate();			
 				return formattedDate;
 				})
-			    .rollup(function(d) { return .05; })
+			    .rollup(function(d) {
+				return .4;
+				})
 			    .map(data);
+			
 			
 			  rect.filter(function(d) { return d in goalsData; })
 			      .attr("class", function(d) {
@@ -787,6 +792,7 @@ $( function( $ ) {
 			      .text(function(d) {
 				return d + ": " + percent(goalsData[d]);
 				});
+			          
 			
 			function monthPath(t0) {
 			  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
@@ -799,7 +805,7 @@ $( function( $ ) {
 			      + "H" + (w0 + 1) * cellSize + "Z";
 			}
 			
-			d3.select(self.frameElement).style("height", "2910px");
+			d3.select("#goals").style("height", "150px");
 
 		},
 		filterGoalsGraph: function(e){

@@ -468,9 +468,10 @@ $( function( $ ) {
 
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
-			app.LogBookEntries.on( 'add', this.addOne, this );
-			app.LogBookEntries.on( 'reset', this.addAll, this );
-			app.LogBookEntries.on( 'all', this.render, this );
+			_.bindAll(this);
+			app.LogBookEntries.bind( 'add', this.addOne, this );
+			app.LogBookEntries.bind( 'reset', this.addAll, this );
+			app.LogBookEntries.bind( 'all', this.render, this );
 			app.LogBookEntries.fetch();
 		},
 		render: function() {			
@@ -517,9 +518,11 @@ $( function( $ ) {
 			
 		},
 		saveNewEntry: function( e ) {
-			app.LogBookEntries.create( this.newAttributes() );
 			
+			app.LogBookEntries.create(this.newAttributes());
 			$("#add-entry-dialog").modal('hide');
+			//this.addAll(app.LogBookEntries);
+			this.onShow();
 		},
 		filterLogBook: function(e) {
 			var searchString = $("#filter-logbook").val();

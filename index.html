@@ -28,21 +28,30 @@
 		</div>
 		<!-- App Source -->	
 		<script type="text/template" id="item-template">
-			<td><a class="update" href="#"><%= name %></a></td>
-			<td><%= bsLevel %>mmol</td>
-			<td><%= insulinAmount %>u</td>
-			<td><%= excerciseDuration %> mins</td>
-			<td><%= excerciseIntensity %> intensity</td>		
+			<td><% if(name) { %> <a class="update" href="#"><%= name %></a><% } %> </td>
+			<td><% if(bsLevel) { %> <%= bsLevel %>mmol <% } %></td>
+			<td><% if(insulinAmount) { %> <%= insulinAmount %>u<% } %></td>
+			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> mins<% } %></td>
+			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>		
 		</script>
 		<script type="text/template" id="item-detail-template">
 		<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 					<h3 id="myModalLabel">Editing Result</h3>
 				</div>
 				<div class="modal-body">
 					<h4>Basics</h4>							
-					<input type="text" id="edit-entry-name" value="<%= name %>" autofocus>
+					<select  id="edit-entry-name" autofocus>
+						<option <%if (name=="Waking") {%>selected<%}%> value="Waking">Waking</option>
+						<option <%if (name=="Breakfast") {%>selected<%}%> value="Breakfast">Breakfast</option>
+						<option <%if (name=="Mid-Morning") {%>selected<%}%> value="Mid-Morning">Mid-Morning</option>
+						<option <%if (name=="Lunch") {%>selected<%}%> value="Lunch">Lunch</option>
+						<option <%if (name=="Mid-Afternoon") {%>selected<%}%> value="Mid-Afternoon">Mid-Afternoon</option>
+						<option <%if (name=="Dinner") {%>selected<%}%> value="Dinner">Dinner</option>
+						<option <%if (name=="Evening") {%>selected<%}%> value="Evening">Evening</option>
+						<option <%if (name=="Bed") {%>selected<%}%> value="Bed">Bed</option>
+						<option <%if (name=="Other") {%>selected<%}%> value="Other">Other</option>
+					</select>
 					<input type="text" class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
 					<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
 					<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
@@ -53,7 +62,7 @@
 					<input type="text" id="edit-entry-labels" value="<%= labels %>">
 				</div>
 				<div class="modal-footer">
-					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 					<button class="btn btn-primary save-entry">Save</button>
 				</div>
 		</div>
@@ -61,12 +70,21 @@
 		<script type="text/template" id="add-item-template">
 		<div id="add-entry-dialog" class="modal hide fade">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h3>Add a new log book entry</h3>
 			</div>
 			<div class="modal-body">
 				<label for="entry-name">Basics</label>
-				<input type="text" id="entry-name" placeholder="Event in your day e.g. Breakfast" autofocus>
+				<select name="locationfilter"  id="entry-name" autofocus>
+					<option value="Waking">Waking</option>
+					<option value="Breakfast">Breakfast</option>
+					<option value="Mid-Morning">Mid-Morning</option>
+					<option value="Lunch">Lunch</option>
+					<option value="Mid-Afternoon">Mid-Afternoon</option>
+					<option value="Dinner">Dinner</option>
+					<option value="Evening">Evening</option>
+					<option value="Bed">Bed</option>
+					<option value="Other">Other</option>
+				</select>
 				<input type="text" name="entry-date" id="entry-date">
 				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
 				<input type="text" id="entry-insulin" placeholder="Insulin Given">
@@ -77,8 +95,8 @@
 				<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="btn">Close</a>
-				<button class="btn btn-primary add-entry">Add entry</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary add-entry">Save</button>
 			</div>
 		</div>
 		</script>

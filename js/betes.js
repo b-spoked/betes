@@ -95,9 +95,9 @@ $( function( $ ) {
 		// The DOM events specific to an item.
 		events: {
 			'click .update': 'edit',
+			'click .delete': 'deleteEntry',
 			'click .save-entry': 'updateOnEnter',
-			'click .close-entry': 'close',
-			'click .remove':  'clear'
+			'click .close-entry': 'close'
 		},
 
 		initialize: function() {
@@ -139,11 +139,10 @@ $( function( $ ) {
 		},
 		// If you hit `enter`, we're through editing the item.
 		updateOnEnter: function( e ) {			
-				this.save();			
+			this.save();			
 		},
-		clear: function() {
+		deleteEntry: function() {
 			this.model.destroy();
-			this.render();
 		}
 	});
 
@@ -471,6 +470,7 @@ $( function( $ ) {
 			_.bindAll(this);
 			app.LogBookEntries.bind( 'add', this.addOne, this );
 			app.LogBookEntries.bind( 'reset', this.addAll, this );
+			app.LogBookEntries.bind( 'remove', this.onShow, this );
 			app.LogBookEntries.bind( 'all', this.render, this );
 			app.LogBookEntries.fetch();
 		},

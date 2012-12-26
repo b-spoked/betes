@@ -32,7 +32,8 @@
 			<td><% if(bsLevel) { %> <%= bsLevel %>mmol <% } %></td>
 			<td><% if(insulinAmount) { %> <%= insulinAmount %>u<% } %></td>
 			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> mins<% } %></td>
-			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>		
+			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>
+			<td><a class="btn update" href="#"><i class="icon-edit"></i></a><a class="btn delete" href="#"><i class="icon-trash"></i></a></td>
 		</script>
 		<script type="text/template" id="item-detail-template">
 		<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -58,6 +59,14 @@
 					<h4>Excercise</h4>
 					<input type="text" id="edit-entry-excercise-duration" value="<%= excerciseDuration %>">				
 					<input type="text" id="edit-entry-excercise-intensity" value="<%= excerciseIntensity %>">
+					<select  id="edit-entry-excercise-intensity">
+						<option <%if (excerciseIntensity=="") {%>selected<%}%> value="">NA</option>
+						<option <%if (excerciseIntensity=="Easy") {%>selected<%}%> value="Easy">Easy</option>
+						<option <%if (excerciseIntensity=="Easy-Moderate") {%>selected<%}%> value="Easy-Moderate">Easy-Moderate</option>
+						<option <%if (excerciseIntensity=="Moderate") {%>selected<%}%> value="Moderate">Moderate</option>
+						<option <%if (excerciseIntensity=="Moderate-Intense") {%>selected<%}%> value="Moderate-Intense">Moderate-Intense</option>
+						<option <%if (excerciseIntensity=="Intense") {%>selected<%}%> value="Intense">Intense</option>
+					</select>
 					<h4>Labels</h4>
 					<input type="text" id="edit-entry-labels" value="<%= labels %>">
 				</div>
@@ -74,7 +83,7 @@
 			</div>
 			<div class="modal-body">
 				<label for="entry-name">Basics</label>
-				<select name="locationfilter"  id="entry-name" autofocus>
+				<select id="entry-name" autofocus>
 					<option value="Waking">Waking</option>
 					<option value="Breakfast">Breakfast</option>
 					<option value="Mid-Morning">Mid-Morning</option>
@@ -90,7 +99,14 @@
 				<input type="text" id="entry-insulin" placeholder="Insulin Given">
 				<label for="entry-excercise-duration">Excercise</label>
 				<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
-				<input type="text" id="entry-excercise-intensity" placeholder="Excercise intensly?">	
+				<select id="entry-excercise-intensity">
+					<option value="">NA</option>
+					<option value="Easy">Easy</option>
+					<option value="Easy-Moderate">Easy-Moderate</option>
+					<option value="Moderate">Moderate</option>
+					<option value="Moderate-Intense">Moderate-Intense</option>
+					<option value="Intense">Intense</option>
+				</select>
 				<label for="entry-labels">Labels</label>
 				<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
 			</div>
@@ -135,7 +151,7 @@
 				</div>
 				<div class="tab-pane" id="goals-graph">
 					<form class="form-inline">
-						<button class="btn show-goals-graph">Show</button>
+						<!--<button class="btn show-goals-graph">Show</button>-->
 						<input type="text" placeholder="filter results ..." id="filter-goals-grap" >
 					</form>
 					<div id="goals">
@@ -143,11 +159,11 @@
 				</div>
 				<div class="tab-pane" id="bs-graph">
 					<form class="form-inline">
-						<label for="from-date">From:</label>
+						<!--<label for="from-date">From:</label>
 						<input type="date" id="from-date" >
 						<label for="to-date">To:</label>
 						<input type="date" id="to-date" >
-						<button class="btn show-bs-graph">Show</button>
+						<button class="btn show-bs-graph">Show</button>-->
 						<label for="filter-bs-graph">Filter Shown:</label>
 						<input type="text" placeholder="filter results ..." id="filter-bs-graph" >
 					</form>
@@ -158,11 +174,11 @@
 				</div>
 				<div class="tab-pane" id="bs-vs-excercise-graph">
 					<form class="form-inline">
-						<label for="from-date">From:</label>
+						<!--<label for="from-date">From:</label>
 						<input type="date" id="from-date" >
 						<label for="to-date">To:</label>
 						<input type="date" id="to-date" >
-						<button class="btn show-bs-vs-excercise-graph">Show</button>
+						<button class="btn show-bs-vs-excercise-graph">Show</button>-->
 						<label for="filter-bs-vs-excercise-graph">Filter Shown:</label>
 						<input type="text" placeholder="filter results ..." id="filter-bs-vs-excercise-graph" >
 					</form>
@@ -269,36 +285,6 @@
 				</div>
 				<div class="clear"></div>
 			</div>
-		</script>
-		<script type="text/template" id="summary-template">
-			<div class="view">				
-				<div class="sixteen columns">									
-					<blockquote>Select your log book entries below and then choose what to do with them.</blockquote>
-				</div>
-				<div class="one-third column alpha">													
-					<label for="from-date">From Date</label>
-					<input type="date" id="from-date" >
-				</div>
-				<div class="one-third column omega">			
-					<label for="to-date">To Date</label>
-					<input type="date" id="to-date" >
-				</div>				
-				<div class="one-third column">
-					<button class="btn btn-small btn-block graph-results">Graph Results</button>
-					<button class="btn btn-small btn-block graph-goals">Graph Goals</button>
-					<button class="btn btn-small btn-block graph-excercise">Graph Excercise</button>
-					<button class="btn btn-small btn-block email">Email Summary</button>				
-				</div>			
-				<div class="sixteen columns" id="graph">						
-					<div id="results-graph">
-					</div>
-					<div id="goals-graph">
-					</div>
-					<div id="excercise-graph">
-					</div>					
-				</div>				
-			</div>							
-			<div class="clear"></div>			
 		</script>
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/underscore-min.js"></script>

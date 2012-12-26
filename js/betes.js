@@ -2,7 +2,6 @@ var app = app || {};
 
 $( function( $ ) {
     
-
 	var Entry = Backbone.Model.extend({
 		defaults: {
 			name: '',
@@ -58,11 +57,7 @@ $( function( $ ) {
 		model : Entry,
 		localStorage : new Store('logbook-entries'),
 		goalPercentageForDay : function() {
-			
-			
 			return .25;
-			
-			
 		},
 		filterEntries : function(letters) {
 			
@@ -193,7 +188,8 @@ $( function( $ ) {
 			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph",
 			'keyup #filter-bs-vs-excercise-graph': "filterBloodSugarVsExcerciseGraph",
 			'click .show-goals-graph' : "showGoalsGraph",
-			'keyup #filter-goals-graph': "filterGoalsGraph"
+			'keyup #filter-goals-graph': "filterGoalsGraph",
+			'shown a[data-toggle="tab"]': "showGraph"
 		},
 
 		initialize: function() {
@@ -215,7 +211,15 @@ $( function( $ ) {
 		onShow: function() {
 			$(this.el).show(500);
 		},
-		
+		showGraph :function(e){
+			if(e.target.hash == "#bs-graph"){
+				this.showBloodSugarGraph(app.LogBookEntries);
+			}else if(e.target.hash == "#bs-vs-excercise-graph"){
+				this.showBloodSugarVsExcerciseGraph(app.LogBookEntries);
+			}else if(e.target.hash == "#goals-graph"){
+				this.showGoalsGraph(app.LogBookEntries);
+			}
+		},
 		addOne: function( entry ) {
 			var view = new app.LogBookEntryView({
 				model: entry
@@ -261,13 +265,13 @@ $( function( $ ) {
 		},
 		filterBloodSugarGraph: function(e){
 			var searchString = $("#filter-bs-graph").val();
-			this.showBloodSugarGraph(e,app.LogBookEntries.filterEntries(searchString));
+			this.showBloodSugarGraph(app.LogBookEntries.filterEntries(searchString));
 		},
 		filterBloodSugarVsExcerciseGraph: function(e){
 			var searchString = $("#filter-bs-vs-excercise-graph").val();
-			this.showBloodSugarVsExcerciseGraph(e,app.LogBookEntries.filterEntries(searchString));
+			this.showBloodSugarVsExcerciseGraph(app.LogBookEntries.filterEntries(searchString));
 		},
-		showBloodSugarGraph : function(e,entries) {
+		showBloodSugarGraph : function(entries) {
 			
 			var data = null;
 			
@@ -311,9 +315,12 @@ $( function( $ ) {
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
-			data.forEach(function(entry) {			  
-				entry.when = new Date(entry.when);
-				entry.bsLevel = +entry.bsLevel;
+			data.forEach(function(entry) {
+				
+				if(entry.bsLevel > 0){
+					entry.when = new Date(entry.when);
+					entry.bsLevel = +entry.bsLevel;
+				}
 			});
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
@@ -340,7 +347,7 @@ $( function( $ ) {
 				.attr("d", line);	  
 					
 		},
-		showBloodSugarVsExcerciseGraph : function(e,entries) {
+		showBloodSugarVsExcerciseGraph : function(entries) {
 			
 			var data = null;
 			
@@ -440,7 +447,7 @@ $( function( $ ) {
 				.attr("d", line2);			
 					
 		},
-		showGoalsGraph : function(e,entries){
+		showGoalsGraph : function(entries){
 			
 			var data = null;
 			

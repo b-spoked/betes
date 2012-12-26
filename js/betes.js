@@ -178,16 +178,12 @@ $( function( $ ) {
 		logBookTemplate: _.template( $('#logbook-template').html()),
 		addEntryTemplate: _.template( $('#add-item-template').html()),
 
-
 		events: {
 			'click .add-entry': 'saveNewEntry',
 			'click .create-new-entry': 'showNewEntryDialog',
 			"keyup #filter-logbook" : "filterLogBook",
-			'click .show-bs-graph' : "showBloodSugarGraph",
 			"keyup #filter-bs-graph" : "filterBloodSugarGraph",
-			'click .show-bs-vs-excercise-graph' : "showBloodSugarVsExcerciseGraph",
 			'keyup #filter-bs-vs-excercise-graph': "filterBloodSugarVsExcerciseGraph",
-			'click .show-goals-graph' : "showGoalsGraph",
 			'keyup #filter-goals-graph': "filterGoalsGraph",
 			'shown a[data-toggle="tab"]': "showGraph"
 		},
@@ -256,7 +252,6 @@ $( function( $ ) {
 			
 			app.LogBookEntries.create(this.newAttributes());
 			$("#add-entry-dialog").modal('hide');
-			//this.addAll(app.LogBookEntries);
 			this.onShow();
 		},
 		filterLogBook: function(e) {
@@ -278,11 +273,10 @@ $( function( $ ) {
 			if(entries){
 				data = new Array(); 
 				entries.forEach(function(entry) {
-					data.push(entry.toJSON());
+					if(entry.get("bsLevel") != ""){
+						data.push(entry.toJSON());
+					}
 				});
-			}
-			else{
-				data = app.LogBookEntries.toJSON();
 			}
 		
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -317,10 +311,9 @@ $( function( $ ) {
 			
 			data.forEach(function(entry) {
 				
-				if(entry.bsLevel > 0){
 					entry.when = new Date(entry.when);
 					entry.bsLevel = +entry.bsLevel;
-				}
+				
 			});
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
@@ -356,9 +349,6 @@ $( function( $ ) {
 				entries.forEach(function(entry) {
 					data.push(entry.toJSON());
 				});
-			}
-			else{
-				data = app.LogBookEntries.toJSON();
 			}
 			
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
@@ -457,9 +447,6 @@ $( function( $ ) {
 					data.push(entry.toJSON());
 				});
 			}
-			else{
-				data = app.LogBookEntries.toJSON();
-			}
 		
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
 				width = 960,
@@ -476,7 +463,7 @@ $( function( $ ) {
 			    .domain([-.05, .05])
 			    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 		    
-			var svg = d3.select("body").selectAll("svg")
+			var svg = d3.select("#goals").selectAll("svg")
 			    .data(d3.range(2012, 2013))
 			  .enter().append("svg")
 			    .attr("width", width)

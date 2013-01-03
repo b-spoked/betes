@@ -91,34 +91,25 @@ $( function( $ ) {
 		// Cache the template function for a single item.
 		rowTemplate: _.template( $('#item-template').html() ),
 		detailTemplate: _.template( $('#item-detail-template').html() ),
-
-		// The DOM events specific to an item.
+		
 		events: {
 			'click .update': 'edit',
 			'click .delete': 'deleteEntry',
-			'click .save-entry': 'updateOnEnter',
-			'click .close-entry': 'close'
+			'click .save-edit': 'save'
 		},
-
 		initialize: function() {
 			this.model.on( 'change', this.render, this );
 		},
-		// Re-render the titles of the todo item.
 		render: function() {			
 			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
 			return this;
 		},
-		
-		// Switch this view into `"editing"` mode, displaying the input field.
 		edit: function() {
 			var itemDetail = "#modal-item-detail";
 			$(itemDetail).html( this.detailTemplate( this.model.toJSON() ) );
-			
 			var itemDetailDialog = "#edit_"+this.model.get('id');
-			
 			$(itemDetailDialog).modal('show');
 		},
-		// Close the `"editing"` mode, saving changes to the todo.
 		save: function() {
 
 			this.model.save({
@@ -129,17 +120,11 @@ $( function( $ ) {
 				excerciseDuration: $("#edit-entry-excercise-duration").val().trim(),
 				excerciseIntensity: $("#edit-entry-excercise-intensity").val().trim(),
 				labels: $("#edit-entry-labels").val().trim()
-			});			
+			});
+			var itemDetailDialog = "#edit_"+this.model.get('id');
+			$(itemDetailDialog).modal('hide');
 
-			this.close();
 			this.render();
-		},
-		close: function() {	
-			this.$el.removeClass('editing');
-		},
-		// If you hit `enter`, we're through editing the item.
-		updateOnEnter: function( e ) {			
-			this.save();			
 		},
 		deleteEntry: function() {
 			this.model.destroy();
@@ -244,7 +229,13 @@ $( function( $ ) {
 		showNewEntryDialog: function() {
 			
 			$("#modal-item-add").html( this.addEntryTemplate() );
-			$('#entry-date').val(new Date().toJSON().substring(0,19).replace('T',' '));
+			
+			var local = new Date();
+			var date = new Date();
+			local.setHours( date.getHours()+(date.getTimezoneOffset()/-60) );
+			console.log(local.toJSON().substring(0,19).replace('T',' '));
+			
+			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));
 			$("#add-entry-dialog").modal('show');
 			
 		},

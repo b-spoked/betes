@@ -58,7 +58,6 @@
 					<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
 					<h4>Excercise</h4>
 					<input type="text" id="edit-entry-excercise-duration" value="<%= excerciseDuration %>">				
-					<input type="text" id="edit-entry-excercise-intensity" value="<%= excerciseIntensity %>">
 					<select  id="edit-entry-excercise-intensity">
 						<option <%if (excerciseIntensity=="") {%>selected<%}%> value="">NA</option>
 						<option <%if (excerciseIntensity=="Easy") {%>selected<%}%> value="Easy">Easy</option>
@@ -72,7 +71,7 @@
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-					<button class="btn btn-primary save-entry">Save</button>
+					<button class="btn btn-primary save-edit">Save</button>
 				</div>
 		</div>
 		</script>

@@ -22,6 +22,7 @@
 		</div>
 		<div class="container">
 			<div id="app" class="row">
+				<div id="modal-dialog"></div>
 				<section id="main">			
 				</section>
 			</div>
@@ -29,14 +30,14 @@
 		<!-- App Source -->	
 		<script type="text/template" id="item-template">
 			<td><% if(name) { %> <a class="update" href="#"><%= name %></a><% } %> </td>
-			<td><% if(bsLevel) { %> <%= bsLevel %>mmol <% } %></td>
-			<td><% if(insulinAmount) { %> <%= insulinAmount %>u<% } %></td>
+			<td><% if(bsLevel) { %> <%= bsLevel %> mmol <% } %></td>
+			<td><% if(insulinAmount) { %> <%= insulinAmount %> u<% } %></td>
 			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> mins<% } %></td>
 			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>
 			<td><a class="btn btn-link update" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete" href="#"><i class="icon-trash  icon-large"></i></a></td>
 		</script>
-		<script type="text/template" id="item-detail-template">
-		<div id="edit_<%= id %>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<script type="text/template" id="edit-item-template">
+		<div id="edit-entry" class="modal hide fade">
 				<div class="modal-header">
 					<h3 id="myModalLabel">Editing Result</h3>
 				</div>
@@ -132,8 +133,7 @@
 						<div class="span2"><input type="text" placeholder="filter results ..." id="filter-logbook" ></div>
 					</div>
 					
-					<div id="modal-item-add"></div>
-					<div id="modal-item-detail"></div>
+					<div id="modal-item"></div>
 					<table class="table table-bordered table-condensed">
 						<thead>
 						  <tr>

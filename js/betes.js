@@ -80,6 +80,40 @@ $( function( $ ) {
 	app.UserSettings = new UserDetails();	
 	app.UserGoals = new GoalSet();
 
+
+	app.EditEntryView = Backbone.View.extend({
+		editEntryTemplate: _.template( $('#edit-item-template').html()),
+
+		events: {
+			'click .save-edit': 'saveEdits'
+		},
+		
+		render: function() {
+			$(this.el).html(this.editEntryTemplate(this.model.toJSON()));
+			return this;
+		},
+		
+		showDialog: function(){
+			$("#edit-entry").modal('show');
+		},
+		
+		saveEdits:function(e){
+			this.model.save(this.editedEntryValues());
+			$("#edit-entry").modal('hide');
+		},
+		
+		editedEntryValues: function() {
+			return {
+				name: $("#edit-entry-name").val().trim(),
+				bsLevel: $("#edit-entry-level").val().trim(),
+				when: $("#edit-entry-date").val().trim(),				
+				insulinAmount: $("#edit-entry-insulin").val().trim(),
+				excerciseDuration: $("#edit-entry-excercise-duration").val().trim(),
+				excerciseIntensity: $("#edit-entry-excercise-intensity").val().trim(),
+				labels: $("#edit-entry-labels").val().trim()
+			};
+		}
+	});
 	// The DOM element for a todo item...
 	app.LogBookEntryView = Backbone.View.extend({
 
@@ -90,41 +124,28 @@ $( function( $ ) {
 
 		// Cache the template function for a single item.
 		rowTemplate: _.template( $('#item-template').html() ),
-		detailTemplate: _.template( $('#item-detail-template').html() ),
+		//editEntryTemplate: _.template( $('#item-editing-template').html() ),
 		
 		events: {
-			'click .update': 'edit',
-			'click .delete': 'deleteEntry',
-			'click .save-edit': 'save'
+			'click .update': 'editEntry',
+			'click .delete': 'deleteEntry'
 		},
 		initialize: function() {
+			_.bindAll(this);
 			this.model.on( 'change', this.render, this );
+			
 		},
 		render: function() {			
 			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
 			return this;
 		},
-		edit: function() {
-			var itemDetail = "#modal-item-detail";
-			$(itemDetail).html( this.detailTemplate( this.model.toJSON() ) );
-			var itemDetailDialog = "#edit_"+this.model.get('id');
-			$(itemDetailDialog).modal('show');
-		},
-		save: function() {
-
-			this.model.save({
-				name: $("#edit-entry-name").val().trim(),
-				bsLevel: $("#edit-entry-level").val().trim(),
-				when: $("#edit-entry-date").val().trim(),				
-				insulinAmount: $("#edit-entry-insulin").val().trim(),
-				excerciseDuration: $("#edit-entry-excercise-duration").val().trim(),
-				excerciseIntensity: $("#edit-entry-excercise-intensity").val().trim(),
-				labels: $("#edit-entry-labels").val().trim()
-			});
-			var itemDetailDialog = "#edit_"+this.model.get('id');
-			$(itemDetailDialog).modal('hide');
-
-			this.render();
+		editEntry: function(e) {
+			var view = new app.EditEntryView({model:this.model});
+			view.render();
+				 
+			var $modalEl = $("#modal-dialog");
+			$modalEl.html(view.el);
+			view.showDialog();
 		},
 		deleteEntry: function() {
 			this.model.destroy();
@@ -158,13 +179,54 @@ $( function( $ ) {
 			});	
 		}
 	});
+	
+	app.AddEntryView = Backbone.View.extend({
+		addEntryTemplate: _.template( $('#add-item-template').html()),
+		
+		events: {
+			'click .add-entry': 'saveNewEntry'
+		},
+
+		render: function() {
+			$(this.el).html(this.addEntryTemplate());
+			return this;
+		},
+		
+		showDialog: function(){
+			
+			var local = new Date();
+			var date = new Date();
+			local.setHours( date.getHours()+(date.getTimezoneOffset()/-60) );
+			
+			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));
+			
+			$("#add-entry-dialog").modal('show');
+		},
+		saveNewEntry:function(e){
+			app.LogBookEntries.create(this.newEntryValues());
+			$("#add-entry-dialog").modal('hide');
+		},
+		
+		newEntryValues: function() {
+			return {
+				name: $("#entry-name").val().trim(),
+				bsLevel: $("#entry-level").val().trim(),
+				when: $("#entry-date").val().trim(),				
+				insulinAmount: $("#entry-insulin").val().trim(),
+				excerciseDuration: $("#entry-excercise-duration").val().trim(),
+				excerciseIntensity: $("#entry-excercise-intensity").val().trim(),
+				labels: $("#entry-labels").val().trim()
+			};
+		}
+		
+	});
+	
+	
 
 	app.LogBookView = Backbone.View.extend({
 		logBookTemplate: _.template( $('#logbook-template').html()),
-		addEntryTemplate: _.template( $('#add-item-template').html()),
 
 		events: {
-			'click .add-entry': 'saveNewEntry',
 			'click .create-new-entry': 'showNewEntryDialog',
 			"keyup #filter-logbook" : "filterLogBook",
 			"keyup #filter-bs-graph" : "filterBloodSugarGraph",
@@ -214,36 +276,16 @@ $( function( $ ) {
 			
 			this.$('#events-list').html('');
 			entries.each(this.addOne, this);
-		},
-		newAttributes: function() {
-			return {
-				name: $("#entry-name").val().trim(),
-				bsLevel: $("#entry-level").val().trim(),
-				when: $("#entry-date").val().trim(),				
-				insulinAmount: $("#entry-insulin").val().trim(),
-				excerciseDuration: $("#entry-excercise-duration").val().trim(),
-				excerciseIntensity: $("#entry-excercise-intensity").val().trim(),
-				labels: $("#entry-labels").val().trim()
-			};
 		},		
 		showNewEntryDialog: function() {
 			
-			$("#modal-item-add").html( this.addEntryTemplate() );
+			var view = new app.AddEntryView();
+			view.render();
+				 
+			var $modalEl = $("#modal-dialog");
+			$modalEl.html(view.el);
+			view.showDialog();
 			
-			var local = new Date();
-			var date = new Date();
-			local.setHours( date.getHours()+(date.getTimezoneOffset()/-60) );
-			console.log(local.toJSON().substring(0,19).replace('T',' '));
-			
-			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));
-			$("#add-entry-dialog").modal('show');
-			
-		},
-		saveNewEntry: function( e ) {
-			
-			app.LogBookEntries.create(this.newAttributes());
-			$("#add-entry-dialog").modal('hide');
-			this.onShow();
 		},
 		filterLogBook: function(e) {
 			var searchString = $("#filter-logbook").val();
@@ -577,6 +619,7 @@ $( function( $ ) {
 		};
 		return region;
 	})(Backbone, jQuery);
+	
 	AppRouter = new ApplicationRouter();
 	Backbone.history.start();
 

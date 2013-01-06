@@ -302,6 +302,7 @@ $( function( $ ) {
 		showBloodSugarGraph : function(entries) {
 			
 			var data = null;
+			var color = d3.scale.category10();
 			
 			if(entries){
 				data = new Array(); 
@@ -343,39 +344,118 @@ $( function( $ ) {
 				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
 			data.forEach(function(entry) {
-				
-					entry.when = new Date(entry.when);
-					entry.bsLevel = +entry.bsLevel;
-				
+				entry.when = new Date(entry.when);
+				entry.bsLevel = +entry.bsLevel;
 			});
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
 			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
+			
+			var regression = numbers.statistic.exponentialRegression(data);
+     
+			var reg_line = d3.svg.line().x(function(d,i){return x(i)}).y(function(d,i){return y(regression(i))});
+      
 
-			  svg.append("g")
+			svg.append("g")
 				  .attr("class", "x axis")
 				  .attr("transform", "translate(0," + height + ")")
 				  .call(xAxis);
 
-			  svg.append("g")
-				  .attr("class", "y axis")
-				  .call(yAxis)
+			svg.append("g")
+				.attr("class", "y axis")
+				.call(yAxis)
 				.append("text")
-				  .attr("transform", "rotate(-90)")
-				  .attr("y", 6)
-				  .attr("dy", "1em")
-				  .style("text-anchor", "end")
-				  .text("Reading (mmol)");			  
+				.attr("transform", "rotate(-90)")
+				.attr("y", 6)
+				.attr("dy", "1em")
+				.style("text-anchor", "end")
+				.text("Reading (mmol)");
+				  
+			svg.selectAll(".dot")
+				.data(data)
+				.enter().append("circle")
+				.attr("class", "dot")
+				.attr("r", 3.5)
+				.attr("cx", function(d) { return x(d.when); })
+				.attr("cy", function(d) { return y(d.bsLevel); })
+				.style("fill", function(d) { return color(d.name); });
+				
+			svg.append('path')
+				.datum(data)
+				.attr('class','regression line')
+				.attr('d',reg_line);	
+				
+			var legend = svg.selectAll(".legend")
+				.data(color.domain())
+			      .enter().append("g")
+				.attr("class", "legend")
+				.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 			  
-			  svg.append("path")
+			    legend.append("rect")
+				.attr("x", width - 18)
+				.attr("width", 18)
+				.attr("height", 18)
+				.style("fill", color);
+			  
+			    legend.append("text")
+				.attr("x", width - 24)
+				.attr("y", 9)
+				.attr("dy", ".35em")
+				.style("text-anchor", "end")
+				.text(function(d) { return d; });	
+			  
+			 /* svg.append("path")
 				.datum(data)
 				.attr("class", "line")
-				.attr("d", line);	  
+				.attr("d", line);	*/  
 					
 		},
+		
+		square: function(x)
+		{
+			return Math.pow(x,2);
+		},
+
+		array_sum : function (arr){
+			var total = 0;
+			arr.forEach(function(d){
+				total+=d.bsLevel;
+			});
+			return total;
+		},
+
+		exp_regression: function(Y){
+			var n = Y.length;
+			var X = d3.range(1,n+1);
+		      
+			var sum_x = array_sum(X);
+			var sum_y = array_sum(Y);
+			var y_mean = array_sum(Y) / n;
+			var log_y = Y.map(function(d){return Math.log(d)});
+			var x_squared = X.map(function(d){return square(d)});
+			var sum_x_squared = array_sum(x_squared);
+			var sum_log_y = array_sum(log_y);
+			var x_log_y = X.map(function(d,i){return d*log_y[i]});
+			var sum_x_log_y = array_sum(x_log_y);
+		      
+			a = (sum_log_y*sum_x_squared - sum_x*sum_x_log_y) /
+			    (n * sum_x_squared - square(sum_x));
+		      
+			b = (n * sum_x_log_y - sum_x*sum_log_y) /
+			    (n * sum_x_squared - square(sum_x));
+		      
+			var y_fit = [];
+			X.forEach(function(x){
+			  y_fit.push(Math.exp(a)*Math.exp(b*x));
+			});
+		      
+			return y_fit;
+	       },
 		showBloodSugarVsExcerciseGraph : function(entries) {
 			
 			var data = null;
+			var color = d3.scale.category10();
+			
 			
 			if(entries){
 				data = new Array(); 
@@ -457,17 +537,28 @@ $( function( $ ) {
 				  .attr("y", 6)
 				  .attr("dy", "1em")
 				  .style("text-anchor", "end")
-				  .text("Excercise (mins)");			
+				  .text("Excercise (mins)");
+				  
+			svg.selectAll(".dot")
+				.data(data)
+				.enter().append("circle")
+				.attr("class", "dot")
+				.attr("r", 3.5)
+				.attr("cx", function(d) { return x(d.when); })
+				.attr("cy", function(d) { return y(d.bsLevel); })
+				.style("fill", function(d) { return color(d.excerciseDuration); });
+				
+			svg.selectAll(".dot")
+				.data(data)
+				.enter().append("circle")
+				.attr("class", "dot")
+				.attr("r", 3.5)
+				.attr("cx", function(d) { return x(d.when); })
+				.attr("cy", function(d) { return y(d.excerciseDuration); })
+				.style("fill", function(d) { return color(d.excerciseDuration); });
+				
 			  
-			  svg.append("path")
-				.datum(data)
-				.attr("class", "line")
-				.attr("d", line);
-
-			  svg.append("path")
-				.datum(data)
-				.attr("class", "line2")
-				.attr("d", line2);			
+			 			
 					
 		},
 		showGoalsGraph : function(entries){
@@ -497,7 +588,7 @@ $( function( $ ) {
 			    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 		    
 			var svg = d3.select("#goals").selectAll("svg")
-			    .data(d3.range(2012, 2013))
+			    .data(d3.range(2012, 2014))
 			  .enter().append("svg")
 			    .attr("width", width)
 			    .attr("height", height)
@@ -566,7 +657,7 @@ $( function( $ ) {
 			      + "H" + (w0 + 1) * cellSize + "Z";
 			}
 			
-			d3.select("#goals").style("height", "150px");
+			d3.select("#goals").style("height", "300px");
 
 		},
 		filterGoalsGraph: function(e){

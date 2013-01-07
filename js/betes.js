@@ -329,11 +329,14 @@ $( function( $ ) {
 
 			var yAxis = d3.svg.axis()
 				.scale(y)
-				.orient("left");	
-
-			var line = d3.svg.line()
+				.orient("left");
+				
+			//average	
+			var averagedData = this.getAverageResults(data);
+			var averagedLine = d3.svg.line()
 				.x(function(entry) { return x(entry.when); })
-				.y(function(entry) { return y(entry.bsLevel); });
+				.y(function(entry) { return y(entry.average); });	
+			
 				
 			$("#bs-results").html('');	
 
@@ -350,11 +353,6 @@ $( function( $ ) {
 			  
 			x.domain(d3.extent(data, function(entry) { return entry.when; }));
 			y.domain(d3.extent(data, function(entry) { return entry.bsLevel; }));
-			
-			var regression = numbers.statistic.exponentialRegression(data);
-     
-			var reg_line = d3.svg.line().x(function(d,i){return x(i)}).y(function(d,i){return y(regression(i))});
-      
 
 			svg.append("g")
 				  .attr("class", "x axis")
@@ -379,12 +377,12 @@ $( function( $ ) {
 				.attr("cx", function(d) { return x(d.when); })
 				.attr("cy", function(d) { return y(d.bsLevel); })
 				.style("fill", function(d) { return color(d.name); });
-				
-			svg.append('path')
-				.datum(data)
-				.attr('class','regression line')
-				.attr('d',reg_line);	
-				
+			
+			 svg.append("path")
+				.datum(averagedData)
+				.attr("class", "line")
+				.attr("d", averagedLine);
+					  		  
 			var legend = svg.selectAll(".legend")
 				.data(color.domain())
 			      .enter().append("g")
@@ -404,53 +402,35 @@ $( function( $ ) {
 				.style("text-anchor", "end")
 				.text(function(d) { return d; });	
 			  
-			 /* svg.append("path")
-				.datum(data)
-				.attr("class", "line")
-				.attr("d", line);	*/  
+				 
 					
 		},
-		
-		square: function(x)
-		{
-			return Math.pow(x,2);
-		},
-
-		array_sum : function (arr){
-			var total = 0;
-			arr.forEach(function(d){
-				total+=d.bsLevel;
+		getAverageResults : function(data){
+			
+			var averaged = new Array(),
+			averageReading = null,
+			sumOfReadings = 0,
+			numberOfReadings = 0;
+			
+			data.forEach(function(entry) {
+				if(entry.bsLevel){
+					numberOfReadings ++;
+					sumOfReadings += parseInt(entry.bsLevel);
+				}
 			});
-			return total;
-		},
-
-		exp_regression: function(Y){
-			var n = Y.length;
-			var X = d3.range(1,n+1);
-		      
-			var sum_x = array_sum(X);
-			var sum_y = array_sum(Y);
-			var y_mean = array_sum(Y) / n;
-			var log_y = Y.map(function(d){return Math.log(d)});
-			var x_squared = X.map(function(d){return square(d)});
-			var sum_x_squared = array_sum(x_squared);
-			var sum_log_y = array_sum(log_y);
-			var x_log_y = X.map(function(d,i){return d*log_y[i]});
-			var sum_x_log_y = array_sum(x_log_y);
-		      
-			a = (sum_log_y*sum_x_squared - sum_x*sum_x_log_y) /
-			    (n * sum_x_squared - square(sum_x));
-		      
-			b = (n * sum_x_log_y - sum_x*sum_log_y) /
-			    (n * sum_x_squared - square(sum_x));
-		      
-			var y_fit = [];
-			X.forEach(function(x){
-			  y_fit.push(Math.exp(a)*Math.exp(b*x));
+			
+			
+			averageReading = sumOfReadings / numberOfReadings;
+			
+			data.forEach(function(entry) {
+				if(entry.bsLevel){
+					var point = {when:new Date(entry.when),average:averageReading};
+					averaged.push(point);
+				}
 			});
-		      
-			return y_fit;
-	       },
+			
+			return averaged;
+		},
 		showBloodSugarVsExcerciseGraph : function(entries) {
 			
 			var data = null;

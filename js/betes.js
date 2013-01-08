@@ -11,7 +11,7 @@ $( function( $ ) {
 			excerciseDuration: 0,
 			excerciseIntensity: 'na',
 			labels: '',
-			goals : ''
+			comments : ''
 		},
 		initialize: function() {
 			this.checkGoals();
@@ -27,19 +27,22 @@ $( function( $ ) {
 	var User = Backbone.Model.extend({
 		defaults: {
 			name: '',
-			email: '',
-			userName: '',
-			showGoals: false
+			emailAddress: '',
+			pw: '',
+			testingUnits : ''
 		}		
 	});
 	
 	var Goal = Backbone.Model.extend({
 		defaults: {
-			bsLowerGoal: 8,
-			bsUpperGoal: 5,
-			bsTestFrequencyGoal: 2,
-			excerciseDurationGoal: 30,
-			excerciseFrequencyGoal: 3
+			bsLowerRange: 8,
+			bsUpperRange: 5,
+			bsFrequency: 2,
+			excerciseDuration: 30,
+			excerciseFrequency: 3,
+			longTermGoal:'',
+			longTermGoalDate:null
+			
 		}
 	});
 	
@@ -132,8 +135,7 @@ $( function( $ ) {
 		},
 		initialize: function() {
 			_.bindAll(this);
-			this.model.on( 'change', this.render, this );
-			
+			this.model.on( 'change', this.render, this );			
 		},
 		render: function() {			
 			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
@@ -156,11 +158,19 @@ $( function( $ ) {
 		accountTemplate: _.template( $('#account-template').html()),
 
 		events: {
-			'submit #profile': 'saveAccount'
+			'submit #goals-testing': 'saveTestingGoals',
+			'submit #goals-excercise': 'saveExcerciseGoals',
+			'submit #goals-long-term': 'saveLongTermGoals',
+			'submit #user-profile': 'saveProfile',
+			'submit #user-settings': 'saveProfileSettings'
+		},
+		
+		initialize: function() {
+			$(this.el).html(this.accountTemplate());
+			_.bindAll(this);
 		},
 
 		render: function() {
-			$(this.el).html(this.accountTemplate());
 			$(this.el).hide();
 		},
 		close: function() {
@@ -169,14 +179,60 @@ $( function( $ ) {
 		},
 		onShow: function() {
 			$(this.el).show(500);
+		},		
+		testGoalsValues: function() {
+			return {
+				bsLowerRange: $("#goal-bs-lower").val().trim(),
+				bsUpperRange: $("#goal-bs-upper").val().trim(),
+				bsFrequency: $("#goal-bs-frequency").val().trim()
+			};
 		},
-		saveAccount : function(e) {
-			this.model.save({
+		excerciseGoalsValues: function() {
+			return {
+				excerciseDuration: $("#goal-excercise-duration").val().trim(),
+				excerciseFrequency: $("#goal-excercise-frequency").val().trim()
+			};
+		},
+		longTermGoalsValues: function() {
+			return {
+				longTermGoal: $("#goal-long-term").val().trim(),
+				longTermGoalDate: $("#goal-long-term-date").val().trim()
+			};
+		},
+		userProfileValues: function() {
+			return {
 				name: $("#account-user-name").val().trim(),
-				email: $("#account-user-email").val().trim(),
-				userName: $("#account-user-public-name").val().trim(),
-				showGoals: $("#account-goals-public").val().trim()
-			});	
+				emailAddress: $("#account-user-email").val().trim(),				
+				pw: $("#password").val().trim()
+			};
+		},
+		userProfileSettingValues: function() {
+			return {
+				testingUnits: $("#account-testing-units").val().trim()
+			};
+		},
+		saveTestingGoals : function(e){
+			e.preventDefault();
+			alert('saving ...');
+		},		
+		
+		saveExcerciseGoals : function(e){
+			e.preventDefault();
+			alert('saving ...');
+		},		
+		
+		saveLongTermGoals : function(e){
+			e.preventDefault();
+			alert('saving ...');
+		},		
+		
+		saveProfile : function(e){
+			e.preventDefault();
+			alert('saving ...');
+		},
+		saveProfileSettings : function(e){
+			e.preventDefault();
+			alert('saving ...');
 		}
 	});
 	
@@ -192,14 +248,11 @@ $( function( $ ) {
 			return this;
 		},
 		
-		showDialog: function(){
-			
+		showDialog: function(){			
 			var local = new Date();
 			var date = new Date();
-			local.setHours( date.getHours()+(date.getTimezoneOffset()/-60) );
-			
-			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));
-			
+			local.setHours( date.getHours()+(date.getTimezoneOffset()/-60) );			
+			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));			
 			$("#add-entry-dialog").modal('show');
 		},
 		saveNewEntry:function(e){
@@ -219,9 +272,7 @@ $( function( $ ) {
 			};
 		}
 		
-	});
-	
-	
+	});	
 
 	app.LogBookView = Backbone.View.extend({
 		logBookTemplate: _.template( $('#logbook-template').html()),
@@ -242,6 +293,7 @@ $( function( $ ) {
 			app.LogBookEntries.bind( 'reset', this.addAll, this );
 			app.LogBookEntries.bind( 'remove', this.onShow, this );
 			app.LogBookEntries.bind( 'all', this.render, this );
+			app.LogBookEntries.bind( 'change', this.onShow, this );	
 			app.LogBookEntries.fetch();
 		},
 		render: function() {			
@@ -357,7 +409,12 @@ $( function( $ ) {
 			svg.append("g")
 				  .attr("class", "x axis")
 				  .attr("transform", "translate(0," + height + ")")
-				  .call(xAxis);
+				  .call(xAxis)
+				  .append("text")
+				.attr("y", 6)
+				.attr("dy", "1em")
+				.style("text-anchor", "end")
+				.text("Date")
 
 			svg.append("g")
 				.attr("class", "y axis")
@@ -535,10 +592,7 @@ $( function( $ ) {
 				.attr("r", 3.5)
 				.attr("cx", function(d) { return x(d.when); })
 				.attr("cy", function(d) { return y(d.excerciseDuration); })
-				.style("fill", function(d) { return color(d.excerciseDuration); });
-				
-			  
-			 			
+				.style("fill", function(d) { return color(d.excerciseDuration); });							  			 
 					
 		},
 		showGoalsGraph : function(entries){
@@ -598,8 +652,7 @@ $( function( $ ) {
 			    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
 			  .enter().append("path")
 			    .attr("class", "month")
-			    .attr("d", monthPath);
-		    
+			    .attr("d", monthPath);		    
 		    
 			//data
 			  

@@ -109,7 +109,9 @@
 					<option value="Intense">Intense</option>
 				</select>
 				<label for="entry-labels">Labels</label>
-				<input type="text" id="entry-labels" placeholder="e.g. sickday (comma seperated)">		
+				<input class="span4" type="text" id="entry-labels" placeholder="e.g. sickday, traveling (comma seperated)">
+				<label for="entry-comments">Comments</label>
+				<textarea class="span4" rows="3" id="entry-comments" placeholder="General Comments"></textarea>				
 			</div>
 			<div class="modal-footer">
 				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -123,7 +125,7 @@
 				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
 				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
 				<li><a href="#bs-graph" data-toggle="tab">Results</a></li>
-				<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Results and Excercise</a></li>
+				<!--<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Results and Excercise</a></li>-->
 			</ul>
 		       
 			<div class="tab-content">
@@ -169,102 +171,130 @@
 		</script>			
 		<script type="text/template" id="account-template">
 		<ul class="nav nav-tabs" id="user-tabs">
-			<li class="active"><a href="#user-info-tab" data-toggle="tab">Details</a></li>
-			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
+			<li class="active"><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
 			<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
 		</ul>
 		<div class="tab-content">
-				<div class="tab-pane active" id="user-info-tab">
-				</div>
 				<div class="tab-pane" id="user-goals-tab">
-					<div class="row">
-						<div class="span6">
-							<form id="goals">
-							<label for="bs-lower">Blood Sugar Range</label>
-							<input type="number" id="goal-bs-lower" placeholder="lower">
-							<input type="number" id="goal-bs-upper" placeholder="upper">		
-							<label for="goal-bs-frequency">Testing Frequency</label>					
-							<input type="number" id="goal-bs-frequency" placeholder="times per day">
+					<p class="lead">Testing Goals</p>
+					
+					<p>Set your goals for testing so you can track them over time.</p>
+					<form class="form-horizontal" id="goals-testing">
+						<div class="control-group">
+							<label class="control-label" for="goal-bs-lower">Range</label>
+							<div class="controls">
+								<input type="number" id="goal-bs-lower" placeholder="lower">
+								<input type="number" id="goal-bs-upper" placeholder="upper">
+							</div>
 						</div>
-						<div class="span6">
-							<label for="goal-excercise-duration">Average Excercise Duration</label>
-							<input type="number" id="goal-excercise-duration" placeholder="mins per day">
-							<label for="goal-excercise-frequency">Excercise Frequency</label>
-							<input type="number" id="goal-excercise-frequency" placeholder="times per week">
-							<input type="submit" value="Save Daily Goals"/>
-							</form>				
+						<div class="control-group">
+							<label class="control-label" for="goal-bs-lower">Frequency</label>
+							<div class="controls">
+								<input type="number" id="goal-bs-frequency" placeholder="times per day"> per/day
+							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="span6">
-							<form id="goals">
-								<label for="goal-excercise-duration">Long Term Goal</label>
-								<textarea id="goal-long-term" />	
-												
+						<div class="control-group">							
+							<div class="controls">
+								<button type="submit" class="btn btn-primary">Set Testing Goals</button>
+							</div>
 						</div>
-						<div class="span6">
-								<label for="goal-long-term-date">When do you aim to achive this?</label>						
-								<input type="date" id="goal-long-term-date" >
-								<input type="submit" value="Save Long Term Goals"/>
-							</form>				
+					</form>						
+					<p class="lead">Excercise Goals</p>						
+					<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
+					<form class="form-horizontal" id="goals-excercise">
+						<div class="control-group">
+							<label class="control-label" for="goal-excercise-duration">How Long</label>
+							<div class="controls">
+								<input type="number" id="goal-excercise-duration" placeholder="mins per day"> mins
+							</div>
 						</div>
-					</div>	
+						<div class="control-group">
+							<label class="control-label" for="goal-excercise-frequency">How Often</label>
+							<div class="controls">
+								<input type="number" id="goal-excercise-frequency" placeholder="times per week"> per/wk
+							</div>
+						</div>
+						<div class="control-group">							
+							<div class="controls">
+								<button type="submit" class="btn btn-primary">Set Excercise Goals</button>
+							</div>
+						</div>
+					</form>	
+					<p class="lead">Long Term Goals</p>
+					<form class="form-horizontal" id="goals-long-term">
+						<div class="control-group">
+							<label class="control-label" for="goal-long-term">Goal</label>
+							<div class="controls">
+								<textarea class="span6" id="goal-long-term" />	
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="goal-long-term">By When</label>
+							<div class="controls">
+								<input type="date" id="goal-long-term-date" >	
+							</div>
+						</div>
+						<div class="control-group">							
+							<div class="controls">
+								<button type="submit" class="btn btn-primary">Set Long Term Goal</button>
+							</div>
+						</div>
+					</form>
 				</div>
 				<div class="tab-pane" id="user-account-tab">
-					<div class="span6">
-						<form id="profile">
-						<input type="text" id="account-user-name" placeholder="Name">
-						<input type="text" id="account-user-public-name" placeholder="User Name (that others will see)">
-						<input type="email" id="account-user-email" placeholder="Email">
-						<input type="password" id="account-user-pw" placeholder="Password">
-					</div>
-					<div class="span6">
-						<select name="account-goals-public" id="account-goals-public">
-							<option value="false">Keep my goals private</option>
-							<option value="true">Show others my goals</option>
-						</select>
-						<input type="submit" value="Save Profile"/>
-						</form>
-					</div>
+					<p class="lead">User Profile</p>
+					<form class="form-horizontal">
+						<div class="control-group">
+							<label class="control-label" for="account-user-name">Name</label>
+							<div class="controls">
+								<input type="text" id="account-user-name" placeholder="Name" required>	
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="account-user-public-name">User Name</label>
+							<div class="controls">
+								<input type="text" id="account-user-public-name" placeholder="User Name (that others will see)">	
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="account-user-email">Email</label>
+							<div class="controls">
+								<input type="email" id="account-user-email" placeholder="Email" required>	
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="account-user-pw">Password</label>
+							<div class="controls">
+								<input type="password" id="account-user-pw" placeholder="Password" required>	
+							</div>
+						</div>
+						<div class="control-group">
+							<div class="controls">
+								<button type="submit" class="btn btn-primary">Save Profile</button>
+							</div>
+						</div>
+					</form>	
+					<p class="lead">User Settings</p>
+					<form class="form-horizontal" id="user-settings">						
+						<div class="control-group">
+							<label class="control-label" for="account-testing-units">Result Units</label>
+							<div class="controls">
+								<select name="account-testing-units" id="account-testing-units">
+									<option value="mg/dl">mg/dl</option>
+									<option value="mmol/l">mmol/l</option>
+								</select>	
+							</div>
+						</div>		
+						<div class="control-group">
+							<div class="controls">
+								<button type="submit" class="btn btn-primary">Save Settings</button>
+							</div>
+						</div>
+					</form>
 				</div>
 		</div>
 		</script>
-		<script type="text/template" id="goals-template">
-			<div class="view">	
-				<blockquote>Short term goal that you would like to track</blockquote>			
-				<div class="one-third column">
-					<form id="goals">
-					<label for="bs-lower">Blood Sugar Range</label>
-					<input type="number" id="goal-bs-lower" placeholder="lower">
-					<input type="number" id="goal-bs-upper" placeholder="upper">		
-					<label for="goal-bs-frequency">Testing Frequency</label>					
-					<input type="number" id="goal-bs-frequency" placeholder="times per day">
-				</div>
-				<div class="one-third column">
-					<label for="goal-excercise-duration">Average Excercise Duration</label>
-					<input type="number" id="goal-excercise-duration" placeholder="mins per day">
-					<label for="goal-excercise-frequency">Excercise Frequency</label>
-					<input type="number" id="goal-excercise-frequency" placeholder="times per week">
-					<input type="submit" value="Save Daily Goals"/>
-					</form>				
-				</div>
-				<div class="clear"/>
-				<blockquote>Do you have a long term goal you are aiming for?</blockquote>
-				<div class="one-third column">
-					<form id="goals">
-						<label for="goal-excercise-duration">Long Term Goal</label>
-						<textarea id="goal-long-term" />	
-										
-				</div>
-				<div class="one-third column">
-						<label for="goal-long-term-date">When do you aim to achive this?</label>						
-						<input type="date" id="goal-long-term-date" >
-						<input type="submit" value="Save Long Term Goals"/>
-					</form>				
-				</div>
-				<div class="clear"></div>
-			</div>
-		</script>
+		
 		<script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/underscore-min.js"></script>
 		<script src="js/backbone-min.js"></script>

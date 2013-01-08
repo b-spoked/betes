@@ -166,8 +166,8 @@ $( function( $ ) {
 		},
 		
 		initialize: function() {
-			$(this.el).html(this.accountTemplate());
 			_.bindAll(this);
+			$(this.el).html(this.accountTemplate());			
 		},
 
 		render: function() {

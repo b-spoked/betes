@@ -154,6 +154,26 @@ $( function( $ ) {
 		}
 	});
 
+	app.AboutView = Backbone.View.extend({
+		aboutTemplate: _.template( $('#about-template').html()),
+		
+		initialize: function() {
+			_.bindAll(this);
+			$(this.el).html(this.aboutTemplate());			
+		},
+
+		render: function() {
+			$(this.el).hide();
+		},
+		close: function() {
+			this.remove();
+			this.unbind();
+		},
+		onShow: function() {
+			$(this.el).show(500);
+		}
+	});
+
 	app.AccountView = Backbone.View.extend({
 		accountTemplate: _.template( $('#account-template').html()),
 
@@ -708,7 +728,8 @@ $( function( $ ) {
 
 		routes: {
 			"":"showLogBook",
-			"account" : "showAccount"
+			"account" : "showAccount",
+			"about" : "showAbout"
 		},
 
 		showLogBook: function() {
@@ -716,6 +737,9 @@ $( function( $ ) {
 		},
 		showAccount: function( ) {
 			RegionManager.show(new app.AccountView());
+		},
+		showAbout: function( ) {
+			RegionManager.show(new app.AboutView());
 		}
 	});
 

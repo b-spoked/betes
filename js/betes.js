@@ -29,26 +29,15 @@ $( function( $ ) {
 			name: '',
 			emailAddress: '',
 			pw: '',
-			testingUnits : ''
-		}		
-	});
-	
-	var Goal = Backbone.Model.extend({
-		defaults: {
-			bsLowerRange: 8,
-			bsUpperRange: 5,
+			testingUnits : 'mm',			
+			bsLowerRange: 5,
+			bsUpperRange: 8,
 			bsFrequency: 2,
 			excerciseDuration: 30,
 			excerciseFrequency: 3,
 			longTermGoal:'',
-			longTermGoalDate:null
-			
-		}
-	});
-	
-	var GoalSet =  Backbone.Collection.extend({
-		model : Goal,
-		localStorage : new Store('logbook-goals')
+			longTermGoalDate:''
+		}		
 	});
 	
 	var UserDetails =  Backbone.Collection.extend({
@@ -80,8 +69,7 @@ $( function( $ ) {
 	});
 
 	app.LogBookEntries = new Entries();
-	app.UserSettings = new UserDetails();	
-	app.UserGoals = new GoalSet();
+	app.Users = new UserDetails();
 
 	//Edit record modal view 
 	app.EditEntryView = Backbone.View.extend({
@@ -185,11 +173,11 @@ $( function( $ ) {
 		},
 		
 		initialize: function() {
-			_.bindAll(this);
-			$(this.el).html(this.accountTemplate());			
+			_.bindAll(this);					
 		},
 
 		render: function() {
+			$(this.el).html(this.accountTemplate(this.model.toJSON()));	
 			$(this.el).hide();
 		},
 		close: function() {
@@ -740,8 +728,20 @@ $( function( $ ) {
 		showLogBook: function() {
 			RegionManager.show(new app.LogBookView());	
 		},
-		showAccount: function( ) {
-			RegionManager.show(new app.AccountView());
+		showAccount: function( ) {			
+			RegionManager.show(new app.AccountView({model:this.getCurrentUser()}));
+		},
+		getCurrentUser:function(){
+			var user;
+			
+			app.Users.fetch();
+			user = app.Users.at(0);
+			if(!user){
+				app.Users.create(new User());
+				user = app.Users.at(0);
+			}
+			
+			return user;
 		},
 		showAbout: function( ) {
 			RegionManager.show(new app.AboutView());

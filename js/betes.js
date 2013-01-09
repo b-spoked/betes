@@ -83,7 +83,7 @@ $( function( $ ) {
 	app.UserSettings = new UserDetails();	
 	app.UserGoals = new GoalSet();
 
-
+	//Edit record modal view 
 	app.EditEntryView = Backbone.View.extend({
 		editEntryTemplate: _.template( $('#edit-item-template').html()),
 
@@ -117,7 +117,7 @@ $( function( $ ) {
 			};
 		}
 	});
-	// The DOM element for a todo item...
+	//Single log book entry
 	app.LogBookEntryView = Backbone.View.extend({
 
 		//... is a list tag.
@@ -125,9 +125,7 @@ $( function( $ ) {
 		
 		className: 'success',
 
-		// Cache the template function for a single item.
 		rowTemplate: _.template( $('#item-template').html() ),
-		//editEntryTemplate: _.template( $('#item-editing-template').html() ),
 		
 		events: {
 			'click .update': 'editEntry',
@@ -153,7 +151,7 @@ $( function( $ ) {
 			this.model.destroy();
 		}
 	});
-
+	//About this app
 	app.AboutView = Backbone.View.extend({
 		aboutTemplate: _.template( $('#about-template').html()),
 		
@@ -173,7 +171,7 @@ $( function( $ ) {
 			$(this.el).show(500);
 		}
 	});
-
+	//Users account
 	app.AccountView = Backbone.View.extend({
 		accountTemplate: _.template( $('#account-template').html()),
 
@@ -255,7 +253,7 @@ $( function( $ ) {
 			alert('saving ...');
 		}
 	});
-	
+	//Add record modal view
 	app.AddEntryView = Backbone.View.extend({
 		addEntryTemplate: _.template( $('#add-item-template').html()),
 		
@@ -275,7 +273,8 @@ $( function( $ ) {
 			$('#entry-date').val(local.toJSON().substring(0,19).replace('T',' '));			
 			$("#add-entry-dialog").modal('show');
 		},
-		saveNewEntry:function(e){
+		saveNewEntry:function(){
+			
 			app.LogBookEntries.create(this.newEntryValues());
 			$("#add-entry-dialog").modal('hide');
 		},
@@ -288,12 +287,13 @@ $( function( $ ) {
 				insulinAmount: $("#entry-insulin").val().trim(),
 				excerciseDuration: $("#entry-excercise-duration").val().trim(),
 				excerciseIntensity: $("#entry-excercise-intensity").val().trim(),
-				labels: $("#entry-labels").val().trim()
+				labels: $("#entry-labels").val().trim(),
+				comments: $("#entry-comments").val().trim()
 			};
 		}
 		
 	});	
-
+	//The fill log book
 	app.LogBookView = Backbone.View.extend({
 		logBookTemplate: _.template( $('#logbook-template').html()),
 
@@ -308,12 +308,10 @@ $( function( $ ) {
 
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
-			_.bindAll(this);
+			_.bindAll(this);				
 			app.LogBookEntries.bind( 'add', this.addOne, this );
 			app.LogBookEntries.bind( 'reset', this.addAll, this );
-			app.LogBookEntries.bind( 'remove', this.onShow, this );
-			app.LogBookEntries.bind( 'all', this.render, this );
-			app.LogBookEntries.bind( 'change', this.onShow, this );	
+			app.LogBookEntries.bind( 'remove', this.refresh, this );
 			app.LogBookEntries.fetch();
 		},
 		render: function() {			
@@ -323,8 +321,13 @@ $( function( $ ) {
 			this.remove();
 			this.unbind();
 		},
-		onShow: function() {
+		onShow: function() {			
 			$(this.el).show(500);
+		},
+		refresh: function(){
+			app.LogBookEntries.fetch()();
+			this.render();
+			this.onShow();
 		},
 		showGraph :function(e){
 			if(e.target.hash == "#bs-graph"){
@@ -343,11 +346,11 @@ $( function( $ ) {
 		},
 		addAll: function(entries) {
 			if(entries == null){
-				entries = app.LogBookEntries;
-			}
-			
+				entries = app.LogBookEntries.fetch();
+			}			
 			this.$('#events-list').html('');
 			entries.each(this.addOne, this);
+			
 		},		
 		showNewEntryDialog: function() {
 			

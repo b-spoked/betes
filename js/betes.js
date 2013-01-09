@@ -198,6 +198,7 @@ $( function( $ ) {
 		},
 		onShow: function() {
 			$(this.el).show(500);
+			$('#user-tabs a:first').tab('show');
 		},		
 		testGoalsValues: function() {
 			return {

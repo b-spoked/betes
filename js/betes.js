@@ -69,7 +69,7 @@ $( function( $ ) {
 
 			var pattern = new RegExp(letters,"gi");
 			return _(this.filter( function(data) {
-				return pattern.test(data.get("name"));
+				return pattern.test(data.get("name")) || pattern.test(data.get("labels"));
 			}));
 		},
 		comparator: function(entry) {
@@ -113,7 +113,8 @@ $( function( $ ) {
 				insulinAmount: $("#edit-entry-insulin").val().trim(),
 				excerciseDuration: $("#edit-entry-excercise-duration").val().trim(),
 				excerciseIntensity: $("#edit-entry-excercise-intensity").val().trim(),
-				labels: $("#edit-entry-labels").val().trim()
+				labels: $("#edit-entry-labels").val().trim(),
+				comments: $("#edit-entry-comments").val().trim()
 			};
 		}
 	});

@@ -72,6 +72,9 @@
 					</select>
 					<h4>Labels</h4>
 					<input type="text" id="edit-entry-labels" value="<%= labels %>">
+					<h4>Comments</h4>
+					<textarea class="span4" rows="3" id="edit-entry-comments" value="<%= comments %>"></textarea>				
+			
 				</div>
 				<div class="modal-footer">
 					<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -124,18 +127,23 @@
 		<script type="text/template" id="logbook-template">
 		
 			<ul class="nav nav-tabs" id="myTab">
-				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
-				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
+				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>				
 				<li><a href="#bs-graph" data-toggle="tab">Results</a></li>
+				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
 				<!--<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Results and Excercise</a></li>-->
 			</ul>
 		       
 			<div class="tab-content">
 				<div class="tab-pane active" id="logbook">
 					
-					<div class="row">
+					<div class="row-fluid">
 						<div class="span2"><button class="btn create-new-entry">Add Result</button></div>
-						<div class="span2"><input type="text" placeholder="filter results ..." id="filter-logbook" ></div>
+						<div class="span6">
+							<div class="input-prepend">
+								<span class="add-on">Filter Results</span>
+								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-logbook" >
+							</div>
+						</div>						
 					</div>
 					
 					<div id="modal-item"></div>
@@ -148,24 +156,30 @@
 						    <th>you did</th>
 						    <th>excercise at</th>
 							<th>labeled as</th>
+							<th></th>
 						  </tr>
 						</thead>
 						<tbody id="events-list">
 						</tbody>
 					</table>	
 				</div>
-				<div class="tab-pane" id="goals-graph">
-					<input type="text" placeholder="filter results ..." id="filter-goals-grap" >
+				<div class="tab-pane" id="goals-graph">					
 					<div id="goals">
 					</div>
 				</div>
 				<div class="tab-pane" id="bs-graph">
-					<input type="text" placeholder="filter results ..." id="filter-bs-graph" >
+					<div class="input-prepend">
+								<span class="add-on">Filter Results</span>
+								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-graph" >
+					</div>
 					<div id="bs-results">
 					</div>
 				</div>
 				<div class="tab-pane" id="bs-vs-excercise-graph">
-					<input type="text" placeholder="filter results ..." id="filter-bs-vs-excercise-graph" >	
+					<div class="input-prepend">
+								<span class="add-on">Filter Results</span>
+								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-vs-excercise-graph" >	
+					</div>
 					<div id="bs-vs-excercise">
 					</div>
 				</div>
@@ -333,10 +347,10 @@
 					</div>
 				</div>
 				<hr class="soften">
+				
 				<div class="row-fluid">
 					<div class="span2">
 						<h3>Jamie</h3>
-						
 					</div>
 					<div class="span2">
 						<img class="img-polaroid" src="images/jamie.JPG" alt="Jamie Bate">

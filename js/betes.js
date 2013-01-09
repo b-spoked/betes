@@ -24,21 +24,7 @@ $( function( $ ) {
 		}
 	});
 	
-	var User = Backbone.Model.extend({
-		defaults: {
-			name: '',
-			emailAddress: '',
-			pw: '',
-			testingUnits : 'mm',			
-			bsLowerRange: 5,
-			bsUpperRange: 8,
-			bsFrequency: 2,
-			excerciseDuration: 30,
-			excerciseFrequency: 3,
-			longTermGoal:'',
-			longTermGoalDate:''
-		}		
-	});
+	
 	
 	var UserDetails =  Backbone.Collection.extend({
 		model : User,
@@ -67,9 +53,39 @@ $( function( $ ) {
 			return -entryDate.getTime();
 		}
 	});
+	
+	var User = Backbone.Model.extend({
+		defaults: {
+			name: '',
+			emailAddress: '',
+			pw: '',
+			testingUnits : 'mm',			
+			bsLowerRange: 5,
+			bsUpperRange: 8,
+			bsFrequency: 2,
+			excerciseDuration: 30,
+			excerciseFrequency: 3,
+			longTermGoal:'',
+			longTermGoalDate:'',
+			logEntries: []
+		},
+		
+		//urlRoot: "/api/index.php/user.json",
+		
+		initialize: function() {
+			
+			var self = this;
+			
+			this.logEntries = new Entries(this.get('logEntries'));
+			/*this.logEntries.url = function () {
+				return self.urlRoot + '/logentries/'+self.get('id');
+			};*/
+		}
+	});
 
-	app.LogBookEntries = new Entries();
+	//app.LogBookEntries = new Entries();
 	app.Users = new UserDetails();
+	app.CurrentUser;
 
 	//Edit record modal view 
 	app.EditEntryView = Backbone.View.extend({
@@ -265,7 +281,7 @@ $( function( $ ) {
 		},
 		saveNewEntry:function(){
 			
-			app.LogBookEntries.create(this.newEntryValues());
+			app.User.logEntries.create(this.newEntryValues());
 			$("#add-entry-dialog").modal('hide');
 		},
 		
@@ -299,10 +315,10 @@ $( function( $ ) {
 		initialize: function() {
 			$(this.el).html(this.logBookTemplate());
 			_.bindAll(this);				
-			app.LogBookEntries.bind( 'add', this.addOne, this );
-			app.LogBookEntries.bind( 'reset', this.addAll, this );
-			app.LogBookEntries.bind( 'remove', this.refresh, this );
-			app.LogBookEntries.fetch();
+			app.User.logEntries.bind( 'add', this.addOne, this );
+			app.User.logEntries.bind( 'reset', this.addAll, this );
+			app.User.logEntries.bind( 'remove', this.refresh, this );
+			app.User.logEntries.fetch();
 		},
 		render: function() {			
 			$(this.el).hide();
@@ -315,17 +331,17 @@ $( function( $ ) {
 			$(this.el).show(500);
 		},
 		refresh: function(){
-			app.LogBookEntries.fetch()();
+			app.User.logEntries.fetch()();
 			this.render();
 			this.onShow();
 		},
 		showGraph :function(e){
 			if(e.target.hash == "#bs-graph"){
-				this.showBloodSugarGraph(app.LogBookEntries);
+				this.showBloodSugarGraph(app.User.logEntries);
 			}else if(e.target.hash == "#bs-vs-excercise-graph"){
-				this.showBloodSugarVsExcerciseGraph(app.LogBookEntries);
+				this.showBloodSugarVsExcerciseGraph(app.User.logEntries);
 			}else if(e.target.hash == "#goals-graph"){
-				this.showGoalsGraph(app.LogBookEntries);
+				this.showGoalsGraph(app.User.logEntries);
 			}
 		},
 		addOne: function( entry ) {
@@ -336,7 +352,7 @@ $( function( $ ) {
 		},
 		addAll: function(entries) {
 			if(entries == null){
-				entries = app.LogBookEntries.fetch();
+				entries = app.User.logEntries.fetch();
 			}			
 			this.$('#events-list').html('');
 			entries.each(this.addOne, this);
@@ -354,15 +370,15 @@ $( function( $ ) {
 		},
 		filterLogBook: function(e) {
 			var searchString = $("#filter-logbook").val();
-			this.addAll(app.LogBookEntries.filterEntries(searchString));
+			this.addAll(app.User.logEntries.filterEntries(searchString));
 		},
 		filterBloodSugarGraph: function(e){
 			var searchString = $("#filter-bs-graph").val();
-			this.showBloodSugarGraph(app.LogBookEntries.filterEntries(searchString));
+			this.showBloodSugarGraph(app.User.logEntries.filterEntries(searchString));
 		},
 		filterBloodSugarVsExcerciseGraph: function(e){
 			var searchString = $("#filter-bs-vs-excercise-graph").val();
-			this.showBloodSugarVsExcerciseGraph(app.LogBookEntries.filterEntries(searchString));
+			this.showBloodSugarVsExcerciseGraph(app.User.logEntries.filterEntries(searchString));
 		},
 		showBloodSugarGraph : function(entries) {
 			
@@ -708,7 +724,7 @@ $( function( $ ) {
 		},
 		filterGoalsGraph: function(e){
 			var searchString = $("#filter-goals-graph").val();
-			this.showGoalsGraph(e,app.LogBookEntries.filterEntries(searchString));
+			this.showGoalsGraph(e,app.User.logEntries.filterEntries(searchString));
 		},
 		
 		shareGraph : function(e){
@@ -724,12 +740,16 @@ $( function( $ ) {
 			"account" : "showAccount",
 			"about" : "showAbout"
 		},
+		
+		initialize: function() {
+			app.User = this.getCurrentUser();
+		},
 
 		showLogBook: function() {
 			RegionManager.show(new app.LogBookView());	
 		},
 		showAccount: function( ) {			
-			RegionManager.show(new app.AccountView({model:this.getCurrentUser()}));
+			RegionManager.show(new app.AccountView({model:app.User}));
 		},
 		getCurrentUser:function(){
 			var user;

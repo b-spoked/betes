@@ -35,7 +35,8 @@
 			<td><% if(bsLevel) { %> <%= bsLevel %> mmol <% } %></td>
 			<td><% if(insulinAmount) { %> <%= insulinAmount %> u<% } %></td>
 			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> mins<% } %></td>
-			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>
+			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>			
+			<td><% if(labels) { %> <%= labels %> <% } %></td>
 			<td><a class="btn btn-link update" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete" href="#"><i class="icon-trash  icon-large"></i></a></td>
 		</script>
 		<script type="text/template" id="edit-item-template">
@@ -146,6 +147,7 @@
 						    <th>you gave</th>
 						    <th>you did</th>
 						    <th>excercise at</th>
+							<th>labeled as</th>
 						  </tr>
 						</thead>
 						<tbody id="events-list">
@@ -299,12 +301,12 @@
 		<div class="container">
 			<h1>About</h1>
 			<p class="lead">I wanted a simple way for people track my blood sugars and 'health' long term.</p>
-			
+			<hr class="soften">	
 				<div class="row-fluid">
-					<div class="span3">
+					<div class="span2">
 					<h3>The App</h3>
 					</div>
-					<div class="span9">
+					<div class="span10">
 					<p class="lead">Designed with these simple goals in mind</p>
 					<ul>
 						<li>Log results (blood sugars and excerise)</li>
@@ -318,46 +320,49 @@
 				
 				
 				<div class="row-fluid">
-					<div class="span3">
+					<div class="span2">
 						<h3>Road Map</h3>
 					</div>
-					<div class="span9">
-					<p class="lead">Keeping things simple I will only concentrate on a few features ahead. The next  cabs off te rank are listed below.</p>
+					<div class="span10">
+					<p class="lead">Keeping things simple I will only concentrate on a few features ahead. The next cabs off the rank are:</p>
 					<ul>
-						<li>Food Diary</li>
-						<li>Sharing</li>
-						<li>Native Mobile App</li>
+						<li>Add a food diary</li>
+						<li>Make it social</li>
+						<li>Create a native mobile app</li>
 					</ul>
 					</div>
 				</div>
 				<hr class="soften">
 				<div class="row-fluid">
-					<div class="span3">
+					<div class="span2">
 						<h3>Jamie</h3>
+						
+					</div>
+					<div class="span2">
 						<img class="img-polaroid" src="images/jamie.JPG" alt="Jamie Bate">
 					</div>
-					<div class="span9">
-					<p class="lead">I have been a diabetic for over 25 years now with varying degrees of attention being paid to the 'betes'. I would describe my self as:</p>
-					<ul>
-						<li>A cycling junkie - MTB is the current passion</li>
-						<li>A busy guy. Family with kids / Work/ Cycling and other projects like this mean I keep busy.</li>
-						<li>A realist - I know there will be ups and downs with my diabetes. As long as I can track it long term I will be happy</li>
-					</ul>
+					<div class="span8">						
+						<p class="lead">I have been a diabetic for over 25 years now with varying degrees of attention being paid to the 'betes'. I would describe my self as:</p>
+						<ul>
+							<li>A cycling junkie - MTB is the current passion</li>
+							<li>A busy guy. Family with kids / Work/ Cycling and other projects like this mean I keep busy.</li>
+							<li>A realist - I know there will be ups and downs with my diabetes. As long as I can track it long term I will be happy</li>
+						</ul>
 					</div>
 				</div>
 				
 				<hr class="soften">
 				<div class="row-fluid">
-					<div class="span3">
+					<div class="span2">
 						<h3>Contact</h3>
 					</div>
-					<div class="span9">
+					<div class="span10">
 						<p class="lead">I would love to hear from you </p>
 						<p>
-						<a href="mailto:jamie@almservices.co.nz"><i class="icon-mail"></i> Email Jamie</a>
+						<a class="btn btn-large btn-primary" href="mailto:jamie@almservices.co.nz">Email Jamie</a>
 						</p>
 						<p>
-						<a href="mailto:jamie@almservices.co.nz"><i class="icon-phone"></i> Call Jamie - +64 21 653141</a>
+						<a class="btn btn-large" href="tel:006421653141">Call Jamie +64 21 653141</a>
 						</p>
 					</div>
 				</div>

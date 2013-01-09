@@ -66,8 +66,7 @@ $( function( $ ) {
 			excerciseDuration: 30,
 			excerciseFrequency: 3,
 			longTermGoal:'',
-			longTermGoalDate:'',
-			logEntries: []
+			longTermGoalDate:''
 		},
 		
 		//urlRoot: "/api/index.php/user.json",
@@ -753,8 +752,7 @@ $( function( $ ) {
 		},
 		getCurrentUser:function(){
 			var user;
-			
-			app.Users.fetch();
+				
 			user = app.Users.at(0);
 			if(!user){
 				app.Users.create(new User());

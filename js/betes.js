@@ -194,19 +194,20 @@ $( function( $ ) {
 		accountTemplate: _.template( $('#account-template').html()),
 
 		events: {
-			'submit #goals-testing': 'saveTestingGoals',
-			'submit #goals-excercise': 'saveExcerciseGoals',
-			'submit #goals-long-term': 'saveLongTermGoals',
-			'submit #user-profile': 'saveProfile',
-			'submit #user-settings': 'saveProfileSettings'
+			'click #save-profile': 'saveProfile',
+			'click .add-new-goals': 'showAddGoalsDialog'
 		},
 		
 		initialize: function() {
-			_.bindAll(this);					
+			_.bindAll(this);				
+			app.User.userGoals.bind( 'add', this.addOne, this );
+			app.User.userGoals.bind( 'reset', this.addAll, this );
+			app.User.userGoals.bind( 'remove', this.refresh, this );
+			app.User.userGoals.fetch();
 		},
 
 		render: function() {
-			$(this.el).html(this.accountTemplate($.extend({}, this.model.toJSON(), this.model.getLatestGoals.toJSON())));	
+			$(this.el).html(this.accountTemplate(this.model.toJSON()));	
 			$(this.el).hide();
 		},
 		close: function() {
@@ -216,74 +217,116 @@ $( function( $ ) {
 		onShow: function() {
 			$(this.el).show(500);
 			$('#user-tabs a:first').tab('show');
-		},		
-		testGoalsValues: function() {
-			return {
-				bsLowerRange: $("#goal-bs-lower").val().trim(),
-				bsUpperRange: $("#goal-bs-upper").val().trim(),
-				bsFrequency: $("#goal-bs-frequency").val().trim()
-			};
 		},
-		excerciseGoalsValues: function() {
-			return {
-				excerciseDuration: $("#goal-excercise-duration").val().trim(),
-				excerciseFrequency: $("#goal-excercise-frequency").val().trim()
-			};
+		refresh: function(){
+			app.User.userGoals.fetch()();
+			this.render();
+			this.onShow();
 		},
-		longTermGoalsValues: function() {
-			return {
-				longTermGoal: $("#goal-long-term").val().trim(),
-				longTermGoalDate: $("#goal-long-term-date").val().trim()
-			};
+		
+		addOne: function( goal ) {
+			var view = new app.GoalSetView({
+				model: goal
+			});
+			this.$('#goals-list').append( view.render().el );
+		},
+		addAll: function(goals) {
+			if(goals == null){
+				goals = app.User.userGoals.fetch();
+			}			
+			this.$('#goals-list').html('');
+			goals.each(this.addOne, this);
+			
 		},
 		userProfileValues: function() {
 			return {
 				name: $("#account-user-name").val().trim(),
 				emailAddress: $("#account-user-email").val().trim(),				
-				pw: $("#password").val().trim()
-			};
-		},
-		userProfileSettingValues: function() {
-			return {
+				pw: $("#password").val().trim(),
 				testingUnits: $("#account-testing-units").val().trim()
 			};
-		},
-		saveTestingGoals : function(e){
-			e.preventDefault();		
-			var goals = this.model.getLatestGoals();
-			goals.set(this.testGoalsValues());
-			
-			this.model.userGoals.reset(goals);
-			
-			this.model.save();
 		},		
-		
-		saveExcerciseGoals : function(e){
-			e.preventDefault();		
-			var goals = this.model.getLatestGoals();
-			goals.set(this.excerciseGoalsValues());
-			this.model.userGoals.reset(goals);
-			this.model.save();
-		},		
-		
-		saveLongTermGoals : function(e){
-			e.preventDefault();
-			var goals = this.model.getLatestGoals();
-			goals.set(this.longTermGoalsValues());
-			this.model.userGoals.reset(goals);
-			this.model.save();
-		},		
-		
 		saveProfile : function(e){
 			e.preventDefault();
 			this.model.set(this.userProfileValues());
 			this.model.save();
-		},
-		saveProfileSettings : function(e){
-			e.preventDefault();
-			this.model.set(this.userProfileSettingValues());
-			this.model.save();
+		},		
+		showAddGoalsDialog : function(e){
+			var view = new app.AddGoalSetView();
+			view.render();
+				 
+			var $modalEl = $("#modal-goal");
+			$modalEl.html(view.el);
+			view.showDialog();
+			
 		}
+		
+	});
+	app.GoalSetView = Backbone.View.extend({
+
+		//... is a list tag.
+		tagName:  'tr',
+
+		rowTemplate: _.template( $('#goal-template').html() ),
+		
+		events: {
+			'click .update-goals': 'updateGoals',
+			'click .delete-goals': 'deleteGoals'
+		},
+		initialize: function() {
+			_.bindAll(this);
+			this.model.on( 'change', this.render, this );			
+		},
+		render: function() {			
+			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
+			return this;
+		},
+		updateGoals: function(e) {
+			var view = new app.EditGoalsView({model:this.model});
+			view.render();
+				 
+			var $modalEl = $("#modal-dialog");
+			$modalEl.html(view.el);
+			view.showDialog();
+		},
+		deleteGoals: function() {
+			this.model.destroy();
+		}
+	});
+	//Add goalset
+	app.AddGoalSetView = Backbone.View.extend({
+		addGoalsTemplate: _.template( $('#add-goal-template').html()),
+		
+		events: {
+			'click .add-goal': 'saveNewGoals'
+		},
+
+		render: function() {
+			$(this.el).html(this.addGoalsTemplate());
+			return this;
+		},
+		
+		showDialog: function(){			
+			$("#add-goal-dialog").modal('show');
+		},
+		saveNewGoals:function(){
+			
+			app.User.userGoals.create(this.newGoalValues());
+			$("#add-goal-dialog").modal('hide');
+		},
+		
+		newGoalValues: function() {
+			return {
+				bsLowerRange: $("#goal-bs-lower").val().trim(),
+				bsUpperRange: $("#goal-bs-upper").val().trim(),
+				bsFrequency: $("#goal-bs-frequency").val().trim(),
+				excerciseDuration: $("#goal-excercise-duration").val().trim(),
+				excerciseFrequency: $("#goal-excercise-frequency").val().trim(),
+				longTermGoal: $("#goal-long-term").val().trim(),
+				longTermGoalDate: $("#goal-long-term-date").val().trim()
+			};
+		}
+		
 	});
 	//Add record modal view
 	app.AddEntryView = Backbone.View.extend({

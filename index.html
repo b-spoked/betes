@@ -196,98 +196,146 @@
 			<td><% if(longTermGoalDate) { %> <%= longTermGoalDate %> <% } %></td>
 			<td><a class="btn btn-link update-goals" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete-goals" href="#"><i class="icon-trash  icon-large"></i></a></td>
 		</script>
+		<script type="text/template" id="add-goal-template">
+		<div id="add-goal-dialog" class="modal hide fade">
+			<div class="modal-header">
+				<h3>Add a new set of goals</h3>
+			</div>
+			<div class="modal-body">
+				<p class="lead">Testing Goals</p>
+				<p>Set your goals for testing so you can track them over time.</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-bs-lower">Range</label>
+					<div class="controls">
+						<input type="number" id="goal-bs-lower" placeholder="lower" >
+						<input type="number" id="goal-bs-upper" placeholder="upper" >
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-bs-lower">Frequency</label>
+					<div class="controls">
+						<input type="number" id="goal-bs-frequency" placeholder="times per day" > per/day
+					</div>
+				</div>				
+				<p class="lead">Excercise Goals</p>						
+				<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-excercise-duration">How Long</label>
+					<div class="controls">
+						<input type="number" id="goal-excercise-duration" placeholder="mins per day" > mins
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-excercise-frequency">How Often</label>
+					<div class="controls">
+						<input type="number" id="goal-excercise-frequency" placeholder="times per week" > per/wk
+					</div>
+				</div>
+				<p class="lead">Long Term Goals</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-long-term">Goal</label>
+					<div class="controls">
+						<textarea id="goal-long-term" />	
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-long-term">By When</label>
+					<div class="controls">
+						<input type="date" id="goal-long-term-date" >	
+					</div>
+				</div>			
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary add-goal">Add</button>
+			</div>
+		</div>
+		</script>
+		<script type="text/template" id="edit-goal-template">
+		<div id="edit-goal-dialog" class="modal hide fade">
+			<div class="modal-header">
+				<h3>Edit goals</h3>
+			</div>
+			<div class="modal-body">
+				<p class="lead">Testing Goals</p>
+				<p>Set your goals for testing so you can track them over time.</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-bs-lower">Range</label>
+					<div class="controls">
+						<input type="number" id="goal-bs-lower" placeholder="lower" <% if(bsLowerRange) { %> value="<%= bsLowerRange %>" <% } %>>
+						<input type="number" id="goal-bs-upper" placeholder="upper" <% if(bsUpperRange) { %> value="<%= bsUpperRange %>" <% } %>>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-bs-lower">Frequency</label>
+					<div class="controls">
+						<input type="number" id="goal-bs-frequency" placeholder="times per day" <% if(bsFrequency) { %> value="<%= bsFrequency %>" <% } %>> per/day
+					</div>
+				</div>				
+				<p class="lead">Excercise Goals</p>						
+				<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-excercise-duration">How Long</label>
+					<div class="controls">
+						<input type="number" id="goal-excercise-duration" placeholder="mins per day" <% if(excerciseDuration) { %> value="<%= excerciseDuration %>" <% } %>> mins
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-excercise-frequency">How Often</label>
+					<div class="controls">
+						<input type="number" id="goal-excercise-frequency" placeholder="times per week" <% if(excerciseFrequency) { %> value="<%= excerciseFrequency %>" <% } %>> per/wk
+					</div>
+				</div>
+				<p class="lead">Long Term Goals</p>
+				<div class="control-group">
+					<label class="control-label" for="goal-long-term">Goal</label>
+					<div class="controls">
+						<textarea class="span6" id="goal-long-term" <% if(longTermGoal) { %> value="<%= longTermGoal %>" <% } %>/>	
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="goal-long-term">By When</label>
+					<div class="controls">
+						<input type="date" id="goal-long-term-date" <% if(longTermGoalDate) { %> value="<%= longTermGoalDate %>" <% } %>>	
+					</div>
+				</div>			
+			</div>
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary add-goal">Add</button>
+			</div>
+		</div>
+		</script>
 		<script type="text/template" id="account-template">
 		<ul class="nav nav-tabs" id="user-tabs">
 			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
 			<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
 		</ul>
 		<div class="tab-content">
-				<div class="tab-pane" id="user-goals-tab">
-					<div id="modal-goal"></div>
-					<table class="table table-bordered table-condensed">
-						<thead>
-						  <tr>
-						    <th>Lower Range</th>
-						    <th>Upper Range</th>
-						    <th>Frequency per day</th>
-						    <th>Excercise Amount</th>
-						    <th>Excercise Frequency per week</th>
+			<div class="tab-pane" id="user-goals-tab">
+				<div class="row-fluid">
+					<div class="span2"><button class="btn add-new-goals">Add Goal Set</button></div>						
+				</div>
+				<div id="modal-goal"></div>
+				<table class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>Lower Range</th>
+							<th>Upper Range</th>
+							<th>Frequency per day</th>
+							<th>Excercise Amount</th>
+							<th>Excercise Frequency per week</th>
 							<th>Long Term</th>
 							<th>Achieved by</th>
-						  </tr>
-						</thead>
-						<tbody id="goals-list">
-						</tbody>
-					</table>
-				
-					<p class="lead">Testing Goals</p>
+						</tr>
+					</thead>
+					<tbody id="goals-list">
+					</tbody>
+				</table>
 					
-					<p>Set your goals for testing so you can track them over time.</p>
-					<form class="form-horizontal" id="goals-testing">
-						<div class="control-group">
-							<label class="control-label" for="goal-bs-lower">Range</label>
-							<div class="controls">
-								<input type="number" id="goal-bs-lower" placeholder="lower" <% if(bsLowerRange) { %> value="<%= bsLowerRange %>" <% } %>>
-								<input type="number" id="goal-bs-upper" placeholder="upper" <% if(bsUpperRange) { %> value="<%= bsUpperRange %>" <% } %>>
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" for="goal-bs-lower">Frequency</label>
-							<div class="controls">
-								<input type="number" id="goal-bs-frequency" placeholder="times per day" <% if(bsFrequency) { %> value="<%= bsFrequency %>" <% } %>> per/day
-							</div>
-						</div>
-						<div class="control-group">							
-							<div class="controls">
-								<button type="submit" class="btn btn-primary">Set Testing Goals</button>
-							</div>
-						</div>
-					</form>						
-					<p class="lead">Excercise Goals</p>						
-					<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
-					<form class="form-horizontal" id="goals-excercise">
-						<div class="control-group">
-							<label class="control-label" for="goal-excercise-duration">How Long</label>
-							<div class="controls">
-								<input type="number" id="goal-excercise-duration" placeholder="mins per day" <% if(excerciseDuration) { %> value="<%= excerciseDuration %>" <% } %>> mins
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" for="goal-excercise-frequency">How Often</label>
-							<div class="controls">
-								<input type="number" id="goal-excercise-frequency" placeholder="times per week" <% if(excerciseFrequency) { %> value="<%= excerciseFrequency %>" <% } %>> per/wk
-							</div>
-						</div>
-						<div class="control-group">							
-							<div class="controls">
-								<button type="submit" class="btn btn-primary">Set Excercise Goals</button>
-							</div>
-						</div>
-					</form>	
-					<p class="lead">Long Term Goals</p>
-					<form class="form-horizontal" id="goals-long-term">
-						<div class="control-group">
-							<label class="control-label" for="goal-long-term">Goal</label>
-							<div class="controls">
-								<textarea class="span6" id="goal-long-term" <% if(longTermGoal) { %> value="<%= longTermGoal %>" <% } %>/>	
-							</div>
-						</div>
-						<div class="control-group">
-							<label class="control-label" for="goal-long-term">By When</label>
-							<div class="controls">
-								<input type="date" id="goal-long-term-date" <% if(longTermGoalDate) { %> value="<%= longTermGoalDate %>" <% } %>>	
-							</div>
-						</div>
-						<div class="control-group">							
-							<div class="controls">
-								<button type="submit" class="btn btn-primary">Set Long Term Goal</button>
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="tab-pane" id="user-account-tab">
+			</div>
+			<div class="tab-pane" id="user-account-tab">
 					<p class="lead">User Profile</p>
-					<form class="form-horizontal" id="user-profile">
 						<div class="control-group">
 							<label class="control-label" for="account-user-name">Name</label>
 							<div class="controls">
@@ -306,14 +354,7 @@
 								<input type="password" id="account-user-pw" placeholder="Password" required>	
 							</div>
 						</div>
-						<div class="control-group">
-							<div class="controls">
-								<button type="submit" class="btn btn-primary">Save Profile</button>
-							</div>
-						</div>
-					</form>	
-					<p class="lead">User Settings</p>
-					<form class="form-horizontal" id="user-settings">						
+					<p class="lead">User Settings</p>						
 						<div class="control-group">
 							<label class="control-label" for="account-testing-units">Result Units</label>
 							<div class="controls">
@@ -325,10 +366,9 @@
 						</div>		
 						<div class="control-group">
 							<div class="controls">
-								<button type="submit" class="btn btn-primary">Save Settings</button>
+								<button id="save-profile" class="btn btn-primary">Save Profile</button>
 							</div>
 						</div>
-					</form>
 				</div>
 		</div>
 		</script>

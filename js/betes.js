@@ -53,7 +53,7 @@ $( function( $ ) {
 	});
 	
 	var Goals = Backbone.Model.extend({
-		defaults: {				
+		defaults: {	
 			bsLowerRange: '',
 			bsUpperRange: '',
 			bsFrequency: '',
@@ -62,6 +62,11 @@ $( function( $ ) {
 			longTermGoal:'',
 			longTermGoalDate:''
 		}
+	});
+	
+	var GoalSet = Backbone.Collection.extend({
+		model : Goals,
+		localStorage : new Store('user-goals')
 	});
 	
 	var User = Backbone.Model.extend({
@@ -79,11 +84,15 @@ $( function( $ ) {
 			var self = this;
 			
 			this.logEntries = new Entries(this.get('logEntries'));
-			this.userGoals = new Goals(this.get('userGoals'));
+			this.userGoals = new GoalSet(this.get('userGoals'));
 			
 			/*this.logEntries.url = function () {
 				return self.urlRoot + '/logentries/'+self.get('id');
 			};*/
+		},
+		
+		getLatestGoals:function(){
+			return _.last(this.userGoals);
 		}
 	});
 
@@ -197,7 +206,7 @@ $( function( $ ) {
 		},
 
 		render: function() {
-			$(this.el).html(this.accountTemplate($.extend({}, this.model.toJSON(), this.model.userGoals.toJSON())));	
+			$(this.el).html(this.accountTemplate($.extend({}, this.model.toJSON(), this.model.getLatestGoals.toJSON())));	
 			$(this.el).hide();
 		},
 		close: function() {
@@ -240,27 +249,40 @@ $( function( $ ) {
 			};
 		},
 		saveTestingGoals : function(e){
-			e.preventDefault();							
-			this.model.userGoals.set(this.testGoalsValues());
+			e.preventDefault();		
+			var goals = this.model.getLatestGoals();
+			goals.set(this.testGoalsValues());
+			
+			this.model.userGoals.reset(goals);
+			
+			this.model.save();
 		},		
 		
 		saveExcerciseGoals : function(e){
 			e.preventDefault();		
-			this.model.userGoals.set(this.excerciseGoalsValues());
+			var goals = this.model.getLatestGoals();
+			goals.set(this.excerciseGoalsValues());
+			this.model.userGoals.reset(goals);
+			this.model.save();
 		},		
 		
 		saveLongTermGoals : function(e){
 			e.preventDefault();
-			this.model.userGoals.set(this.longTermGoalsValues());
+			var goals = this.model.getLatestGoals();
+			goals.set(this.longTermGoalsValues());
+			this.model.userGoals.reset(goals);
+			this.model.save();
 		},		
 		
 		saveProfile : function(e){
 			e.preventDefault();
 			this.model.set(this.userProfileValues());
+			this.model.save();
 		},
 		saveProfileSettings : function(e){
 			e.preventDefault();
 			this.model.set(this.userProfileSettingValues());
+			this.model.save();
 		}
 	});
 	//Add record modal view

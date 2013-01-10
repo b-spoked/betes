@@ -186,6 +186,16 @@
 			</div>
 					
 		</script>			
+		<script type="text/template" id="goal-template">
+			<td><% if(bsLowerRange) { %> <%= bsLowerRange %> <% } %> </td>
+			<td><% if(bsUpperRange) { %> <%= bsUpperRange %> <% } %></td>
+			<td><% if(bsFrequency) { %> <%= bsFrequency %> u<% } %></td>
+			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> <% } %></td>
+			<td><% if(excerciseFrequency) { %> <%= excerciseFrequency %> <% } %></td>			
+			<td><% if(longTermGoal) { %> <%= longTermGoal %> <% } %></td>
+			<td><% if(longTermGoalDate) { %> <%= longTermGoalDate %> <% } %></td>
+			<td><a class="btn btn-link update-goals" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete-goals" href="#"><i class="icon-trash  icon-large"></i></a></td>
+		</script>
 		<script type="text/template" id="account-template">
 		<ul class="nav nav-tabs" id="user-tabs">
 			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
@@ -193,6 +203,23 @@
 		</ul>
 		<div class="tab-content">
 				<div class="tab-pane" id="user-goals-tab">
+					<div id="modal-goal"></div>
+					<table class="table table-bordered table-condensed">
+						<thead>
+						  <tr>
+						    <th>Lower Range</th>
+						    <th>Upper Range</th>
+						    <th>Frequency per day</th>
+						    <th>Excercise Amount</th>
+						    <th>Excercise Frequency per week</th>
+							<th>Long Term</th>
+							<th>Achieved by</th>
+						  </tr>
+						</thead>
+						<tbody id="goals-list">
+						</tbody>
+					</table>
+				
 					<p class="lead">Testing Goals</p>
 					
 					<p>Set your goals for testing so you can track them over time.</p>

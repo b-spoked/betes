@@ -22,9 +22,7 @@ $( function( $ ) {
 			//this.model.goalsMeet = "goals-not-meet";
 			//this.model.goalsMeet = "goals-partial-meet";
 		}
-	});
-	
-	
+	});	
 	
 	var UserDetails =  Backbone.Collection.extend({
 		model : User,
@@ -54,19 +52,24 @@ $( function( $ ) {
 		}
 	});
 	
+	var Goals = Backbone.Model.extend({
+		defaults: {				
+			bsLowerRange: '',
+			bsUpperRange: '',
+			bsFrequency: '',
+			excerciseDuration: '',
+			excerciseFrequency: '',
+			longTermGoal:'',
+			longTermGoalDate:''
+		}
+	});
+	
 	var User = Backbone.Model.extend({
 		defaults: {
 			name: '',
 			emailAddress: '',
 			pw: '',
-			testingUnits : 'mm',			
-			bsLowerRange: 5,
-			bsUpperRange: 8,
-			bsFrequency: 2,
-			excerciseDuration: 30,
-			excerciseFrequency: 3,
-			longTermGoal:'',
-			longTermGoalDate:''
+			testingUnits : 'mm'			
 		},
 		
 		//urlRoot: "/api/index.php/user.json",
@@ -76,6 +79,8 @@ $( function( $ ) {
 			var self = this;
 			
 			this.logEntries = new Entries(this.get('logEntries'));
+			this.userGoals = new Goals(this.get('userGoals'));
+			
 			/*this.logEntries.url = function () {
 				return self.urlRoot + '/logentries/'+self.get('id');
 			};*/
@@ -192,7 +197,7 @@ $( function( $ ) {
 		},
 
 		render: function() {
-			$(this.el).html(this.accountTemplate(this.model.toJSON()));	
+			$(this.el).html(this.accountTemplate($.extend({}, this.model.toJSON(), this.model.userGoals.toJSON())));	
 			$(this.el).hide();
 		},
 		close: function() {
@@ -235,27 +240,27 @@ $( function( $ ) {
 			};
 		},
 		saveTestingGoals : function(e){
-			e.preventDefault();
-			alert('saving ...');
+			e.preventDefault();							
+			this.model.userGoals.set(this.testGoalsValues());
 		},		
 		
 		saveExcerciseGoals : function(e){
-			e.preventDefault();
-			alert('saving ...');
+			e.preventDefault();		
+			this.model.userGoals.set(this.excerciseGoalsValues());
 		},		
 		
 		saveLongTermGoals : function(e){
 			e.preventDefault();
-			alert('saving ...');
+			this.model.userGoals.set(this.longTermGoalsValues());
 		},		
 		
 		saveProfile : function(e){
 			e.preventDefault();
-			alert('saving ...');
+			this.model.set(this.userProfileValues());
 		},
 		saveProfileSettings : function(e){
 			e.preventDefault();
-			alert('saving ...');
+			this.model.set(this.userProfileSettingValues());
 		}
 	});
 	//Add record modal view

@@ -24,11 +24,6 @@ $( function( $ ) {
 		}
 	});	
 	
-	var UserDetails =  Backbone.Collection.extend({
-		model : User,
-		localStorage : new Store('logbook-user')
-	});
-	
 	var Entries =  Backbone.Collection.extend({
 		model : Entry,
 		localStorage : new Store('logbook-entries'),
@@ -37,14 +32,22 @@ $( function( $ ) {
 		},
 		filterEntries : function(letters) {
 			
-			if(letters == "")
+			if(letters == ""){
 				return this;
+			}
 
 			var pattern = new RegExp(letters,"gi");
 			return _(this.filter( function(data) {
 				return pattern.test(data.get("name")) || pattern.test(data.get("labels"));
 			}));
 		},
+		
+		filterString : function(letters){},
+		
+		filterPlus : function(letters){},
+		
+		filterGreaterThan : function(letters){},
+		filterLessThan : function(letters){},
 		comparator: function(entry) {
 			//latest entry first
 			var entryDate = new Date(entry.get('when'));
@@ -74,7 +77,9 @@ $( function( $ ) {
 			name: '',
 			emailAddress: '',
 			pw: '',
-			testingUnits : 'mm'			
+			testingUnits : 'mm',
+			logEntries :[],
+			userGoals:[]
 		},
 		
 		//urlRoot: "/api/index.php/user.json",
@@ -83,6 +88,8 @@ $( function( $ ) {
 			
 			var self = this;
 			
+			//this.set({logEntries : new Entries(this.get('logEntries'))});
+			//this.set({userGoals : new GoalSet(this.get('userGoals'))});
 			this.logEntries = new Entries(this.get('logEntries'));
 			this.userGoals = new GoalSet(this.get('userGoals'));
 			
@@ -94,6 +101,12 @@ $( function( $ ) {
 		getLatestGoals:function(){
 			return _.last(this.userGoals);
 		}
+	});
+	
+	var UserDetails =  Backbone.Collection.extend({
+		model : User,
+		localStorage : new Store('logbook-user'),
+		url : '/users'
 	});
 
 	//app.LogBookEntries = new Entries();
@@ -189,79 +202,6 @@ $( function( $ ) {
 			$(this.el).show(500);
 		}
 	});
-	//Users account
-	app.AccountView = Backbone.View.extend({
-		accountTemplate: _.template( $('#account-template').html()),
-
-		events: {
-			'click #save-profile': 'saveProfile',
-			'click .add-new-goals': 'showAddGoalsDialog'
-		},
-		
-		initialize: function() {
-			_.bindAll(this);				
-			app.User.userGoals.bind( 'add', this.addOne, this );
-			app.User.userGoals.bind( 'reset', this.addAll, this );
-			app.User.userGoals.bind( 'remove', this.refresh, this );
-			app.User.userGoals.fetch();
-		},
-
-		render: function() {
-			$(this.el).html(this.accountTemplate(this.model.toJSON()));	
-			$(this.el).hide();
-		},
-		close: function() {
-			this.remove();
-			this.unbind();
-		},
-		onShow: function() {
-			$(this.el).show(500);
-			$('#user-tabs a:first').tab('show');
-		},
-		refresh: function(){
-			app.User.userGoals.fetch()();
-			this.render();
-			this.onShow();
-		},
-		
-		addOne: function( goal ) {
-			var view = new app.GoalSetView({
-				model: goal
-			});
-			this.$('#goals-list').append( view.render().el );
-		},
-		addAll: function(goals) {
-			if(goals == null){
-				goals = app.User.userGoals.fetch();
-			}			
-			this.$('#goals-list').html('');
-			goals.each(this.addOne, this);
-			
-		},
-		userProfileValues: function() {
-			return {
-				name: $("#account-user-name").val().trim(),
-				emailAddress: $("#account-user-email").val().trim(),				
-				pw: $("#password").val().trim(),
-				testingUnits: $("#account-testing-units").val().trim()
-			};
-		},		
-		saveProfile : function(e){
-			e.preventDefault();
-			this.model.set(this.userProfileValues());
-			this.model.save();
-		},		
-		showAddGoalsDialog : function(e){
-			var view = new app.AddGoalSetView();
-			view.render();
-				 
-			var $modalEl = $("#modal-goal");
-			$modalEl.html(view.el);
-			view.showDialog();
-			
-		}
-		
-	});
 	app.GoalSetView = Backbone.View.extend({
 
 		//... is a list tag.
@@ -278,7 +218,7 @@ $( function( $ ) {
 			this.model.on( 'change', this.render, this );			
 		},
 		render: function() {			
-			this.$el.html( this.rowTemplate( this.model.toJSON() ) );
+			this.$el.html( this.rowTemplate(this.model.toJSON()) );
 			return this;
 		},
 		updateGoals: function(e) {
@@ -293,6 +233,82 @@ $( function( $ ) {
 			this.model.destroy();
 		}
 	});
+	//Users account
+	app.AccountView = Backbone.View.extend({
+		accountTemplate: _.template( $('#account-template').html()),
+
+		events: {
+			'click #save-profile': 'saveProfile',
+			'click .add-new-goals': 'showAddGoalsDialog'
+		},
+		
+		initialize: function() {
+			$(this.el).html(this.accountTemplate(this.model.toJSON()));
+			
+			_.bindAll(this);
+			app.User.userGoals.bind( 'add', this.addOne, this );
+			app.User.userGoals.bind( 'reset', this.addAll, this );
+			app.User.userGoals.bind( 'remove', this.refresh, this );
+			
+			app.User.userGoals.fetch();
+		},
+
+		render: function() {
+			
+			$('#user-tabs a:first').tab('show');	
+			$(this.el).hide();
+		},
+		close: function() {
+			this.remove();
+			this.unbind();
+		},
+		onShow: function() {
+			$(this.el).show(500);
+		},
+		refresh: function(){
+			app.User.userGoals.fetch();
+			this.render();
+			this.onShow();
+		},
+		addOne: function( goal ) {
+			var goalSetView = new app.GoalSetView({
+				model: goal
+			});
+			this.$('#goals-list').append( goalSetView.render().el );
+		},
+		addAll: function(goals) {
+			if(goals == null){
+				goals = app.User.userGoals.fetch();
+			}			
+			this.$('#goals-list').html('');
+			goals.each(this.addOne, this);
+			
+		},
+		userProfileValues: function() {
+			return {
+				name: $("#account-user-name").val().trim(),
+				emailAddress: $("#account-user-email").val().trim(),				
+				pw: $("#account-user-pw").val().trim(),
+				testingUnits: $("#account-testing-units").val().trim()
+			};
+		},		
+		saveProfile : function(e){
+			e.preventDefault();
+			this.model.set(this.userProfileValues());
+			this.model.save();
+		},		
+		showAddGoalsDialog : function(e){
+			var goalSetDialog = new app.AddGoalSetView();
+			goalSetDialog.render();
+				 
+			var $modalEl = $("#modal-goal");
+			$modalEl.html(goalSetDialog.el);
+			goalSetDialog.showDialog();
+			
+		}
+		
+	});
+	
 	//Add goalset
 	app.AddGoalSetView = Backbone.View.extend({
 		addGoalsTemplate: _.template( $('#add-goal-template').html()),
@@ -400,7 +416,7 @@ $( function( $ ) {
 			$(this.el).show(500);
 		},
 		refresh: function(){
-			app.User.logEntries.fetch()();
+			app.User.logEntries.fetch();
 			this.render();
 			this.onShow();
 		},
@@ -443,6 +459,7 @@ $( function( $ ) {
 		},
 		filterBloodSugarGraph: function(e){
 			var searchString = $("#filter-bs-graph").val();
+			
 			this.showBloodSugarGraph(app.User.logEntries.filterEntries(searchString));
 		},
 		filterBloodSugarVsExcerciseGraph: function(e){
@@ -487,7 +504,6 @@ $( function( $ ) {
 				.x(function(entry) { return x(entry.when); })
 				.y(function(entry) { return y(entry.average); });	
 			
-				
 			$("#bs-results").html('');	
 
 			var svg = d3.select("#bs-results").append("svg")
@@ -498,6 +514,7 @@ $( function( $ ) {
 			
 			data.forEach(function(entry) {
 				entry.when = new Date(entry.when);
+				console.log(entry.when);
 				entry.bsLevel = +entry.bsLevel;
 			});
 			  
@@ -573,7 +590,6 @@ $( function( $ ) {
 					sumOfReadings += parseInt(entry.bsLevel);
 				}
 			});
-			
 			
 			averageReading = sumOfReadings / numberOfReadings;
 			
@@ -811,25 +827,28 @@ $( function( $ ) {
 		},
 		
 		initialize: function() {
-			app.User = this.getCurrentUser();
+			this.getCurrentUser();
 		},
 
 		showLogBook: function() {
 			RegionManager.show(new app.LogBookView());	
 		},
-		showAccount: function( ) {			
+		showAccount: function( ) {
 			RegionManager.show(new app.AccountView({model:app.User}));
 		},
 		getCurrentUser:function(){
-			var user;
-				
-			user = app.Users.at(0);
+			var user,
+			users;
+			
+			users = new UserDetails();
+			users.fetch();
+			user = users.first();
 			if(!user){
-				app.Users.create(new User());
-				user = app.Users.at(0);
+				users.create(new User());
+				user = users.first();
 			}
 			
-			return user;
+			app.User = user;
 		},
 		showAbout: function( ) {
 			RegionManager.show(new app.AboutView());

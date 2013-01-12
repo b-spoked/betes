@@ -35,19 +35,37 @@ $( function( $ ) {
 			if(letters == ""){
 				return this;
 			}
-
+			
+			if(letters.indexOf('>') !== -1){
+				return this.filterGreaterThan(letters);
+			}else if(letters.indexOf('<') !== -1){
+				return this.filterLessThan(letters);
+			}else if(letters.indexOf('+') !== -1){
+				return this.filterPlus(letters);
+			}else{
+				return this.filterString(letters);
+			}			
+		},
+		
+		filterString : function(letters){
 			var pattern = new RegExp(letters,"gi");
 			return _(this.filter( function(data) {
 				return pattern.test(data.get("name")) || pattern.test(data.get("labels"));
 			}));
 		},
 		
-		filterString : function(letters){},
+		filterPlus : function(letters){
+			alert('filter +');
+		},
 		
-		filterPlus : function(letters){},
-		
-		filterGreaterThan : function(letters){},
-		filterLessThan : function(letters){},
+		filterGreaterThan : function(letters){
+			
+			alert('filter >');
+		},
+		filterLessThan : function(letters){
+			
+			alert('filter <');
+		},
 		comparator: function(entry) {
 			//latest entry first
 			var entryDate = new Date(entry.get('when'));

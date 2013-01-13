@@ -288,8 +288,7 @@ $( function( $ ) {
 			_.bindAll(this);
 			app.User.userGoals.bind( 'add', this.addOne, this );
 			app.User.userGoals.bind( 'reset', this.addAll, this );
-			app.User.userGoals.bind( 'remove', this.refresh, this );
-			
+			app.User.userGoals.bind( 'remove', this.refresh, this );			
 			app.User.userGoals.fetch();
 		},
 
@@ -815,9 +814,7 @@ $( function( $ ) {
 			  //roll up goals for the day
 			  var goalsData = d3.nest()
 			    .key(function(d) {
-				var fullDate = new Date(d.when);
-				var formattedDate = fullDate.getFullYear() + "-" + (fullDate.getMonth() + 1) + "-" + fullDate.getDate();			
-				return formattedDate;
+					return format(new Date(d.when));
 				})
 			    .rollup(function(d) {
 				return .4;

@@ -37,14 +37,26 @@ $( function( $ ) {
 			}
 			
 			if(letters.indexOf('>') !== -1){
-				return this.filterGreaterThan(letters);
+				var valueOfReadings = letters.split('>');
+				if(valueOfReadings[1]){
+					return this.filterGreaterThan(valueOfReadings[1]);
+				}
 			}else if(letters.indexOf('<') !== -1){
-				return this.filterLessThan(letters);
+				
+				var valueOfReadings = letters.split('<');
+				if(valueOfReadings[1]){
+					return this.filterLessThan(valueOfReadings[1]);
+				}
 			}else if(letters.indexOf('+') !== -1){
-				return this.filterPlus(letters);
+				var included = letters.split('+');
+				if(included){
+					console.log(included);
+					return this.filterPlus(included);
+				}
 			}else{
 				return this.filterString(letters);
-			}			
+			}
+			return this;
 		},
 		
 		filterString : function(letters){
@@ -54,17 +66,27 @@ $( function( $ ) {
 			}));
 		},
 		
-		filterPlus : function(letters){
-			alert('filter +');
+		filterPlus : function(included){
+			
+			var pattern1 = new RegExp(included[0].trim(),"gi");
+			//console.log("pattern1 "+pattern1);
+			var pattern2 = new RegExp(included[1].trim(),"gi");
+			//console.log("pattern2 "+pattern2);
+			return _(this.filter( function(data) {
+				return pattern1.test(data.get("name")) || pattern2.test(data.get("name"));
+			}));
 		},
 		
-		filterGreaterThan : function(letters){
-			
-			alert('filter >');
+		filterGreaterThan : function(level){
+			return _(this.filter( function(data) {
+				return (parseInt(data.get("bsLevel")) > level);
+			}));
 		},
-		filterLessThan : function(letters){
+		filterLessThan : function(level){
+			return _(this.filter( function(data) {
+				return (parseInt(data.get("bsLevel")) < level);
+			}));
 			
-			alert('filter <');
 		},
 		comparator: function(entry) {
 			//latest entry first
@@ -602,22 +624,24 @@ $( function( $ ) {
 			sumOfReadings = 0,
 			numberOfReadings = 0;
 			
-			data.forEach(function(entry) {
-				if(entry.bsLevel){
-					numberOfReadings ++;
-					sumOfReadings += parseInt(entry.bsLevel);
-				}
-			});
+			if(data){
 			
-			averageReading = sumOfReadings / numberOfReadings;
-			
-			data.forEach(function(entry) {
-				if(entry.bsLevel){
-					var point = {when:new Date(entry.when),average:averageReading};
-					averaged.push(point);
-				}
-			});
-			
+				data.forEach(function(entry) {
+					if(entry.bsLevel){
+						numberOfReadings ++;
+						sumOfReadings += parseInt(entry.bsLevel);
+					}
+				});
+				
+				averageReading = sumOfReadings / numberOfReadings;
+				
+				data.forEach(function(entry) {
+					if(entry.bsLevel){
+						var point = {when:new Date(entry.when),average:averageReading};
+						averaged.push(point);
+					}
+				});
+			}
 			return averaged;
 		},
 		showBloodSugarVsExcerciseGraph : function(entries) {

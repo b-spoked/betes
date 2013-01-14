@@ -954,10 +954,11 @@ $(function($) {
 			this.setActiveNav("#about-page");
             RegionManager.show(new app.AboutView());
         }, 
-	setActiveNav:function(activeId){
-		$(activeId).parent().parent().find('.active').removeClass('active');
-		$(activeId).addClass('active');
-	}
+		setActiveNav:function(activeId){
+			$(activeId).parent().parent().find('.active').removeClass('active');
+			$(activeId).addClass('active');
+		}
+<<<<<<< HEAD
     });
 
     RegionManager = (function (Backbone, $) {

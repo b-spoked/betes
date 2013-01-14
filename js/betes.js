@@ -292,9 +292,7 @@ $(function($) {
             app.User.userGoals.fetch();
         },
 
-        render: function() {
-
-            $('#user-tabs a:first').tab('show');
+        render: function() {           
             $(this.el).hide();
         },
         close: function() {
@@ -302,6 +300,8 @@ $(function($) {
             this.unbind();
         },
         onShow: function() {
+		
+			$('#user-tabs a:first').tab('show');
             $(this.el).show(500);
         },
         refresh: function() {
@@ -812,7 +812,7 @@ $(function($) {
 				
 			var margin = {top: 20, right: 20, bottom: 30, left: 50},
                 width = 480 - margin.left - margin.right,
-                height = 160 - margin.top - margin.bottom,
+                height = 100 - margin.top - margin.bottom,
 				cellSize = 5; // cell size
 
             var day = d3.time.format("%w"),
@@ -829,9 +829,7 @@ $(function($) {
             var svg = d3.select("#goals").selectAll("svg")
                 .data(d3.range(2012, 2014))
                 .enter().append("svg")
-				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))				
-                //.attr("width", width)
-                //.attr("height", height)
+				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))				               
                 .attr("class", "RdYlGn")
                 .append("g")
                 .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
@@ -896,7 +894,6 @@ $(function($) {
                     return d + ": " + percent(goalsData[d]);
                 });
 
-
             function monthPath(t0) {
                 var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
                     d0 = +day(t0), w0 = +week(t0),
@@ -907,8 +904,6 @@ $(function($) {
                     + "H" + (w1 + 1) * cellSize + "V" + 0
                     + "H" + (w0 + 1) * cellSize + "Z";
             }
-
-            //d3.select("#goals").style("height", "300px");
 
         },
         filterGoalsGraph: function(e) {

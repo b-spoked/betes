@@ -37,7 +37,7 @@ svg, #container{
 .month {
   fill: none;
   stroke: #000;
-  stroke-width: 2px;
+  stroke-width: 1px;
 }
 
 .RdYlGn .q0-11{fill:rgb(165,0,38)}

@@ -16,14 +16,14 @@
 			<div class="navbar-inner">
 				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
 				<ul class="nav">
-					<li class="active"><a href="#/">Log Book</a></li>
-					<li><a href="#/account">Settings</a></li>
-					<li><a href="#/about">About</a></li>
+					<li id="log-page" class="active"><a href="#">Log Book</a></li>
+					<li id="settings-page"><a href="#/account">Settings</a></li>
+					<li id="about-page"><a href="#/about">About</a></li>
 				</ul>
 			</div>
 		</div>
 		<div class="container">
-			<div id="app" class="row">
+			<div id="app" class="row-fluid">
 				<div id="modal-dialog"></div>
 				<section id="main">			
 				</section>
@@ -34,8 +34,8 @@
 			<td><% if(name) { %> <a class="update" href="#"><%= name %></a><% } %> </td>
 			<td><% if(bsLevel) { %> <%= bsLevel %> mmol <% } %></td>
 			<td><% if(insulinAmount) { %> <%= insulinAmount %> u<% } %></td>
-			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> mins<% } %></td>
-			<td><% if(excerciseIntensity) { %> <%= excerciseIntensity %> intensity<% } %></td>			
+			<td><% if(exerciseDuration) { %> <%= exerciseDuration %> mins<% } %></td>
+			<td><% if(exerciseIntensity) { %> <%= exerciseIntensity %> intensity<% } %></td>			
 			<td><% if(labels) { %> <%= labels %> <% } %></td>
 			<td><a class="btn btn-link update" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete" href="#"><i class="icon-trash  icon-large"></i></a></td>
 		</script>
@@ -60,15 +60,15 @@
 					<input type="text" class="when-picker" name="when-picker" id="edit-entry-date" value="<%= when %>">
 					<input type="text" id="edit-entry-level" value="<%= bsLevel %>">
 					<input type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
-					<h4>Excercise</h4>
-					<input type="text" id="edit-entry-excercise-duration" value="<%= excerciseDuration %>">				
-					<select  id="edit-entry-excercise-intensity">
-						<option <%if (excerciseIntensity=="") {%>selected<%}%> value="">NA</option>
-						<option <%if (excerciseIntensity=="Easy") {%>selected<%}%> value="Easy">Easy</option>
-						<option <%if (excerciseIntensity=="Easy-Moderate") {%>selected<%}%> value="Easy-Moderate">Easy-Moderate</option>
-						<option <%if (excerciseIntensity=="Moderate") {%>selected<%}%> value="Moderate">Moderate</option>
-						<option <%if (excerciseIntensity=="Moderate-Intense") {%>selected<%}%> value="Moderate-Intense">Moderate-Intense</option>
-						<option <%if (excerciseIntensity=="Intense") {%>selected<%}%> value="Intense">Intense</option>
+					<h4>exercise</h4>
+					<input type="text" id="edit-entry-exercise-duration" value="<%= exerciseDuration %>">				
+					<select  id="edit-entry-exercise-intensity">
+						<option <%if (exerciseIntensity=="") {%>selected<%}%> value="">NA</option>
+						<option <%if (exerciseIntensity=="Easy") {%>selected<%}%> value="Easy">Easy</option>
+						<option <%if (exerciseIntensity=="Easy-Moderate") {%>selected<%}%> value="Easy-Moderate">Easy-Moderate</option>
+						<option <%if (exerciseIntensity=="Moderate") {%>selected<%}%> value="Moderate">Moderate</option>
+						<option <%if (exerciseIntensity=="Moderate-Intense") {%>selected<%}%> value="Moderate-Intense">Moderate-Intense</option>
+						<option <%if (exerciseIntensity=="Intense") {%>selected<%}%> value="Intense">Intense</option>
 					</select>
 					<h4>Labels</h4>
 					<input type="text" id="edit-entry-labels" value="<%= labels %>">
@@ -103,9 +103,9 @@
 				<input type="text" name="entry-date" id="entry-date">
 				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
 				<input type="text" id="entry-insulin" placeholder="Insulin Given">
-				<label for="entry-excercise-duration">Excercise</label>
-				<input type="text" id="entry-excercise-duration" placeholder="Excercise duration?">				
-				<select id="entry-excercise-intensity">
+				<label for="entry-exercise-duration">exercise</label>
+				<input type="text" id="entry-exercise-duration" placeholder="exercise duration?">				
+				<select id="entry-exercise-intensity">
 					<option value="">NA</option>
 					<option value="Easy">Easy</option>
 					<option value="Easy-Moderate">Easy-Moderate</option>
@@ -130,7 +130,7 @@
 				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>				
 				<li><a href="#bs-graph" data-toggle="tab">Results</a></li>
 				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
-				<!--<li><a href="#bs-vs-excercise-graph" data-toggle="tab">Results and Excercise</a></li>-->
+				<!--<li><a href="#bs-vs-exercise-graph" data-toggle="tab">Results and exercise</a></li>-->
 			</ul>
 		       
 			<div class="tab-content">
@@ -154,7 +154,7 @@
 						    <th>your blood sugar was</th>
 						    <th>you gave</th>
 						    <th>you did</th>
-						    <th>excercise at</th>
+						    <th>exercise at</th>
 							<th>labeled as</th>
 							<th></th>
 						  </tr>
@@ -175,12 +175,12 @@
 					<div id="bs-results">
 					</div>
 				</div>
-				<div class="tab-pane" id="bs-vs-excercise-graph">
+				<div class="tab-pane" id="bs-vs-exercise-graph">
 					<div class="input-prepend">
 								<span class="add-on">Filter Results</span>
-								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-vs-excercise-graph" >	
+								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-vs-exercise-graph" >	
 					</div>
-					<div id="bs-vs-excercise">
+					<div id="bs-vs-exercise">
 					</div>
 				</div>
 			</div>
@@ -190,8 +190,8 @@
 			<td><% if(bsLowerRange) { %> <%= bsLowerRange %> <% } %> </td>
 			<td><% if(bsUpperRange) { %> <%= bsUpperRange %> <% } %></td>
 			<td><% if(bsFrequency) { %> <%= bsFrequency %> u<% } %></td>
-			<td><% if(excerciseDuration) { %> <%= excerciseDuration %> <% } %></td>
-			<td><% if(excerciseFrequency) { %> <%= excerciseFrequency %> <% } %></td>			
+			<td><% if(exerciseDuration) { %> <%= exerciseDuration %> <% } %></td>
+			<td><% if(exerciseFrequency) { %> <%= exerciseFrequency %> <% } %></td>			
 			<td><% if(longTermGoal) { %> <%= longTermGoal %> <% } %></td>
 			<td><% if(longTermGoalDate) { %> <%= longTermGoalDate %> <% } %></td>
 			<td><a class="btn btn-link update-goals" href="#"><i class="icon-edit icon-large"></i></a><a class="btn btn-link delete-goals" href="#"><i class="icon-trash  icon-large"></i></a></td>
@@ -217,18 +217,18 @@
 						<input type="number" id="goal-bs-frequency" placeholder="times per day" > per/day
 					</div>
 				</div>				
-				<p class="lead">Excercise Goals</p>						
-				<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
+				<p class="lead">exercise Goals</p>						
+				<p>Set your goals for how much and how often you would like to exercise so you can this over time.</p>
 				<div class="control-group">
-					<label class="control-label" for="goal-excercise-duration">How Long</label>
+					<label class="control-label" for="goal-exercise-duration">How Long</label>
 					<div class="controls">
-						<input type="number" id="goal-excercise-duration" placeholder="mins per day" > mins
+						<input type="number" id="goal-exercise-duration" placeholder="mins per day" > mins
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="goal-excercise-frequency">How Often</label>
+					<label class="control-label" for="goal-exercise-frequency">How Often</label>
 					<div class="controls">
-						<input type="number" id="goal-excercise-frequency" placeholder="times per week" > per/wk
+						<input type="number" id="goal-exercise-frequency" placeholder="times per week" > per/wk
 					</div>
 				</div>
 				<p class="lead">Long Term Goals</p>
@@ -272,18 +272,18 @@
 						<input type="number" id="goal-bs-frequency" placeholder="times per day" <% if(bsFrequency) { %> value="<%= bsFrequency %>" <% } %>> per/day
 					</div>
 				</div>				
-				<p class="lead">Excercise Goals</p>						
-				<p>Set your goals for how much and how often you would like to excercise so you can this over time.</p>
+				<p class="lead">exercise Goals</p>						
+				<p>Set your goals for how much and how often you would like to exercise so you can this over time.</p>
 				<div class="control-group">
-					<label class="control-label" for="goal-excercise-duration">How Long</label>
+					<label class="control-label" for="goal-exercise-duration">How Long</label>
 					<div class="controls">
-						<input type="number" id="goal-excercise-duration" placeholder="mins per day" <% if(excerciseDuration) { %> value="<%= excerciseDuration %>" <% } %>> mins
+						<input type="number" id="goal-exercise-duration" placeholder="mins per day" <% if(exerciseDuration) { %> value="<%= exerciseDuration %>" <% } %>> mins
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="control-label" for="goal-excercise-frequency">How Often</label>
+					<label class="control-label" for="goal-exercise-frequency">How Often</label>
 					<div class="controls">
-						<input type="number" id="goal-excercise-frequency" placeholder="times per week" <% if(excerciseFrequency) { %> value="<%= excerciseFrequency %>" <% } %>> per/wk
+						<input type="number" id="goal-exercise-frequency" placeholder="times per week" <% if(exerciseFrequency) { %> value="<%= exerciseFrequency %>" <% } %>> per/wk
 					</div>
 				</div>
 				<p class="lead">Long Term Goals</p>
@@ -308,7 +308,7 @@
 		</script>
 		<script type="text/template" id="account-template">
 		<ul class="nav nav-tabs" id="user-tabs">
-			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
+			<li class="active"><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
 			<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
 		</ul>
 		<div class="tab-content">
@@ -323,8 +323,8 @@
 							<th>Lower Range</th>
 							<th>Upper Range</th>
 							<th>Frequency per day</th>
-							<th>Excercise Amount</th>
-							<th>Excercise Frequency per week</th>
+							<th>exercise Amount</th>
+							<th>exercise Frequency per week</th>
 							<th>Long Term</th>
 							<th>Achieved by</th>
 						</tr>
@@ -387,7 +387,7 @@
 						<li>Log results (blood sugars and excerise)</li>
 						<li>Watch the trends over time</li>
 						<li>Set realistic and personal goals</li>
-						<li>Share results with whom you choose (Dr /Diabetes Health Profesionals/ Others)</li>
+						<li>Share results with whom you choose (Dr /Diabetes Health Professionals/ Others)</li>
 					</ul>
 					</div>
 				</div>

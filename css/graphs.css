@@ -1,5 +1,10 @@
 
 /* Graph */
+svg, #container{
+    height: 90%;
+    width: 90%;
+}
+
 .axis path,
 .axis line {
   fill: none;

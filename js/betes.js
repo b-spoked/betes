@@ -520,15 +520,15 @@ $(function($) {
             }
 
             var margin = {top: 20, right: 20, bottom: 30, left: 50},
-                width = 960 - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
+                width = 480 - margin.left - margin.right,
+                height = 320 - margin.top - margin.bottom;
 
             var x = d3.time.scale()
                 .range([0, width]);
 
             var y = d3.scale.linear()
-                .range([height, 0]);
-
+                .range([height, 0]);				
+                
             var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom");
@@ -550,10 +550,9 @@ $(function($) {
             $("#bs-results").html('');
 
             var svg = d3.select("#bs-results").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             data.forEach(function(entry) {
                 entry.when = new Date(entry.when);
@@ -602,12 +601,14 @@ $(function($) {
                 .style("fill", function(d) {
                     return color(d.name);
                 });
-
+				
+			/*Average blood sugar */
             svg.append("path")
                 .datum(averagedData)
                 .attr("class", "line")
                 .attr("d", averagedLine);
 
+			/*Legend */	
             var legend = svg.selectAll(".legend")
                 .data(color.domain())
                 .enter().append("g")
@@ -804,11 +805,15 @@ $(function($) {
                 });
             }
 
-            var margin = {top: 20, right: 20, bottom: 30, left: 50},
+           /* var margin = {top: 20, right: 20, bottom: 30, left: 50},
                 width = 960,
                 height = 137,
-                cellSize = 17; // cell size
-
+                cellSize = 17;*/ // cell size
+				
+			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 480 - margin.left - margin.right,
+                height = 160 - margin.top - margin.bottom,
+				cellSize = 5; // cell size
 
             var day = d3.time.format("%w"),
                 week = d3.time.format("%U"),
@@ -824,8 +829,9 @@ $(function($) {
             var svg = d3.select("#goals").selectAll("svg")
                 .data(d3.range(2012, 2014))
                 .enter().append("svg")
-                .attr("width", width)
-                .attr("height", height)
+				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))				
+                //.attr("width", width)
+                //.attr("height", height)
                 .attr("class", "RdYlGn")
                 .append("g")
                 .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
@@ -902,7 +908,7 @@ $(function($) {
                     + "H" + (w0 + 1) * cellSize + "Z";
             }
 
-            d3.select("#goals").style("height", "300px");
+            //d3.select("#goals").style("height", "300px");
 
         },
         filterGoalsGraph: function(e) {

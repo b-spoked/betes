@@ -18,9 +18,6 @@ $(function($) {
         },
         checkGoals : function() {
             this.set({ goals: "goals-not-meet" });
-            //return "goals-meet";
-            //this.model.goalsMeet = "goals-not-meet";
-            //this.model.goalsMeet = "goals-partial-meet";
         }
     });
 
@@ -50,7 +47,7 @@ $(function($) {
             } else if (letters.indexOf('+') !== -1) {
                 var included = letters.split('+');
                 if (included) {
-                    console.log(included);
+                    //console.log(included);
                     return this.filterPlus(included);
                 }
             } else {
@@ -556,7 +553,7 @@ $(function($) {
 
             data.forEach(function(entry) {
                 entry.when = new Date(entry.when);
-                console.log(entry.when);
+                //console.log(entry.when);
                 entry.bsLevel = +entry.bsLevel;
             });
 
@@ -930,12 +927,12 @@ $(function($) {
         },
 
         showLogBook: function() {		
-			this.setActiveNav("#log-page");
+            this.setActiveNav("#log-page");
             RegionManager.show(new app.LogBookView());
         },
         showAccount: function() {
-			this.setActiveNav("#settings-page");
-            RegionManager.show(new app.AccountView({model:app.User}));
+		this.setActiveNav("#settings-page");
+		RegionManager.show(new app.AccountView({model:app.User}));
         },
         getCurrentUser:function() {
             var user,
@@ -952,8 +949,8 @@ $(function($) {
             app.User = user;
         },
         showAbout: function() {		
-			this.setActiveNav("#about-page");
-            RegionManager.show(new app.AboutView());
+		this.setActiveNav("#about-page");
+		RegionManager.show(new app.AboutView());
         }, 
 		setActiveNav:function(activeId){
 			$(activeId).parent().parent().find('.active').removeClass('active');

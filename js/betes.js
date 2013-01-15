@@ -281,7 +281,6 @@ $(function($) {
             'click #save-profile': 'saveProfile',
             'click .add-new-goals': 'showAddGoalsDialog'
         },
-
         initialize: function() {
             $(this.el).html(this.accountTemplate(this.model.toJSON()));
 
@@ -291,16 +290,16 @@ $(function($) {
             app.User.userGoals.bind('remove', this.refresh, this);
             app.User.userGoals.fetch();
         },
-
-        render: function() {           
+        render: function() {  
+				
             $(this.el).hide();
         },
         close: function() {
             this.remove();
             this.unbind();
         },
-        onShow: function() {
-		
+        onShow: function() {	
+			$("#profile-saved-message").hide();			
 			$('#user-tabs a:first').tab('show');
             $(this.el).show(500);
         },
@@ -335,6 +334,7 @@ $(function($) {
             e.preventDefault();
             this.model.set(this.userProfileValues());
             this.model.save();
+			$("#profile-saved-message").show();	
         },
         showAddGoalsDialog : function(e) {
             var goalSetDialog = new app.AddGoalSetView();

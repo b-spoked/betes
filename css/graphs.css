@@ -5,6 +5,10 @@ svg, #container{
     width: 90%;
 }
 
+text{
+    font-size: 0.750em;
+}
+
 .axis path,
 .axis line {
   fill: none;

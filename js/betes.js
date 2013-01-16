@@ -124,19 +124,12 @@ $(function($) {
         initialize: function() {
 
             var self = this;
-
-            //this.set({logEntries : new Entries(this.get('logEntries'))});
-            //this.set({userGoals : new GoalSet(this.get('userGoals'))});
             this.logEntries = new Entries(this.get('logEntries'));
             this.userGoals = new GoalSet(this.get('userGoals'));
 
             /*this.logEntries.url = function () {
              return self.urlRoot + '/logentries/'+self.get('id');
              };*/
-        },
-
-        getLatestGoals:function() {
-            return _.last(this.userGoals);
         }
     });
 
@@ -516,7 +509,7 @@ $(function($) {
                 });
             }
 
-            var margin = {top: 20, right: 20, bottom: 30, left: 50},
+            var margin = {top: 10, right: 20, bottom: 20, left: 30},
                 width = 480 - margin.left - margin.right,
                 height = 320 - margin.top - margin.bottom;
 
@@ -570,7 +563,7 @@ $(function($) {
                 .call(xAxis)
                 .append("text")
                 .attr("y", 6)
-                .attr("dy", "1em")
+                .attr("dy", ".75em")
                 .style("text-anchor", "end")
                 .text("Date")
 
@@ -580,7 +573,7 @@ $(function($) {
                 .append("text")
                 .attr("transform", "rotate(-90)")
                 .attr("y", 6)
-                .attr("dy", "1em")
+                .attr("dy", ".75em")
                 .style("text-anchor", "end")
                 .text("Reading (mmol)");
 
@@ -615,14 +608,14 @@ $(function($) {
                 });
 
             legend.append("rect")
-                .attr("x", width - 18)
-                .attr("width", 18)
-                .attr("height", 18)
+                .attr("x", width - 10)
+                .attr("width", 10)
+                .attr("height", 10)
                 .style("fill", color);
 
             legend.append("text")
-                .attr("x", width - 24)
-                .attr("y", 9)
+                .attr("x", width - 18)
+                .attr("y", 5)
                 .attr("dy", ".35em")
                 .style("text-anchor", "end")
                 .text(function(d) {
@@ -801,13 +794,13 @@ $(function($) {
                     data.push(entry.toJSON());
                 });
             }
-
+            
            /* var margin = {top: 20, right: 20, bottom: 30, left: 50},
                 width = 960,
                 height = 137,
                 cellSize = 17;*/ // cell size
 				
-			var margin = {top: 20, right: 20, bottom: 30, left: 50},
+			var margin = {top: 5, right: 5, bottom: 5, left: 5},
                 width = 480 - margin.left - margin.right,
                 height = 100 - margin.top - margin.bottom,
 				cellSize = 5; // cell size

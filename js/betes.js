@@ -817,7 +817,7 @@ $(function($) {
             }));
 
             var svg = d3.select("#goals").selectAll("svg")
-                .data(d3.range(2012, 2014))
+                .data(d3.range(2013, 2014))
                 .enter().append("svg")
 				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))				               
                 .attr("class", "RdYlGn")

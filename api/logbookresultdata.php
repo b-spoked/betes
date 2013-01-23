@@ -8,7 +8,7 @@
  * automatically on first `get` or `get($id)` request
  */
 require_once 'config.php';
-class LogBookResult
+class LogBookResultData
 {
     private $db;
      function __construct(){
@@ -22,38 +22,38 @@ class LogBookResult
         }
      }
     
-    function get ($id, $installTableOnFailure = FALSE)
+    function getAll ($userId, $installTableOnFailure = FALSE)
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name, description, address, latitude, longitude, classification, labels, updated_at, id FROM place WHERE id = ' . mysql_escape_string(
-            $id);
+            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
+            $userId);
             return $this->id2int($this->db->query($sql)
                 ->fetch());
         } catch (PDOException $e) {
             if (! $installTableOnFailure && $e->getCode() == '42S02') {
 //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
                 $this->install();
-                return $this->get($id, TRUE);
+                return $this->getAll($userId, TRUE);
             }
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
     
-    function insert ($rec)
+    function insert ($userId,$rec)
     {
+        $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
-        $description = mysql_escape_string($rec['description']);
-        $address = mysql_escape_string($rec['address']);
-        $latitude = mysql_escape_string($rec['latitude']);
-        $longitude = mysql_escape_string($rec['longitude']);
-	$classification = mysql_escape_string($rec['classification']);
-	$labels = mysql_escape_string($rec['labels']);
+        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_escape_string($rec['when']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
+		$comments = mysql_escape_string($rec['comments']);
+		$labels = mysql_escape_string($rec['labels']);
+		$userId = mysql_escape_string($rec['user_id']);
         $updated_at = mysql_escape_string($rec['updated_at']);
         
-        $user_id = 1;
-	//name, description, address, latitude, longitude, recommended, updated_at, id
-        $sql = "INSERT INTO place (name,description,address,latitude,longitude,classification,labels,updated_at) VALUES ('$name', '$description','$address','$latitude','$longitude','$classification','$labels',NOW())";  
+        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$whenDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$user_id',NOW())";  
         if (! $this->db->query($sql))
             return FALSE;
         return $this->get($this->db->lastInsertId());
@@ -62,15 +62,17 @@ class LogBookResult
     function update ($id, $rec)
     {
         $id = mysql_escape_string($id);
+        $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
-        $description = mysql_escape_string($rec['description']);
-        $address = mysql_escape_string($rec['address']);
-        $latitude = mysql_escape_string($rec['latitude']);
-        $longitude = mysql_escape_string($rec['longitude']);
-	$classification = mysql_escape_string($rec['classification']);
-	$labels = mysql_escape_string($rec['labels']);
+        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_escape_string($rec['when']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
+		$comments = mysql_escape_string($rec['comments']);
+		$labels = mysql_escape_string($rec['labels']);
+		$userId = mysql_escape_string($rec['user_id']);
 	
-        $sql = "UPDATE place SET name = '$name', description ='$description', address ='$address', latitude ='$latitude',longitude ='$longitude', classification='$classification',labels='$labels', updated_at=NOW() WHERE id = $id";
+        $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', whenDate ='$whenDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
         if (! $this->db->query($sql))
             return FALSE;
         return $this->get($id);
@@ -80,7 +82,7 @@ class LogBookResult
     {
         $r = $this->get($id);
         if (! $r || ! $this->db->query(
-        'DELETE FROM place WHERE id = ' . mysql_escape_string($id)))
+        'DELETE FROM result WHERE id = ' . mysql_escape_string($id)))
             return FALSE;
         return $r;
     }
@@ -102,14 +104,14 @@ class LogBookResult
 		$this->db->exec(
 			"CREATE TABLE result (
             id INT AUTO_INCREMENT PRIMARY KEY ,
-            name TEXT NOT NULL ,
-            description TEXT NOT NULL,
-			classification TEXT NOT NULL ,
-			labels TEXT,
-			name TEXT NOT NULL ,
-            address TEXT NOT NULL,
-            latitude TEXT NOT NULL,
-            longitude TEXT NOT NULL,
+            name TEXT NOT NULL,
+            bsLevel DECIMAL(3,1),
+			insulinAmount INT,
+			when DATETIME,
+			exerciseDuration INT,
+            exerciseIntensity TEXT NOT NULL,
+            labels TEXT,
+            comments TEXT,
             user_id INT,
             updated_at DATETIME
         );");

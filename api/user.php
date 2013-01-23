@@ -2,22 +2,38 @@
 require_once 'config.php';
 class User {
 	public $userData;
+	public $resultData;
 
 	static $FIELDS = array('name', 'email','newsletter');
 
 	function __construct(){
 		$this->userData = new UserData();
+		$this->resultData = new LogBookResultData();
 	}
 
 	function get($id=NULL) {
-		return $this->userData->get($id) ;
+		return $this->userData->get($id);
 	}
 	
 	/**
 	* @url GET /logbook/:id/
 	*/
 	function getLogBook($id=NULL) {
-		return $this->userData->getTodos($id);
+		return $this->resultData->getAll($id);
+	}
+	
+	/**
+	* @url POST /logbook/
+	*/
+	function insertResult($rec){
+		return $this->resultData->insert($id,$rec);
+	}
+	
+	/**
+	* @url PUT /logbook/
+	*/
+	function updateResult($rec){
+		return $this->resultData->update($id,$rec);
 	}
 	
 	/**

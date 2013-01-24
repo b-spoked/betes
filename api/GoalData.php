@@ -8,13 +8,12 @@
  * automatically on first `get` or `get($id)` request
  */
 require_once 'config.php';
-class UserData
+class GoalData
 {
     private $db;
 
     function __construct()
     {
-
         try {
             $this->db = new PDO(DB_SERVER, DB_USER, DB_PASSWORD);
             $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,
@@ -28,7 +27,7 @@ class UserData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, name, email, newsletter FROM user WHERE id = ' . mysql_real_escape_string(
+            $sql = 'SELECT id, bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate FROM goal WHERE id = ' . mysql_real_escape_string(
                 $id);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -44,13 +43,14 @@ class UserData
 
     function insert($rec)
     {
+        $bsLowerRange = mysql_real_escape_string($rec['bsLowerRange']);
+        $bsFrequency = mysql_real_escape_string($rec['bsFrequency']);
+        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
+        $exerciseFrequency = mysql_real_escape_string($rec['exerciseFrequency']);
+        $longTermGoal = mysql_real_escape_string($rec['longTermGoal']);
+        $longTermGoalDate = mysql_real_escape_string($rec['longTermGoalDate']);
 
-        $name = mysql_real_escape_string($rec['name']);
-        $email = mysql_real_escape_string($rec['email']);
-        $newsletter = mysql_real_escape_string($rec['newsletter']);
-        $testingUnits = mysql_real_escape_string($rec['testingUnits']);
-
-        $sql = "INSERT INTO user (name,email,newsletter,testingUnits,updated_at) VALUES ('$name', '$email','$newsletter','$testingUnits', NOW())";
+        $sql = "INSERT INTO goal (bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate) VALUES ('$bsLowerRange', '$bsFrequency','$exerciseDuration','$exerciseFrequency','$longTermGoal','$longTermGoalDate' NOW())";
 
         if (!$this->db->query($sql)) {
             return FALSE;
@@ -62,12 +62,14 @@ class UserData
 
     function update($id, $rec)
     {
-        $name = mysql_real_escape_string($rec['name']);
-        $email = mysql_real_escape_string($rec['email']);
-        $newsletter = mysql_real_escape_string($rec['newsletter']);
-        $testingUnits = mysql_real_escape_string($rec['testingUnits']);
+        $bsLowerRange = mysql_real_escape_string($rec['bsLowerRange']);
+        $bsFrequency = mysql_real_escape_string($rec['bsFrequency']);
+        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
+        $exerciseFrequency = mysql_real_escape_string($rec['exerciseFrequency']);
+        $longTermGoal = mysql_real_escape_string($rec['longTermGoal']);
+        $longTermGoalDate = mysql_real_escape_string($rec['longTermGoalDate']);
 
-        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', updated_at=NOW() WHERE id = $id";
+        $sql = "UPDATE goal SET bsLowerRange = '$bsLowerRange', bsFrequency ='$bsFrequency', exerciseDuration ='$exerciseDuration', exerciseFrequency='$exerciseFrequency', longTermGoal='$longTermGoal', longTermGoalDate='$longTermGoalDate', updated_at=NOW() WHERE id = $id";
 
         if (!$this->db->query($sql)) {
 
@@ -82,8 +84,8 @@ class UserData
     {
         $r = $this->get($id);
         if (!$r || !$this->db->query(
-            'DELETE FROM user WHERE id = ' . mysql_real_escape_string($id))
-        ){
+            'DELETE FROM goal WHERE id = ' . mysql_real_escape_string($id))
+        ) {
             return FALSE;
         }
         return $r;
@@ -105,13 +107,17 @@ class UserData
 
     private function install()
     {
+        //bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate
+
         $this->db->exec(
-            "CREATE TABLE user (
+            "CREATE TABLE goal (
             id INT PRIMARY KEY,
-            name TEXT NOT NULL ,
-            email TEXT NOT NULL,
-            testingUnits TEXT NOT NULL,
-	        newsletter BOOL NOT NULL,
+            bsLowerRange  DECIMAL(3,1),
+            bsFrequency INT,
+            exerciseDuration INT,
+	        exerciseFrequency INT,
+	        longTermGoalDate TEXT,
+	        longTermGoalDate DATE,
             updated_at DATETIME
         );");
     }

@@ -3,7 +3,7 @@
  * MySQL DB. All data is stored in data_pdo_mysql database
  * Create an empty MySQL database and set the dbname, username
  * and password below
- * 
+ *
  * This class will create the table with sample data
  * automatically on first `get` or `get($id)` request
  */
@@ -11,82 +11,84 @@ require_once 'config.php';
 class LogBookResultData
 {
     private $db;
-     function __construct(){
-	
-    try {
+
+    function __construct()
+    {
+
+        try {
             $this->db = new PDO(DB_SERVER, DB_USER, DB_PASSWORD);
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, 
-            PDO::FETCH_ASSOC);
+            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,
+                                    PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
-     }
-    
-    function getAll ($userId, $installTableOnFailure = FALSE)
+    }
+
+    function getAll($userId, $installTableOnFailure = FALSE)
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
-            $userId);
+            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_real_escape_string(
+                $userId);
             return $this->id2int($this->db->query($sql)
-                ->fetch());
+                                         ->fetch());
         } catch (PDOException $e) {
-            if (! $installTableOnFailure && $e->getCode() == '42S02') {
-//SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
+            if (!$installTableOnFailure && $e->getCode() == '42S02') {
+                //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
                 $this->install();
                 return $this->getAll($userId, TRUE);
             }
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
-    
-    function insert ($userId,$rec)
+
+    function insert($rec)
     {
-        $bsLevel = mysql_escape_string($rec['bsLevel']);
-        $name = mysql_escape_string($rec['name']);
-        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_escape_string($rec['when']);
-        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
-        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
-		$comments = mysql_escape_string($rec['comments']);
-		$labels = mysql_escape_string($rec['labels']);
-		$userId = mysql_escape_string($rec['user_id']);
-        $updated_at = mysql_escape_string($rec['updated_at']);
-        
-        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$whenDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$user_id',NOW())";  
-        if (! $this->db->query($sql))
+        $bsLevel = mysql_real_escape_string($rec['bsLevel']);
+        $name = mysql_real_escape_string($rec['name']);
+        $insulinAmount = mysql_real_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_real_escape_string($rec['when']);
+        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_real_escape_string($rec['exerciseIntensity']);
+        $comments = mysql_real_escape_string($rec['comments']);
+        $labels = mysql_real_escape_string($rec['labels']);
+        $userId = mysql_real_escape_string($rec['user_id']);
+
+        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$whenDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
+        if (!$this->db->query($sql))
             return FALSE;
         return $this->get($this->db->lastInsertId());
     }
-    
-    function update ($id, $rec)
+
+    function update($rec)
     {
-        $id = mysql_escape_string($id);
-        $bsLevel = mysql_escape_string($rec['bsLevel']);
-        $name = mysql_escape_string($rec['name']);
-        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_escape_string($rec['when']);
-        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
-        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
-		$comments = mysql_escape_string($rec['comments']);
-		$labels = mysql_escape_string($rec['labels']);
-		$userId = mysql_escape_string($rec['user_id']);
-	
+        $id = mysql_real_escape_string($rec['id']);
+        $bsLevel = mysql_real_escape_string($rec['bsLevel']);
+        $name = mysql_real_escape_string($rec['name']);
+        $insulinAmount = mysql_real_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_real_escape_string($rec['when']);
+        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_real_escape_string($rec['exerciseIntensity']);
+        $comments = mysql_real_escape_string($rec['comments']);
+        $labels = mysql_real_escape_string($rec['labels']);
+
         $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', whenDate ='$whenDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
-        if (! $this->db->query($sql))
+        if (!$this->db->query($sql))
             return FALSE;
         return $this->get($id);
     }
-    
-    function delete ($id)
+
+    function delete($id)
     {
         $r = $this->get($id);
-        if (! $r || ! $this->db->query(
-        'DELETE FROM result WHERE id = ' . mysql_escape_string($id)))
+        if (!$r || !$this->db->query(
+            'DELETE FROM result WHERE id = ' . mysql_real_escape_string($id))
+        )
             return FALSE;
         return $r;
     }
-    private function id2int ($r)
+
+    private function id2int($r)
     {
         if (is_array($r)) {
             if (isset($r['id'])) {
@@ -99,10 +101,11 @@ class LogBookResultData
         }
         return $r;
     }
-    private function install ()
+
+    private function install()
     {
-		$this->db->exec(
-			"CREATE TABLE result (
+        $this->db->exec(
+            "CREATE TABLE result (
             id INT AUTO_INCREMENT PRIMARY KEY ,
             name TEXT NOT NULL,
             bsLevel DECIMAL(3,1),

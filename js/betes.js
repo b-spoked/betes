@@ -280,17 +280,17 @@ $(function($) {
             app.User.userGoals.bind('remove', this.refresh, this);
             app.User.userGoals.fetch();
         },
-        render: function() {  
-				
+        render: function() {
+
             $(this.el).hide();
         },
         close: function() {
             this.remove();
             this.unbind();
         },
-        onShow: function() {	
-			$("#profile-saved-message").hide();			
-			$('#user-tabs a:first').tab('show');
+        onShow: function() {
+            $("#profile-saved-message").hide();
+            $('#user-tabs a:first').tab('show');
             $(this.el).show(500);
         },
         refresh: function() {
@@ -324,7 +324,7 @@ $(function($) {
             e.preventDefault();
             this.model.set(this.userProfileValues());
             this.model.save();
-			$("#profile-saved-message").show();	
+            $("#profile-saved-message").show();
         },
         showAddGoalsDialog : function(e) {
             var goalSetDialog = new app.AddGoalSetView();
@@ -517,8 +517,8 @@ $(function($) {
                 .range([0, width]);
 
             var y = d3.scale.linear()
-                .range([height, 0]);				
-                
+                .range([height, 0]);
+
             var xAxis = d3.svg.axis()
                 .scale(x)
                 .orient("bottom");
@@ -540,9 +540,9 @@ $(function($) {
             $("#bs-results").html('');
 
             var svg = d3.select("#bs-results").append("svg")
-				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))
-				.append("g")
-				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             data.forEach(function(entry) {
                 entry.when = new Date(entry.when);
@@ -591,14 +591,14 @@ $(function($) {
                 .style("fill", function(d) {
                     return color(d.name);
                 });
-				
-			/*Average blood sugar */
+
+            /*Average blood sugar */
             svg.append("path")
                 .datum(averagedData)
                 .attr("class", "line")
                 .attr("d", averagedLine);
 
-			/*Legend */	
+            /*Legend */
             var legend = svg.selectAll(".legend")
                 .data(color.domain())
                 .enter().append("g")
@@ -794,16 +794,16 @@ $(function($) {
                     data.push(entry.toJSON());
                 });
             }
-            
-           /* var margin = {top: 20, right: 20, bottom: 30, left: 50},
-                width = 960,
-                height = 137,
-                cellSize = 17;*/ // cell size
-				
-			var margin = {top: 5, right: 5, bottom: 5, left: 5},
+
+            /* var margin = {top: 20, right: 20, bottom: 30, left: 50},
+             width = 960,
+             height = 137,
+             cellSize = 17;*/ // cell size
+
+            var margin = {top: 5, right: 5, bottom: 5, left: 5},
                 width = 480 - margin.left - margin.right,
                 height = 100 - margin.top - margin.bottom,
-				cellSize = 5; // cell size
+                cellSize = 5; // cell size
 
             var day = d3.time.format("%w"),
                 week = d3.time.format("%U"),
@@ -819,7 +819,7 @@ $(function($) {
             var svg = d3.select("#goals").selectAll("svg")
                 .data(d3.range(2013, 2014))
                 .enter().append("svg")
-				.attr("viewBox", "0 0 "+(width + margin.left + margin.right)+" "+(height + margin.top + margin.bottom))				               
+                .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
                 .attr("class", "RdYlGn")
                 .append("g")
                 .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
@@ -919,13 +919,13 @@ $(function($) {
             this.getCurrentUser();
         },
 
-        showLogBook: function() {		
+        showLogBook: function() {
             this.setActiveNav("#log-page");
             RegionManager.show(new app.LogBookView());
         },
         showAccount: function() {
-		this.setActiveNav("#settings-page");
-		RegionManager.show(new app.AccountView({model:app.User}));
+            this.setActiveNav("#settings-page");
+            RegionManager.show(new app.AccountView({model:app.User}));
         },
         getCurrentUser:function() {
             var user,
@@ -941,14 +941,14 @@ $(function($) {
 
             app.User = user;
         },
-        showAbout: function() {		
-		this.setActiveNav("#about-page");
-		RegionManager.show(new app.AboutView());
-        }, 
-		setActiveNav:function(activeId){
-			$(activeId).parent().parent().find('.active').removeClass('active');
-			$(activeId).addClass('active');
-		}
+        showAbout: function() {
+            this.setActiveNav("#about-page");
+            RegionManager.show(new app.AboutView());
+        },
+        setActiveNav:function(activeId) {
+            $(activeId).parent().parent().find('.active').removeClass('active');
+            $(activeId).addClass('active');
+        }
     });
 
     RegionManager = (function (Backbone, $) {

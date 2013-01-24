@@ -28,7 +28,7 @@ class UserData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, name, email, newsletter FROM user WHERE id = ' . mysql_real_escape_string(
+            $sql = 'SELECT id, name, email, newsletter FROM user WHERE id = ' . mysql_escape_string(
                 $id);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());

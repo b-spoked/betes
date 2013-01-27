@@ -45,10 +45,10 @@ class UserData
     function insert($rec)
     {
 
-        $name = mysql_real_escape_string($rec['name']);
-        $email = mysql_real_escape_string($rec['email']);
-        $newsletter = mysql_real_escape_string($rec['newsletter']);
-        $testingUnits = mysql_real_escape_string($rec['testingUnits']);
+        $name = mysql_escape_string($rec['name']);
+        $email = mysql_escape_string($rec['email']);
+        $newsletter = FALSE;
+        $testingUnits = mysql_escape_string($rec['testingUnits']);
 
         $sql = "INSERT INTO user (name,email,newsletter,testingUnits,updated_at) VALUES ('$name', '$email','$newsletter','$testingUnits', NOW())";
 
@@ -62,10 +62,10 @@ class UserData
 
     function update($id, $rec)
     {
-        $name = mysql_real_escape_string($rec['name']);
-        $email = mysql_real_escape_string($rec['email']);
-        $newsletter = mysql_real_escape_string($rec['newsletter']);
-        $testingUnits = mysql_real_escape_string($rec['testingUnits']);
+        $name = mysql_escape_string($rec['name']);
+        $email = mysql_escape_string($rec['email']);
+        $newsletter = FALSE;
+        $testingUnits = mysql_escape_string($rec['testingUnits']);
 
         $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', updated_at=NOW() WHERE id = $id";
 
@@ -82,7 +82,7 @@ class UserData
     {
         $r = $this->get($id);
         if (!$r || !$this->db->query(
-            'DELETE FROM user WHERE id = ' . mysql_real_escape_string($id))
+            'DELETE FROM user WHERE id = ' . mysql_escape_string($id))
         ){
             return FALSE;
         }

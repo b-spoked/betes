@@ -28,7 +28,7 @@ class LogBookResultData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_real_escape_string(
+            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
                 $userId);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -44,15 +44,15 @@ class LogBookResultData
 
     function insert($rec)
     {
-        $bsLevel = mysql_real_escape_string($rec['bsLevel']);
-        $name = mysql_real_escape_string($rec['name']);
-        $insulinAmount = mysql_real_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_real_escape_string($rec['when']);
-        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
-        $exerciseIntensity = mysql_real_escape_string($rec['exerciseIntensity']);
-        $comments = mysql_real_escape_string($rec['comments']);
-        $labels = mysql_real_escape_string($rec['labels']);
-        $userId = mysql_real_escape_string($rec['user_id']);
+        $bsLevel = mysql_escape_string($rec['bsLevel']);
+        $name = mysql_escape_string($rec['name']);
+        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_escape_string($rec['when']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
+        $comments = mysql_escape_string($rec['comments']);
+        $labels = mysql_escape_string($rec['labels']);
+        $userId = mysql_escape_string($rec['user_id']);
 
         $sql = "INSERT INTO result (name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$whenDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
         if (!$this->db->query($sql))
@@ -62,15 +62,15 @@ class LogBookResultData
 
     function update($rec)
     {
-        $id = mysql_real_escape_string($rec['id']);
-        $bsLevel = mysql_real_escape_string($rec['bsLevel']);
-        $name = mysql_real_escape_string($rec['name']);
-        $insulinAmount = mysql_real_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_real_escape_string($rec['when']);
-        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
-        $exerciseIntensity = mysql_real_escape_string($rec['exerciseIntensity']);
-        $comments = mysql_real_escape_string($rec['comments']);
-        $labels = mysql_real_escape_string($rec['labels']);
+        $id = mysql_escape_string($rec['id']);
+        $bsLevel = mysql_escape_string($rec['bsLevel']);
+        $name = mysql_escape_string($rec['name']);
+        $insulinAmount = mysql_escape_string($rec['insulinAmount']);
+        $whenDate = mysql_escape_string($rec['when']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
+        $comments = mysql_escape_string($rec['comments']);
+        $labels = mysql_escape_string($rec['labels']);
 
         $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', whenDate ='$whenDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
         if (!$this->db->query($sql))
@@ -82,7 +82,7 @@ class LogBookResultData
     {
         $r = $this->get($id);
         if (!$r || !$this->db->query(
-            'DELETE FROM result WHERE id = ' . mysql_real_escape_string($id))
+            'DELETE FROM result WHERE id = ' . mysql_escape_string($id))
         )
             return FALSE;
         return $r;

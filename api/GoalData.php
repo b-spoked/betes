@@ -27,7 +27,7 @@ class GoalData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate FROM goal WHERE id = ' . mysql_real_escape_string(
+            $sql = 'SELECT id, bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate FROM goal WHERE id = ' . mysql_escape_string(
                 $id);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -43,12 +43,12 @@ class GoalData
 
     function insert($rec)
     {
-        $bsLowerRange = mysql_real_escape_string($rec['bsLowerRange']);
-        $bsFrequency = mysql_real_escape_string($rec['bsFrequency']);
-        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
-        $exerciseFrequency = mysql_real_escape_string($rec['exerciseFrequency']);
-        $longTermGoal = mysql_real_escape_string($rec['longTermGoal']);
-        $longTermGoalDate = mysql_real_escape_string($rec['longTermGoalDate']);
+        $bsLowerRange = mysql_escape_string($rec['bsLowerRange']);
+        $bsFrequency = mysql_escape_string($rec['bsFrequency']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseFrequency = mysql_escape_string($rec['exerciseFrequency']);
+        $longTermGoal = mysql_escape_string($rec['longTermGoal']);
+        $longTermGoalDate = mysql_escape_string($rec['longTermGoalDate']);
 
         $sql = "INSERT INTO goal (bsLowerRange, bsFrequency, exerciseDuration, exerciseFrequency, longTermGoalDate, longTermGoalDate) VALUES ('$bsLowerRange', '$bsFrequency','$exerciseDuration','$exerciseFrequency','$longTermGoal','$longTermGoalDate' NOW())";
 
@@ -62,12 +62,12 @@ class GoalData
 
     function update($id, $rec)
     {
-        $bsLowerRange = mysql_real_escape_string($rec['bsLowerRange']);
-        $bsFrequency = mysql_real_escape_string($rec['bsFrequency']);
-        $exerciseDuration = mysql_real_escape_string($rec['exerciseDuration']);
-        $exerciseFrequency = mysql_real_escape_string($rec['exerciseFrequency']);
-        $longTermGoal = mysql_real_escape_string($rec['longTermGoal']);
-        $longTermGoalDate = mysql_real_escape_string($rec['longTermGoalDate']);
+        $bsLowerRange = mysql_escape_string($rec['bsLowerRange']);
+        $bsFrequency = mysql_escape_string($rec['bsFrequency']);
+        $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
+        $exerciseFrequency = mysql_escape_string($rec['exerciseFrequency']);
+        $longTermGoal = mysql_escape_string($rec['longTermGoal']);
+        $longTermGoalDate = mysql_escape_string($rec['longTermGoalDate']);
 
         $sql = "UPDATE goal SET bsLowerRange = '$bsLowerRange', bsFrequency ='$bsFrequency', exerciseDuration ='$exerciseDuration', exerciseFrequency='$exerciseFrequency', longTermGoal='$longTermGoal', longTermGoalDate='$longTermGoalDate', updated_at=NOW() WHERE id = $id";
 
@@ -84,7 +84,7 @@ class GoalData
     {
         $r = $this->get($id);
         if (!$r || !$this->db->query(
-            'DELETE FROM goal WHERE id = ' . mysql_real_escape_string($id))
+            'DELETE FROM goal WHERE id = ' . mysql_escape_string($id))
         ) {
             return FALSE;
         }

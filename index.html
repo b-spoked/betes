@@ -17,9 +17,13 @@
 				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
 				<ul class="nav">
 					<li id="log-page" class="active"><a href="#">Log Book</a></li>
-					<li id="settings-page"><a href="#/account">Settings</a></li>
+					<li id="settings-page"><a href="#/account">Account</a></li>
 					<li id="about-page"><a href="#/about">About</a></li>
 				</ul>
+                <div class="pull-right">
+                    <button class="btn btn-primary join">Join</button>
+					<button class="btn sign-up">Login</button>
+				</div>
 			</div>
 		</div>
 		<div class="container">
@@ -308,8 +312,8 @@
 		</script>
 		<script type="text/template" id="account-template">
 		<ul class="nav nav-tabs" id="user-tabs">
-			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
-			<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
+            <li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
+			<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>	
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane" id="user-goals-tab">
@@ -339,7 +343,7 @@
 			<div class="tab-pane" id="user-account-tab">
 					<div id="profile-saved-message" class="alert alert-success">
 						<button type="button" class="close" data-dismiss="alert">×</button>
-						Profile Saved
+						Profile Updated
 					</div>
 					<p class="lead">User Profile</p>
 						<div class="control-group">
@@ -351,17 +355,14 @@
 						<div class="control-group">
 							<label class="control-label" for="account-user-email">Email</label>
 							<div class="controls">
-								<input type="email" id="account-user-email" placeholder="Email" <% if(emailAddress) { %> value="<%= emailAddress %>" <% } %> required>	
+								<input type="email" id="account-user-email" placeholder="Email" <% if(email) { %> value="<%= email %>" <% } %> required>	
 							</div>
 						</div>
 						<div class="control-group">
-                            
-                            <p class="lead"><strong>NOTE: You can't yet set your password until accounts are fully enabled.</strong> The will be before 31/1/2013. Your results and account will be synchronized
-                            from your browser after that.</p>
-                            
-							<label class="control-label" for="account-user-pw">Password</label>
+							<label class="control-label" for="account-user-old-pw">Change Password</label>
 							<div class="controls">
-								<input type="password" id="account-user-pw" placeholder="Password" disabled>	
+								<input type="password" id="account-user-old-pw" placeholder="Old Password">
+								<input type="password" id="account-user-new-pw" placeholder="New Password">	
 							</div>
 						</div>
 					<p class="lead">User Settings</p>						
@@ -376,13 +377,69 @@
 						</div>		
 						<div class="control-group">
 							<div class="controls">
-								<button id="save-profile" class="btn btn-primary">Save Profile</button>
+								<button id="save-profile" class="btn btn-primary">Update Profile</button>
 							</div>
 						</div>
 				</div>
 		</div>
 		</script>
-		<script type="text/template" id="about-template">
+		<script type="text/template" id="login-template">
+		<div id="add-entry-dialog" class="modal hide fade">
+			<div class="modal-header">
+				<h3>Login</h3>
+			</div>
+			<div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="login-email">Email</label>
+					<div class="controls">
+                    	<input type="email" id="login-email" placeholder="Email" required>	
+					</div>
+				</div>
+				<div class="control-group">
+                    <label class="control-label" for="login-pw">Password</label>
+                    <div class="controls">
+                        <input type="password" id="login-pw" placeholder="Password" required>	
+                    </div>
+				</div>
+            </div>	
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary account-login">Login</button>
+			</div>
+		</div>
+		</script>
+        <script type="text/template" id="siginup-template">
+		<div id="add-entry-dialog" class="modal hide fade">
+			<div class="modal-header">
+				<h3>Create Account</h3>
+			</div>
+			<div class="modal-body">
+                <div class="control-group">
+                    <label class="control-label" for="signup-name">Name</label>
+					<div class="controls">
+                    	<input type="test" id="signup-name" placeholder="Name" required>	
+					</div>
+				</div>
+                <div class="control-group">
+                    <label class="control-label" for="signup-email">Email</label>
+					<div class="controls">
+                    	<input type="email" id="signup-email" placeholder="Email" required>	
+					</div>
+				</div>
+				<div class="control-group">
+                    <label class="control-label" for="signup-pw">Password</label>
+                    <div class="controls">
+                        <input type="password" id="signup-pw" placeholder="Password" required>	
+                    </div>
+				</div>
+            </div>	
+			<div class="modal-footer">
+				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				<button class="btn btn-primary account-join">Join</button>
+			</div>
+		</div>
+		</script>
+        <script type="text/template" id="about-template">
 		<div class="container">
 			<h1>About</h1>
 			<p class="lead">Designed as a simple way for people track blood sugars and 'health' long term.</p>
@@ -470,13 +527,12 @@
 			
 		</div>
 		</script>
-		<script src="js/jquery-1.8.2.min.js"></script>
+        <script src="js/jquery-1.8.2.min.js"></script>
 		<script src="js/underscore-min.js"></script>
 		<script src="js/backbone-min.js"></script>
-		<script src="js/backbone-localstorage.js"></script>		
+		<script src="js/backbone_offline.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 		<script src="js/d3.v2.min.js"></script>
-		<script src="js/betes.js"></script>
-					
+		<script src="js/betes.js"></script>	
 	</body>
 </html>

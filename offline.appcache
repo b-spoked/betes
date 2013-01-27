@@ -1,5 +1,6 @@
 CACHE MANIFEST
-#version 1.0.2
+
+# Version 2.1.2
 
 CACHE:
 
@@ -13,10 +14,11 @@ font/fontawesome-webfont.svg
 font/fontawesome-webfont.ttf
 font/fontawesome-webfont.woff
 images/jamie.jpg
-js/backbone-localstorage.js
+
 js/backbone-min.js
 js/betes.js
 js/bootstrap.min.js
 js/d3.v2.min.js
 js/jquery-1.8.2.min.js
 js/underscore-min.js
+js/backbone_offline.js

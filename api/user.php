@@ -6,7 +6,7 @@ class User
     public $resultData;
     public $goalData;
 
-    static $USER_FIELDS = array('name', 'email', 'newsletter', 'testingUnits');
+    static $USER_FIELDS = array('name', 'email', 'testingUnits');
     static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','whenDate','exerciseDuration','exerciseIntensity','comments','labels','user_id');
 
     function __construct()
@@ -18,6 +18,9 @@ class User
 
     function get($id = NULL)
     {
+		if($id ==NULL){
+			return false;
+		}
         return $this->userData->get($id);
     }
 
@@ -26,6 +29,9 @@ class User
      */
     function getLogBook($id = NULL)
     {
+		if($id ==NULL){
+			return false;
+		}
         return $this->resultData->getAll($id);
     }
 
@@ -50,6 +56,9 @@ class User
      */
     function getGoals($id = NULL)
     {
+		if($id ==NULL){
+			return false;
+		}
         return $this->goalData->get($id);
     }
 

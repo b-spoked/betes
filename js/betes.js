@@ -23,7 +23,13 @@ $(function($) {
 
     var Entries = Backbone.Collection.extend({
         model : Entry,
-        localStorage : new Store('logbook-entries'),
+        initialize : function() {
+			this.storage = new Offline.Storage('logbook-entries', this, {
+				autoPush:true
+			});
+		},
+		url:  '/api/index.php/user/logbook',
+        //localStorage : new Store('logbook-entries'),
         goalPercentageForDay : function() {
             return .25;
         },
@@ -106,14 +112,21 @@ $(function($) {
 
     var GoalSet = Backbone.Collection.extend({
         model : Goals,
-        localStorage : new Store('user-goals')
+        //localStorage : new Store('user-goals'),
+        initialize : function() {
+			this.storage = new Offline.Storage('user-goals', this, {
+				autoPush:true
+			});
+		},
+		url:  '/api/index.php/user/goals'
     });
 
     var User = Backbone.Model.extend({
         defaults: {
             name: '',
-            emailAddress: '',
+            email: '',
             pw: '',
+            newsletter: false,
             testingUnits : 'mm',
             logEntries :[],
             userGoals:[]
@@ -135,11 +148,14 @@ $(function($) {
 
     var UserDetails = Backbone.Collection.extend({
         model : User,
-        localStorage : new Store('logbook-user'),
-        url : '/users'
+        initialize : function() {
+			this.storage = new Offline.Storage('logbook-user', this, {
+				autoPush:true
+			});
+		},
+		url:  '/api/index.php/user'
     });
 
-    //app.LogBookEntries = new Entries();
     app.Users = new UserDetails();
     app.CurrentUser;
 
@@ -315,7 +331,7 @@ $(function($) {
         userProfileValues: function() {
             return {
                 name: $("#account-user-name").val().trim(),
-                emailAddress: $("#account-user-email").val().trim(),
+                email: $("#account-user-email").val().trim(),
                 pw: $("#account-user-pw").val().trim(),
                 testingUnits: $("#account-testing-units").val().trim()
             };
@@ -510,8 +526,8 @@ $(function($) {
             }
 
             var margin = {top: 10, right: 20, bottom: 20, left: 30},
-                width = 480 - margin.left - margin.right,
-                height = 320 - margin.top - margin.bottom;
+                width = 480;// - margin.left - margin.right,
+                height = 320;// - margin.top - margin.bottom;
 
             var x = d3.time.scale()
                 .range([0, width]);
@@ -800,10 +816,10 @@ $(function($) {
              height = 137,
              cellSize = 17;*/ // cell size
 
-            var margin = {top: 5, right: 5, bottom: 5, left: 5},
-                width = 480 - margin.left - margin.right,
-                height = 100 - margin.top - margin.bottom,
-                cellSize = 5; // cell size
+            var margin = {top: 5, right: 20, bottom: 5, left: 5},
+                width = 480;// - margin.left - margin.right,
+                height = 100;// - margin.top - margin.bottom,
+                cellSize = 8; // cell size
 
             var day = d3.time.format("%w"),
                 week = d3.time.format("%U"),

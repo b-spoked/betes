@@ -12,6 +12,18 @@
 	</head>
 	  
 	<body>
+		<section id="app-nav">
+				
+		</section>
+		<div class="container">
+			<div id="app" class="row-fluid">
+				<div id="modal-dialog"></div>
+				<section id="main">			
+				</section>
+			</div>
+		</div>
+		<!-- App Source -->
+		<script type="text/template" id="nav-template">
 		<div class="navbar navbar-inverse">
 			<div class="navbar-inner">
 				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
@@ -21,19 +33,12 @@
 					<li id="about-page"><a href="#/about">About</a></li>
 				</ul>
                 <div class="pull-right">
-                    <button class="btn btn-primary join">Join</button>
-					<button class="btn sign-up">Login</button>
+                    <button id="join" class="btn btn-primary">Join</button>
+					<button id="login" class="btn">Login</button>
 				</div>
 			</div>
 		</div>
-		<div class="container">
-			<div id="app" class="row-fluid">
-				<div id="modal-dialog"></div>
-				<section id="main">			
-				</section>
-			</div>
-		</div>
-		<!-- App Source -->	
+		</script>
 		<script type="text/template" id="item-template">
 			<td><% if(name) { %> <a class="update" href="#"><%= name %></a><% } %> </td>
 			<td><% if(bsLevel) { %> <%= bsLevel %> mmol <% } %></td>
@@ -384,7 +389,7 @@
 		</div>
 		</script>
 		<script type="text/template" id="login-template">
-		<div id="add-entry-dialog" class="modal hide fade">
+		<div id="login-dialog" class="modal hide fade">
 			<div class="modal-header">
 				<h3>Login</h3>
 			</div>
@@ -408,8 +413,8 @@
 			</div>
 		</div>
 		</script>
-        <script type="text/template" id="siginup-template">
-		<div id="add-entry-dialog" class="modal hide fade">
+        <script type="text/template" id="signup-template">
+		<div id="signup-dialog" class="modal hide fade">
 			<div class="modal-header">
 				<h3>Create Account</h3>
 			</div>

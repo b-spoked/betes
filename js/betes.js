@@ -143,6 +143,12 @@ $(function($) {
             /*this.logEntries.url = function () {
              return self.urlRoot + '/logentries/'+self.get('id');
              };*/
+        },
+        login : function(){
+            alert('login');
+        },
+        signup : function(){
+            alert('signup');
         }
     });
 
@@ -159,6 +165,8 @@ $(function($) {
     app.Users = new UserDetails();
     app.CurrentUser;
 
+
+    
     //Edit record modal view
     app.EditEntryView = Backbone.View.extend({
         editEntryTemplate: _.template($('#edit-item-template').html()),
@@ -354,6 +362,71 @@ $(function($) {
 
     });
 
+    app.LoginView = Backbone.View.extend({
+        loginTemplate: _.template($('#login-template').html()),
+
+        events: {
+            'click .account-login': 'login'
+        },
+        initialize: function() {
+            _.bindAll(this);
+        },
+        render: function() {
+            $(this.el).html(this.loginTemplate());
+            return this;
+        },
+
+        showDialog: function() {
+            $("#login-dialog").modal('show');
+        },
+        login:function() {
+
+            //app.User.login.(this.loginValues());
+            $("#login-dialog").modal('hide');
+        },
+
+        loginValues: function() {
+            return {
+                loginEmail: $("#login-email").val().trim(),
+                loginPw: $("#login-pw").val().trim()
+            };
+        }
+
+    });
+    app.SignupView = Backbone.View.extend({
+        signupTemplate: _.template($('#signup-template').html()),
+
+        events: {
+            'click .account-signup': 'signup'
+        },
+        
+        initialize: function() {
+            _.bindAll(this);
+        },
+
+        render: function() {
+            $(this.el).html(this.signupTemplate());
+            return this;
+        },
+
+        showDialog: function() {
+            $("#signup-dialog").modal('show');
+        },
+        signup:function() {
+
+            //app.User.signUp.(this.signupValues());
+            $("#signup-dialog").modal('hide');
+        },
+
+        signupValues: function() {
+            return {
+                signupName: $("#signup-name").val().trim(),
+                signupEmail: $("#signup-email").val().trim(),
+                signupPw: $("#signup-pw").val().trim()
+            };
+        }
+
+    });
     //Add goalset
     app.AddGoalSetView = Backbone.View.extend({
         addGoalsTemplate: _.template($('#add-goal-template').html()),
@@ -923,8 +996,49 @@ $(function($) {
         }
     });
 
+    //Navigation View
+    app.NavView = Backbone.View.extend({
+
+		el: "#app-nav",
+        
+        events: {
+            'click #join': 'showSignupDialog',
+            'click #login': 'showLoginDialog'
+        },
+		
+		navigationTemplate: _.template( $('#nav-template').html()),
+		
+		initialize: function() {
+			_.bindAll(this, "render");
+			this.render();
+		},
+		render: function() {
+			$(this.el).html(this.navigationTemplate());
+		},
+        showLoginDialog : function(e) {
+            var loginDialog = new app.LoginView();
+            loginDialog.render();
+
+            var $modalEl = $("#modal-dialog");
+            $modalEl.html(loginDialog.el);
+            loginDialog.showDialog();
+
+        },
+        showSignupDialog : function(e) {
+            var signupDialog = new app.SignupView();
+            signupDialog.render();
+
+            var $modalEl = $("#modal-dialog");
+            $modalEl.html(signupDialog.el);
+            signupDialog.showDialog();
+
+        }
+	
+	});
     var ApplicationRouter = Backbone.Router.extend({
 
+        navigationView : null,
+        
         routes: {
             "":"showLogBook",
             "account" : "showAccount",
@@ -932,6 +1046,7 @@ $(function($) {
         },
 
         initialize: function() {
+            this.navigationView = new app.NavView();
             this.getCurrentUser();
         },
 

@@ -132,7 +132,7 @@ $(function($) {
             userGoals:[]
         },
 
-        //urlRoot: "/api/index.php/user.json",
+        urlRoot: "/api/index.php/user.json",
 
         initialize: function() {
 
@@ -140,15 +140,23 @@ $(function($) {
             this.logEntries = new Entries(this.get('logEntries'));
             this.userGoals = new GoalSet(this.get('userGoals'));
 
-            /*this.logEntries.url = function () {
-             return self.urlRoot + '/logentries/'+self.get('id');
-             };*/
+            this.logEntries.url = function () {
+                return self.urlRoot + '/logbook/'+self.get('id');
+            };
+            
+            this.userGoals.url = function () {
+                return self.urlRoot + '/goals/'+self.get('id');
+            };
         },
-        login : function(){
-            alert('login');
+        login : function(data){
+            alert('login: '+data);
         },
-        signup : function(){
-            alert('signup');
+        signup : function(data){
+            alert('signup: '+data);
+            
+            this.urlRoot = this.urlRoot + '/login/'+data.email+'/'+data.pw;
+            this.fetch();
+            
         }
     });
 
@@ -380,15 +388,15 @@ $(function($) {
             $("#login-dialog").modal('show');
         },
         login:function() {
-
-            //app.User.login.(this.loginValues());
+            app.User.login(this.loginValues());
             $("#login-dialog").modal('hide');
         },
 
         loginValues: function() {
             return {
-                loginEmail: $("#login-email").val().trim(),
-                loginPw: $("#login-pw").val().trim()
+                email: $("#login-email").val().trim(),
+                pw: $("#login-pw").val().trim(),
+                rememberLogin: $("login-remember").val().trim()
             };
         }
 
@@ -413,16 +421,16 @@ $(function($) {
             $("#signup-dialog").modal('show');
         },
         signup:function() {
-
-            //app.User.signUp.(this.signupValues());
+            app.User.signup(this.signupValues());
             $("#signup-dialog").modal('hide');
         },
 
         signupValues: function() {
             return {
-                signupName: $("#signup-name").val().trim(),
-                signupEmail: $("#signup-email").val().trim(),
-                signupPw: $("#signup-pw").val().trim()
+                name: $("#signup-name").val().trim(),
+                email: $("#signup-email").val().trim(),
+                pw: $("#signup-pw").val().trim(),
+                newsletter:$("#signup-newsletter").val().trim()
             };
         }
 

@@ -18,10 +18,21 @@ class User
 
     function get($id = NULL)
     {
-		if($id ==NULL){
+		if(is_null($id)){
 			return false;
 		}
         return $this->userData->get($id);
+    }
+
+	/**
+     * @url GET /login/
+     */
+    function login($rec)
+    {
+		if(is_null($rec)){
+			return false;
+		}
+        return $this->userData->getId($rec);
     }
 
     /**
@@ -29,7 +40,7 @@ class User
      */
     function getLogBook($id = NULL)
     {
-		if($id ==NULL){
+		if(is_null($id)){
 			return false;
 		}
         return $this->resultData->getAll($id);
@@ -56,7 +67,7 @@ class User
      */
     function getGoals($id = NULL)
     {
-		if($id ==NULL){
+		if(is_null($id)){
 			return false;
 		}
         return $this->goalData->get($id);
@@ -90,6 +101,9 @@ class User
 
     function delete($id = NULL)
     {
+		if(is_null($id)){
+			return false;
+		}
         return $this->userData->delete($id);
     }
 

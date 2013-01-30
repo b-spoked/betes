@@ -125,8 +125,8 @@ $(function($) {
         defaults: {
             name: '',
             email: '',
-            pw: '',
             newsletter: false,
+            rememberLogin: false,
             testingUnits : 'mm',
             logEntries :[],
             userGoals:[]
@@ -381,15 +381,41 @@ $(function($) {
         },
         render: function() {
             $(this.el).html(this.loginTemplate());
+            $("#login-failed-message").hide();
             return this;
         },
 
         showDialog: function() {
             $("#login-dialog").modal('show');
         },
-        login:function() {
-            app.User.login(this.loginValues());
-            $("#login-dialog").modal('hide');
+        login:function(e) {
+            e.preventDefault();
+            var url = '/api/index.php/user/login';
+            console.log('Loggin in... ');
+            var formValues = {
+                email: $("#login-email").val().trim(),
+                pw: $("#login-pw").val().trim()
+            };
+    
+            $.ajax({
+                url:url,
+                type:'POST',
+                dataType:"json",
+                data: formValues,
+                success:function (data) {
+                    console.log(["Login request details: ", data]);
+                   
+                    if(data.error) {  // If there is an error, show the error messages
+                        $("#login-failed-message").show();
+                    }
+                    else { // If not, send them back to the home page
+                        app.User({sid:data['id'],
+                                 rememberLogin: $("login-remember").val().trim()});
+                        app.User.fetch();
+                        $("#login-dialog").modal('hide');
+                    }
+                }
+            });
         },
 
         loginValues: function() {

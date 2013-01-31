@@ -42,6 +42,22 @@ class UserData
         }
     }
 
+	function getId($rec)
+    {
+
+        $pw = mysql_escape_string($rec['pw']);
+        $email = mysql_escape_string($rec['email']);
+
+        $sql = "SELECT id FROM user WHERE ";
+
+        if (!$this->db->query($sql)) {
+            return FALSE;
+        }
+
+        $id = $this->get($this->db->lastInsertId());
+        return $id;
+    }
+
     function insert($rec)
     {
 

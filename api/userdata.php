@@ -41,6 +41,15 @@ class UserData
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
+    
+    private function pwHash($pw){
+        return hash('sha256', $pw);
+    }
+
+     private function pwRest($oldPw, $newPw){
+        $old = $this->pwHash($oldPw);
+        $updated = $this->pwHash($newPw);
+     }
 
 	function getId($rec)
     {
@@ -65,8 +74,9 @@ class UserData
         $email = mysql_escape_string($rec['email']);
         $newsletter = FALSE;
         $testingUnits = mysql_escape_string($rec['testingUnits']);
+        $hashedPassword = $this->pwHash(mysql_escape_string($rec['pw']));
 
-        $sql = "INSERT INTO user (name,email,newsletter,testingUnits,updated_at) VALUES ('$name', '$email','$newsletter','$testingUnits', NOW())";
+        $sql = "INSERT INTO user (name,email,password,newsletter,testingUnits,updated_at) VALUES ('$name', '$email', '$hashedPassword','$newsletter','$testingUnits', NOW())";
 
         if (!$this->db->query($sql)) {
             return FALSE;
@@ -80,8 +90,10 @@ class UserData
     {
         $name = mysql_escape_string($rec['name']);
         $email = mysql_escape_string($rec['email']);
-        $newsletter = FALSE;
+        $newsletter = mysql_escape_string($rec['newsletter']);
         $testingUnits = mysql_escape_string($rec['testingUnits']);
+        $oldPassword = $this->pwHash(mysql_escape_string($rec['old_pw']));
+        $newPassword = $this->pwHash(mysql_escape_string($rec['new_pw']));
 
         $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', updated_at=NOW() WHERE id = $id";
 
@@ -126,6 +138,7 @@ class UserData
             id INT PRIMARY KEY,
             name TEXT NOT NULL ,
             email TEXT NOT NULL,
+            password CHAR(64) NOT NULL,
             testingUnits TEXT NOT NULL,
 	        newsletter BOOL NOT NULL,
             updated_at DATETIME

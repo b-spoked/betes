@@ -22,7 +22,7 @@ class User
 	*/
 	
     static $USER_FIELDS = array('name', 'email', 'testingUnits','newsletter','thumbnailPath','thirdPartyId');
-    static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','whenDate','exerciseDuration','exerciseIntensity','comments','labels','user_id');
+    static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','resultDate','exerciseDuration','exerciseIntensity','comments','labels','user_id');
 
     function __construct()
     {

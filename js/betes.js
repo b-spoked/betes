@@ -28,8 +28,9 @@ $(function($) {
 				autoPush:true
 			});
 		},
-		url:  '/api/index.php/user/logbook',
-        //localStorage : new Store('logbook-entries'),
+		
+       // url :  '/api/index.php/user/logbook',
+        
         goalPercentageForDay : function() {
             return .25;
         },
@@ -117,17 +118,19 @@ $(function($) {
 			this.storage = new Offline.Storage('user-goals', this, {
 				autoPush:true
 			});
-		},
-		url:  '/api/index.php/user/goals'
+		}
+		//url:  '/api/index.php/user/goals'
     });
 
     var User = Backbone.Model.extend({
         defaults: {
             name: '',
-            email: '',
+            email: 'na',
             newsletter: false,
-            rememberLogin: false,
-            testingUnits : 'mm',
+            thirdPartyId : 0,
+            thumbnailPath: '',
+            authenticated : false,
+            testingUnits : 'mmol/l',
             logEntries :[],
             userGoals:[]
         },
@@ -140,22 +143,13 @@ $(function($) {
             this.logEntries = new Entries(this.get('logEntries'));
             this.userGoals = new GoalSet(this.get('userGoals'));
 
-            this.logEntries.url = function () {
-                return self.urlRoot + '/logbook/'+self.get('id');
-            };
-            
-            this.userGoals.url = function () {
-                return self.urlRoot + '/goals/'+self.get('id');
-            };
-        },
-        login : function(data){
-            alert('login: '+data);
-        },
-        signup : function(data){
-            alert('signup: '+data);
-            
-            this.urlRoot = this.urlRoot + '/login/'+data.email+'/'+data.pw;
-            this.fetch();
+                this.logEntries.url = function () {
+                    return self.urlRoot + '/logbook/'+self.get('sid');
+                };
+                
+                this.userGoals.url = function () {
+                    return self.urlRoot + '/goals/'+self.get('sid');
+                };
             
         }
     });
@@ -167,13 +161,13 @@ $(function($) {
 				autoPush:true
 			});
 		},
-		url:  '/api/index.php/user'
+		url: function(){
+            return '/api/index.php/user';
+        }
     });
 
     app.Users = new UserDetails();
-    app.CurrentUser;
-
-
+    app.FBUser = new FacebookUser();
     
     //Edit record modal view
     app.EditEntryView = Backbone.View.extend({
@@ -370,97 +364,6 @@ $(function($) {
 
     });
 
-    app.LoginView = Backbone.View.extend({
-        loginTemplate: _.template($('#login-template').html()),
-
-        events: {
-            'click .account-login': 'login'
-        },
-        initialize: function() {
-            _.bindAll(this);
-        },
-        render: function() {
-            $(this.el).html(this.loginTemplate());
-            $("#login-failed-message").hide();
-            return this;
-        },
-
-        showDialog: function() {
-            $("#login-dialog").modal('show');
-        },
-        login:function(e) {
-            e.preventDefault();
-            var url = '/api/index.php/user/login';
-            console.log('Loggin in... ');
-            var formValues = {
-                email: $("#login-email").val().trim(),
-                pw: $("#login-pw").val().trim()
-            };
-    
-            $.ajax({
-                url:url,
-                type:'POST',
-                dataType:"json",
-                data: formValues,
-                success:function (data) {
-                    console.log(["Login request details: ", data]);
-                   
-                    if(data.error) {  // If there is an error, show the error messages
-                        $("#login-failed-message").show();
-                    }
-                    else { // If not, send them back to the home page
-                        app.User({sid:data['id'],
-                                 rememberLogin: $("login-remember").val().trim()});
-                        app.User.fetch();
-                        $("#login-dialog").modal('hide');
-                    }
-                }
-            });
-        },
-
-        loginValues: function() {
-            return {
-                email: $("#login-email").val().trim(),
-                pw: $("#login-pw").val().trim(),
-                rememberLogin: $("login-remember").val().trim()
-            };
-        }
-
-    });
-    app.SignupView = Backbone.View.extend({
-        signupTemplate: _.template($('#signup-template').html()),
-
-        events: {
-            'click .account-signup': 'signup'
-        },
-        
-        initialize: function() {
-            _.bindAll(this);
-        },
-
-        render: function() {
-            $(this.el).html(this.signupTemplate());
-            return this;
-        },
-
-        showDialog: function() {
-            $("#signup-dialog").modal('show');
-        },
-        signup:function() {
-            app.User.signup(this.signupValues());
-            $("#signup-dialog").modal('hide');
-        },
-
-        signupValues: function() {
-            return {
-                name: $("#signup-name").val().trim(),
-                email: $("#signup-email").val().trim(),
-                pw: $("#signup-pw").val().trim(),
-                newsletter:$("#signup-newsletter").val().trim()
-            };
-        }
-
-    });
     //Add goalset
     app.AddGoalSetView = Backbone.View.extend({
         addGoalsTemplate: _.template($('#add-goal-template').html()),
@@ -555,7 +458,7 @@ $(function($) {
             app.User.logEntries.bind('add', this.addOne, this);
             app.User.logEntries.bind('reset', this.addAll, this);
             app.User.logEntries.bind('remove', this.refresh, this);
-            app.User.logEntries.fetch();
+            //app.User.logEntries.fetch();
         },
         render: function() {
             $(this.el).hide();
@@ -1036,37 +939,105 @@ $(function($) {
 		el: "#app-nav",
         
         events: {
-            'click #join': 'showSignupDialog',
-            'click #login': 'showLoginDialog'
+            'click #login': 'userLogin',
+            'click #logout': 'userLogout'
         },
-		
+        
 		navigationTemplate: _.template( $('#nav-template').html()),
 		
 		initialize: function() {
+            this.getCurrentUser();
 			_.bindAll(this, "render");
+            app.FBUser.bind('change',this.updateUserStatus, this);
+			app.FBUser.on('facebook:unauthorized',this.fbUnauthorized, this);
+			app.FBUser.on('facebook:connected',this.fbConnected, this);
+			app.FBUser.on('facebook:disconnected',this.fbDisconnected, this);
 			this.render();
 		},
 		render: function() {
-			$(this.el).html(this.navigationTemplate());
+			$(this.el).html(this.navigationTemplate(app.User.toJSON()));
+            return this;
 		},
-        showLoginDialog : function(e) {
-            var loginDialog = new app.LoginView();
-            loginDialog.render();
+        
+		fbUnauthorized:  function(model, response) {
+			console.info('facebook:unauthorized');
+		},
 
-            var $modalEl = $("#modal-dialog");
-            $modalEl.html(loginDialog.el);
-            loginDialog.showDialog();
+		fbConnected: function(model, response) {
+			console.info('facebook:connected');
+			$('#login').attr('disabled', true);
+			$('#logout').attr('disabled', false);
+		},
 
+		fbDisconnected: function(model, response) {
+			console.info('facebook:disconnected');
+			$('#login').attr('disabled', false);
+			$('#logout').attr('disabled', true);
+		},
+        updateUserStatus:function(){
+            console.info('update user status');
+            var self = this;
+            if(app.FBUser.isConnected()){
+                console.log('authenticated');
+                self.fbConnected();
+                Offline.onLine = function() {
+                    return navigator.onLine !== false;
+                };
+               
+                app.User.set({thirdPartyId:app.FBUser.get('id'),
+							name:app.FBUser.get('name'),
+							email:'unknown',
+                            testingUnits : 'mmol/l',
+							thumbnailPath:app.FBUser.get('pictures').square,
+                            authenticated:true
+                            });
+						
+				app.User.save();
+						
+            }else{
+                
+                console.log('not authenticated');
+                self.fbDisconnected();
+                
+                Offline.onLine = function() {
+                    return false;
+                };
+                app.User.set({authenticated:false});
+				app.User.save();
+            }
         },
-        showSignupDialog : function(e) {
-            var signupDialog = new app.SignupView();
-            signupDialog.render();
+        setLocalSave:function(){
+            Offline.onLine = function() {
+                return false;
+            };
+        },
+        
+        setServerSave:function(){
+            Offline.onLine = function() {
+                return navigator.onLine !== false;
+            };
+        },
+        getCurrentUser:function() {
+            var user,
+                users;
 
-            var $modalEl = $("#modal-dialog");
-            $modalEl.html(signupDialog.el);
-            signupDialog.showDialog();
+            users = new UserDetails();
+            users.fetch();
+            user = users.first();
+            
+            if (!user) {
+                users.create(new User());
+                user = users.first();
+            }
 
-        }
+            app.User = user;
+        },
+		userLogin : function(){
+			app.FBUser.login();
+		},
+		userLogout : function(){
+			app.FBUser.logout();
+		}
 	
 	});
     var ApplicationRouter = Backbone.Router.extend({
@@ -1080,8 +1051,8 @@ $(function($) {
         },
 
         initialize: function() {
+            
             this.navigationView = new app.NavView();
-            this.getCurrentUser();
         },
 
         showLogBook: function() {
@@ -1091,20 +1062,6 @@ $(function($) {
         showAccount: function() {
             this.setActiveNav("#settings-page");
             RegionManager.show(new app.AccountView({model:app.User}));
-        },
-        getCurrentUser:function() {
-            var user,
-                users;
-
-            users = new UserDetails();
-            users.fetch();
-            user = users.first();
-            if (!user) {
-                users.create(new User());
-                user = users.first();
-            }
-
-            app.User = user;
         },
         showAbout: function() {
             this.setActiveNav("#about-page");

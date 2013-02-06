@@ -5,8 +5,23 @@ class User
     public $userData;
     public $resultData;
     public $goalData;
-
-    static $USER_FIELDS = array('name', 'email', 'testingUnits');
+	
+	/*
+	{"name":"Jamie Kimber-Bate",
+	"newsletter":false,
+	"thirdPartyId":"529453804",
+	"thumbnailPath":"http://graph.facebook.com/529453804/picture?type=square",
+	"authenticated":true,
+	"testingUnits":"mmol/l",
+	"logEntries":[],
+	"userGoals":[],
+	"sid":"new",
+	"updated_at":"2013-02-04T09:43:19.497Z",
+	"dirty":true,
+	"email":"unknown"}
+	*/
+	
+    static $USER_FIELDS = array('name', 'email', 'testingUnits','newsletter','thumbnailPath','thirdPartyId');
     static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','whenDate','exerciseDuration','exerciseIntensity','comments','labels','user_id');
 
     function __construct()

@@ -28,7 +28,7 @@ class LogBookResultData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
+            $sql = 'SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
                 $userId);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -47,14 +47,14 @@ class LogBookResultData
         $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
         $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_escape_string($rec['when']);
+        $resultDate = mysql_escape_string($rec['when']);
         $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
         $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
         $comments = mysql_escape_string($rec['comments']);
         $labels = mysql_escape_string($rec['labels']);
         $userId = mysql_escape_string($rec['user_id']);
 
-        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,whenDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$whenDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
+        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$resultDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
         if (!$this->db->query($sql))
             return FALSE;
         return $this->get($this->db->lastInsertId());
@@ -66,13 +66,13 @@ class LogBookResultData
         $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
         $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $whenDate = mysql_escape_string($rec['when']);
+        $resultDate = mysql_escape_string($rec['when']);
         $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
         $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
         $comments = mysql_escape_string($rec['comments']);
         $labels = mysql_escape_string($rec['labels']);
 
-        $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', whenDate ='$whenDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
+        $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', resultDate ='$resultDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
         if (!$this->db->query($sql))
             return FALSE;
         return $this->get($id);
@@ -110,12 +110,12 @@ class LogBookResultData
             name TEXT NOT NULL,
             bsLevel DECIMAL(3,1),
 			insulinAmount INT,
-			when DATETIME,
+			resultDate DATETIME,
 			exerciseDuration INT,
             exerciseIntensity TEXT NOT NULL,
             labels TEXT,
             comments TEXT,
-            user_id INT,
+            user_id INT NOT NULL,
             updated_at DATETIME
         );");
     }

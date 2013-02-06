@@ -28,7 +28,7 @@ class UserData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, name, email, newsletter FROM user WHERE id = ' . mysql_escape_string(
+            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId FROM user WHERE id = ' . mysql_escape_string(
                 $id);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -51,51 +51,36 @@ class UserData
         $updated = $this->pwHash($newPw);
      }
 
-	function getId($rec)
-    {
-
-        $pw = mysql_escape_string($rec['pw']);
-        $email = mysql_escape_string($rec['email']);
-
-        $sql = "SELECT id FROM user WHERE ";
-
-        if (!$this->db->query($sql)) {
-            return FALSE;
-        }
-
-        $id = $this->get($this->db->lastInsertId());
-        return $id;
-    }
-
     function insert($rec)
     {
-
+		
         $name = mysql_escape_string($rec['name']);
         $email = mysql_escape_string($rec['email']);
-        $newsletter = FALSE;
+        $newsletter = ($rec['newsletter']) ? 'true' : 'false';
         $testingUnits = mysql_escape_string($rec['testingUnits']);
-        $hashedPassword = $this->pwHash(mysql_escape_string($rec['pw']));
+		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
+		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
 
-        $sql = "INSERT INTO user (name,email,password,newsletter,testingUnits,updated_at) VALUES ('$name', '$email', '$hashedPassword','$newsletter','$testingUnits', NOW())";
+        $sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
 
         if (!$this->db->query($sql)) {
-            return FALSE;
+            return false;
         }
 
-        $id = $this->get($this->db->lastInsertId());
+        $id = $this->db->lastInsertId();
         return $id;
     }
 
     function update($id, $rec)
     {
-        $name = mysql_escape_string($rec['name']);
+		$name = mysql_escape_string($rec['name']);
         $email = mysql_escape_string($rec['email']);
-        $newsletter = mysql_escape_string($rec['newsletter']);
+        $newsletter =  ($rec['newsletter']) ? 'true' : 'false';
         $testingUnits = mysql_escape_string($rec['testingUnits']);
-        $oldPassword = $this->pwHash(mysql_escape_string($rec['old_pw']));
-        $newPassword = $this->pwHash(mysql_escape_string($rec['new_pw']));
+		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
+		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
 
-        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', updated_at=NOW() WHERE id = $id";
+        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', thumbnailPath='$thumbnailPath', thirdPartyId='$thirdPartyId',updated_at=NOW() WHERE id = $id";
 
         if (!$this->db->query($sql)) {
 
@@ -138,9 +123,10 @@ class UserData
             id INT PRIMARY KEY,
             name TEXT NOT NULL ,
             email TEXT NOT NULL,
-            password CHAR(64) NOT NULL,
             testingUnits TEXT NOT NULL,
 	        newsletter BOOL NOT NULL,
+			thirdPartyId INT NOT NULL,
+			thumbnailPath TEXT,
             updated_at DATETIME
         );");
     }

@@ -7,6 +7,8 @@
       this.options = _.defaults(options, this.defaultOptions);
 
       _.bindAll(this, 'onLoginStatusChange');
+      
+      if(typeof(FB) === 'undefined') return;
 
       FB.Event.subscribe('auth.authResponseChange', this.onLoginStatusChange);
     },

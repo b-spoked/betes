@@ -116,8 +116,9 @@ class GoalData
             bsFrequency INT,
             exerciseDuration INT,
 	        exerciseFrequency INT,
-	        longTermGoalDate TEXT,
+	        longTermGoal TEXT,
 	        longTermGoalDate DATE,
+            user_id INT NOT NULL,
             updated_at DATETIME
         );");
     }

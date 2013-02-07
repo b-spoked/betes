@@ -60,6 +60,12 @@ class UserData
         $testingUnits = mysql_escape_string($rec['testingUnits']);
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
 		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
+		
+		$recordId = $this->dupCheck($thirdPartyId);
+		
+		if($recordId){		
+			return $this->get($recordId);
+		}
 
         $sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
 
@@ -68,8 +74,21 @@ class UserData
         }
 
         $id = $this->db->lastInsertId();
-        return $id;
+		
+        return $this->get($id);
     }
+
+	function dupCheck($thirdPartyId){
+		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId'";
+		
+		if(!$this->db->query($sql)){
+			return false;
+		}
+		
+		$existingRecord = $this->id2int($this->db->query($sql)->fetch());
+		return $existingRecord['id'];
+		
+	}
 
     function update($id, $rec)
     {

@@ -7,11 +7,12 @@ $(function($) {
             name: '',
             bsLevel: 0,
             insulinAmount: 0,
-            when: new Date(),
+            resultDate: new Date(),
             exerciseDuration: 0,
             exerciseIntensity: 'na',
             labels: '',
-            comments : ''
+            comments : '',
+            userId : 0
         },
         initialize: function() {
             this.checkGoals();
@@ -143,13 +144,13 @@ $(function($) {
             this.logEntries = new Entries(this.get('logEntries'));
             this.userGoals = new GoalSet(this.get('userGoals'));
 
-                this.logEntries.url = function () {
-                    return self.urlRoot + '/logbook/'+self.get('sid');
-                };
+            this.logEntries.url = function () {
+                return self.urlRoot + '/logbook/';
+            };
                 
-                this.userGoals.url = function () {
-                    return self.urlRoot + '/goals/'+self.get('sid');
-                };
+            this.userGoals.url = function () {
+                return self.urlRoot + '/goals/';
+            };
             
         }
     });
@@ -421,20 +422,21 @@ $(function($) {
         },
         saveNewEntry:function() {
 
-            app.User.logEntries.create(this.newEntryValues());
+            app.User.logEntries.create(this.entryValues());
             $("#add-entry-dialog").modal('hide');
         },
 
-        newEntryValues: function() {
+        entryValues: function() {
             return {
                 name: $("#entry-name").val().trim(),
                 bsLevel: $("#entry-level").val().trim(),
-                when: $("#entry-date").val().trim(),
+                resultDate: $("#entry-date").val().trim(),
                 insulinAmount: $("#entry-insulin").val().trim(),
                 exerciseDuration: $("#entry-exercise-duration").val().trim(),
                 exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
                 labels: $("#entry-labels").val().trim(),
-                comments: $("#entry-comments").val().trim()
+                comments: $("#entry-comments").val().trim(),
+                userId : app.User.get('sid')
             };
         }
 

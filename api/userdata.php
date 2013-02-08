@@ -41,7 +41,7 @@ class UserData
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
-    
+	
     private function pwHash($pw){
         return hash('sha256', $pw);
     }

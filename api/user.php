@@ -21,8 +21,23 @@ class User
 	"email":"unknown"}
 	*/
 	
+	/*
+	 {"name":"Dinner",
+	 "bsLevel":"7.5",
+	 "resultDate":"2013-02-07 18:15:43",
+	 "insulinAmount":"",
+	 "exerciseDuration":"",
+	 "exerciseIntensity":"",
+	 "labels":"",
+	 "comments":"",
+	 "goals":"goals-not-meet",
+	 "userId":"30",
+	 "updated_at":"2013-02-07T09:16:08.601Z",
+	 "dirty":true}
+	*/
+	
     static $USER_FIELDS = array('name', 'email', 'testingUnits','newsletter','thumbnailPath','thirdPartyId');
-    static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','resultDate','exerciseDuration','exerciseIntensity','comments','labels','user_id');
+    static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','resultDate','exerciseDuration','exerciseIntensity','comments','labels','userId');
 
     function __construct()
     {
@@ -30,13 +45,25 @@ class User
         $this->resultData = new LogBookResultData();
         $this->goalData = new GoalData();
     }
-
-    function get($id = NULL)
+	
+	function get($id = NULL)
     {
 		if(is_null($id)){
 			return false;
 		}
-        return $this->userData->get($id);
+		
+		$user = $this->userData->get($id);
+		/*$results = $this->resultData->getAll($id);
+		if($results){
+			$user['results'] = $results;
+		}
+		$goals = $this->goalData->getAll($id);
+		if($goals){
+			$user['goals'] = $goals;
+		}*/
+		
+		return $user;
+		
     }
 
 	/**
@@ -64,17 +91,17 @@ class User
     /**
      * @url POST /logbook/
      */
-    function addLogBookResult($rec)
+    function addLogBookResult($request_data=null)
     {
-        return $this->resultData->insert($this->_validateLogBookResult($rec));
+        return $this->resultData->insert($this->_validateLogBookResult($request_data));
     }
 
     /**
      * @url PUT /logbook/
      */
-    function updateLogBookResult($rec)
+    function updateLogBookResult($request_data=null)
     {
-        return $this->resultData->update($this->_validateLogBookResult($rec));
+        return $this->resultData->update($this->_validateLogBookResult($request_data));
     }
 
     /**
@@ -135,12 +162,12 @@ class User
 
     private function _validateLogBookResult($data)
     {
-        $user = array();
+        $log = array();
         foreach (User::$LOGBOOK_FIELDS as $field) {
             //you may also validate the data here
             if (!isset($data[$field])) throw new RestException(417, "$field field missing");
-            $user[$field] = $data[$field];
+            $log[$field] = $data[$field];
         }
-        return $user;
+        return $log;
     }
 }

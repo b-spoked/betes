@@ -28,10 +28,9 @@ class LogBookResultData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at, id FROM result WHERE user_id = ' . mysql_escape_string(
+            $sql = 'SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,userId,updated_at, id FROM result WHERE userId = ' . mysql_escape_string(
                 $userId);
-            return $this->id2int($this->db->query($sql)
-                                         ->fetch());
+            return $this->id2int($this->db->query($sql)->fetchAll());
         } catch (PDOException $e) {
             if (!$installTableOnFailure && $e->getCode() == '42S02') {
                 //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
@@ -47,17 +46,19 @@ class LogBookResultData
         $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
         $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $resultDate = mysql_escape_string($rec['when']);
+        $resultDate = mysql_escape_string($rec['resultDate']);
         $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
         $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
         $comments = mysql_escape_string($rec['comments']);
         $labels = mysql_escape_string($rec['labels']);
-        $userId = mysql_escape_string($rec['user_id']);
+        $userId = mysql_escape_string($rec['userId']);
 
-        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,user_id,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$resultDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
-        if (!$this->db->query($sql))
-            return FALSE;
-        return $this->get($this->db->lastInsertId());
+        $sql = "INSERT INTO result (name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,userId,updated_at) VALUES ('$name','$bsLevel','$insulinAmount','$resultDate','$exerciseDuration','$exerciseIntensity','$comments','$labels','$userId',NOW())";
+        
+		if (!$this->db->query($sql)){
+            return false;
+        }
+        return true;
     }
 
     function update($rec)
@@ -66,15 +67,16 @@ class LogBookResultData
         $bsLevel = mysql_escape_string($rec['bsLevel']);
         $name = mysql_escape_string($rec['name']);
         $insulinAmount = mysql_escape_string($rec['insulinAmount']);
-        $resultDate = mysql_escape_string($rec['when']);
+        $resultDate = mysql_escape_string($rec['resultDate']);
         $exerciseDuration = mysql_escape_string($rec['exerciseDuration']);
         $exerciseIntensity = mysql_escape_string($rec['exerciseIntensity']);
         $comments = mysql_escape_string($rec['comments']);
         $labels = mysql_escape_string($rec['labels']);
 
         $sql = "UPDATE result SET name = '$name', bsLevel ='$bsLevel', insulinAmount ='$insulinAmount', resultDate ='$resultDate', exerciseDuration ='$exerciseDuration', exerciseIntensity ='$exerciseIntensity', comments='$comments',labels='$labels', updated_at=NOW() WHERE id = $id";
-        if (!$this->db->query($sql))
-            return FALSE;
+        if (!$this->db->query($sql)){
+            return false;
+        }
         return $this->get($id);
     }
 
@@ -106,7 +108,7 @@ class LogBookResultData
     {
         $this->db->exec(
             "CREATE TABLE result (
-            id INT AUTO_INCREMENT PRIMARY KEY ,
+            id INT AUTO_INCREMENT PRIMARY KEY,
             name TEXT NOT NULL,
             bsLevel DECIMAL(3,1),
 			insulinAmount INT,
@@ -115,7 +117,7 @@ class LogBookResultData
             exerciseIntensity TEXT NOT NULL,
             labels TEXT,
             comments TEXT,
-            user_id INT NOT NULL,
+            userId INT NOT NULL,
             updated_at DATETIME
         );");
     }

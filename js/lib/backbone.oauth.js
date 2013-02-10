@@ -35,8 +35,9 @@
     _.extend(this, options);
 
     // Make the onRedirect function publicy available.
-    _.bind(this.onRedirect, this);
-    window.OAuthRedirect = this.onRedirect;
+    //_.bind(this.onRedirect, this);
+    window.OAuthRedirect = _.bind(this.onRedirect, this);
+    //window.OAuthRedirect = this.onRedirect;
   };
 
   // Inject methods and properties.
@@ -69,7 +70,7 @@
     // that the dialog auth process has finished. It has to be checked, if
     // the auth was successful or not.
     onRedirect: function(hash) {
-      var params = parseHash(location.hash);
+      var params = parseHash(hash);
       if (this.authSuccess(params)) {
         this.onSuccess(params);
       } else {

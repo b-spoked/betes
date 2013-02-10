@@ -938,6 +938,9 @@ $(function($) {
         initialize: function() {
             _.bindAll(this);
             app.User.on('change:authenticated',this.setUserSaveStatus,this);
+            
+            
+            
         },
         render: function(){
             $(this.el).html(this.loginTemplate());
@@ -953,14 +956,30 @@ $(function($) {
             this.setLocalSave();
         },
         loginFB: function(){
+            _.extend(Backbone.OAuth.configs.Facebook, {
+        
+                onSuccess: function(params) {
+                    console.log('FB '+params);
+                    Alert('Login FB');
+                }
+            });
             // Create a new OAuth object and call the auth() method to start the process.
             var FBAuthorisation = new Backbone.OAuth(Backbone.OAuth.configs.Facebook);
             FBAuthorisation.auth();
+            $("#login-dialog").modal('hide');
         },
         loginGoogle: function(){
+            _.extend(Backbone.OAuth.configs.Google, {
+        
+                onSuccess: function(params) {
+                    console.log('Google '+params);
+                    Alert('Login Google');
+                }
+            });
             // Create a new OAuth object and call the auth() method to start the process.
             var GoogleAuthorisation = new Backbone.OAuth(Backbone.OAuth.configs.Google);
             GoogleAuthorisation.auth();
+            $("#login-dialog").modal('hide');
         },
         setLocalSave:function(){
             console.log('save local only');

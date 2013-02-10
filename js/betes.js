@@ -959,8 +959,7 @@ $(function($) {
             _.extend(Backbone.OAuth.configs.Facebook, {
         
                 onSuccess: function(params) {
-                    console.log('FB '+params);
-                    Alert('Login FB');
+                    console.log('FB '+params.access_token);
                 }
             });
             // Create a new OAuth object and call the auth() method to start the process.
@@ -972,8 +971,7 @@ $(function($) {
             _.extend(Backbone.OAuth.configs.Google, {
         
                 onSuccess: function(params) {
-                    console.log('Google '+params);
-                    Alert('Login Google');
+                    console.log('Google: '+params.access_token);
                 }
             });
             // Create a new OAuth object and call the auth() method to start the process.

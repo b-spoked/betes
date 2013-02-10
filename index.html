@@ -10,7 +10,8 @@
 		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
 		<link rel="stylesheet" href="css/font-awesome.css" />
 		<link rel="stylesheet" href="css/graphs.css" />
-        <script type="text/javascript">
+        <script>var hash=window.location.hash;window.close();opener.OAuthRedirect(hash);</script>
+       <!-- <script type="text/javascript">
             window.fbAsyncInit = function() {
               console.info('FB jssdk loaded');
         
@@ -29,7 +30,7 @@
                js.src = "//connect.facebook.net/en_US/all.js";
                ref.parentNode.insertBefore(js, ref);
              }(document));
-		</script>
+		</script>-->
 	</head>
 	  
 	<body>
@@ -53,12 +54,14 @@
 					<li id="settings-page"><a href="#/account">Account</a></li>
 					<li id="about-page"><a href="#/about">About</a></li>
 				</ul>
-                <div class="pull-right">
+                <!--<div class="pull-right">
                     <button id="login" class="btn btn-primary"><i class="icon-facebook"></i> Connect with Facebook</button>
-                    <button id="logout" class="btn"> Logout</button>
+				</div>-->
+                <div class="pull-right">
+                    <button id="login" class="btn btn-primary"> Login</button>
 				</div>
 			</div>
-            <div id="fb-root"></div>
+            <!--<div id="fb-root"></div>-->
 		</div>
 		</script>
 		<script type="text/template" id="item-template">
@@ -416,12 +419,10 @@
 				<h3>Login</h3>
 			</div>
 			<div class="modal-body">
-                <% if(app.User.isConnected()) { %>
-						<a href="#user/" class="btn btn-primary">Hi <%= name%></a>
-						<button id="logout" class="btn">Logout</button>
-					<% } else { %>	
-						<button id="login" class="btn btn-primary"><i class="icon-facebook"></i> Connect with Facebook</button>
-					<% } %> 
+                	
+				<button id="login-fb" class="btn btn-large"><i class="icon-facebook"></i> Login with Facebook</button>
+                <button id="login-google" class="btn btn-large"><i class="icon-google-plus"></i> Login with Google</button>
+					
             </div>	
 			<div class="modal-footer">
 				<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
@@ -556,7 +557,7 @@
         <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
 		<script type="text/javascript" src="js/underscore-min.js"></script>
 		<script type="text/javascript" src="js/backbone-min.js"></script>
-        <script type="text/javascript" src="js/FacebookUser.js"></script>
+        <script type="text/javascript" src="js/lib/backbone.oauth.js"></script>
 		<script type="text/javascript" src="js/backbone_offline.js"></script>
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/d3.v2.min.js"></script>

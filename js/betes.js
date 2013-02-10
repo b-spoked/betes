@@ -25,12 +25,8 @@ $(function($) {
     var Entries = Backbone.Collection.extend({
         model : Entry,
         initialize : function() {
-			this.storage = new Offline.Storage('logbook-entries', this, {
-				autoPush:true
-			});
+			this.storage = new Offline.Storage('logbook-entries', this);
 		},
-		
-       // url :  '/api/index.php/user/logbook',
         
         goalPercentageForDay : function() {
             return .25;
@@ -114,13 +110,11 @@ $(function($) {
 
     var GoalSet = Backbone.Collection.extend({
         model : Goals,
-        //localStorage : new Store('user-goals'),
         initialize : function() {
 			this.storage = new Offline.Storage('user-goals', this, {
 				autoPush:true
 			});
 		}
-		//url:  '/api/index.php/user/goals'
     });
 
     var User = Backbone.Model.extend({
@@ -158,17 +152,13 @@ $(function($) {
     var UserDetails = Backbone.Collection.extend({
         model : User,
         initialize : function() {
-			this.storage = new Offline.Storage('logbook-user', this, {
-				autoPush:true
-			});
+			this.storage = new Offline.Storage('logbook-user', this);
 		},
-		url: function(){
-            return '/api/index.php/user';
-        }
+        url:'/api/index.php/user.json'
     });
 
     app.Users = new UserDetails();
-    app.FBUser = new FacebookUser();
+   // app.FBUser = new FacebookUser();
     
     //Edit record modal view
     app.EditEntryView = Backbone.View.extend({
@@ -934,9 +924,107 @@ $(function($) {
             var graphImg = graphCanvas.toDataURL("image/png");
         }
     });
-
+    
+    //Login
+    app.LoginView = Backbone.View.extend({
+        
+        loginTemplate: _.template($('#login-template').html()),
+        
+        events: {
+            'click #login-fb': 'loginFB',
+            'click #login-google': 'loginGoogle'
+        },
+        
+        initialize: function() {
+            _.bindAll(this);
+            app.User.on('change:authenticated',this.setUserSaveStatus,this);
+        },
+        render: function(){
+            $(this.el).html(this.loginTemplate());
+        },
+        showDialog:function(){
+            $("#login-dialog").modal('show');
+        },
+        setUserSaveStatus:function(){
+            if(app.User.get('authenticated')){
+                this.setServerSave();
+                return;
+            }
+            this.setLocalSave();
+        },
+        loginFB: function(){
+            // Create a new OAuth object and call the auth() method to start the process.
+            var FBAuthorisation = new Backbone.OAuth(Backbone.OAuth.configs.Facebook);
+            FBAuthorisation.auth();
+        },
+        loginGoogle: function(){
+            // Create a new OAuth object and call the auth() method to start the process.
+            var GoogleAuthorisation = new Backbone.OAuth(Backbone.OAuth.configs.Google);
+            GoogleAuthorisation.auth();
+        },
+        setLocalSave:function(){
+            console.log('save local only');
+            Offline.onLine = function() {
+                return false;
+            };
+        },
+        
+        setServerSave:function(){
+            
+            console.log('save to server if online');
+            Offline.onLine = function() {
+                return navigator.onLine !== false;
+            };
+        }
+    });
     //Navigation View
+    
+     
     app.NavView = Backbone.View.extend({
+
+		el: "#app-nav",
+        
+        events: {
+            'click #login': 'showLoginDialog'
+        },
+        
+		navigationTemplate: _.template( $('#nav-template').html()),
+		
+		initialize: function() {
+            this.getCurrentUser();
+            _.bindAll(this, "render");
+			this.render();
+		},
+		render: function() {
+			$(this.el).html(this.navigationTemplate());
+            return this;
+		},
+        
+		showLoginDialog:  function(e) {
+			var loginDialog = new app.LoginView();
+            loginDialog.render();
+            var $modalEl = $("#modal-dialog");
+            $modalEl.html(loginDialog.el);
+            loginDialog.showDialog();
+		},
+        getCurrentUser:function() {
+            var user,
+                users;
+
+            users = new UserDetails();
+            users.fetch({local: true});
+            user = users.first();
+            
+            if (!user) {
+                users.create(new User());
+                user = users.first();
+            }
+
+            app.User = user;
+        }
+	
+	});
+    /*app.NavView = Backbone.View.extend({
 
 		el: "#app-nav",
         
@@ -1041,7 +1129,7 @@ $(function($) {
 			app.FBUser.logout();
 		}
 	
-	});
+	});*/
     var ApplicationRouter = Backbone.Router.extend({
 
         navigationView : null,
@@ -1049,7 +1137,8 @@ $(function($) {
         routes: {
             "":"showLogBook",
             "account" : "showAccount",
-            "about" : "showAbout"
+            "about" : "showAbout",
+            "oauth2callback/" : "authorization"
         },
 
         initialize: function() {
@@ -1072,6 +1161,9 @@ $(function($) {
         setActiveNav:function(activeId) {
             $(activeId).parent().parent().find('.active').removeClass('active');
             $(activeId).addClass('active');
+        },
+        authorization: function (params){
+            alert('authorization: '+params);
         }
     });
 
@@ -1102,5 +1194,11 @@ $(function($) {
 
     AppRouter = new ApplicationRouter();
     Backbone.history.start();
+    //authorisation
+    // Configurate the Facebook OAuth settings.
+   
+
+
+    
 
 });

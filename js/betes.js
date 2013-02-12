@@ -25,7 +25,9 @@ $(function($) {
     var Entries = Backbone.Collection.extend({
         model : Entry,
         initialize : function() {
-            this.storage = new Offline.Storage('logbook-entries', this);
+            this.storage = new Offline.Storage('logbook-entries', this, {
+                autoPush:true
+            });
         },
 
         goalPercentageForDay : function() {
@@ -152,12 +154,14 @@ $(function($) {
     var UserDetails = Backbone.Collection.extend({
         model : User,
         initialize : function() {
-            this.storage = new Offline.Storage('logbook-user', this);
+            this.storage = new Offline.Storage('logbook-user', this, {
+                autoPush:true
+            });
         },
         url:'/api/index.php/user.json'
     });
 
-    app.Users = new UserDetails();
+    //window.Users = new UserDetails();
 
     //Edit record modal view
     app.EditEntryView = Backbone.View.extend({
@@ -959,14 +963,31 @@ $(function($) {
                     // Get the user's data from Facebook's graph api.
                     $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                         success: function(data) {
-                            //login or create user
-                            app.User.set({
-                                 thirdPartyId:data.id,
-                                 name:data.name,
-                                 email:data.email,
-                                 thumbnailPath:data.picture,
-                                 authenticated:true
-                                 });
+                            app.Users = UserDetails();
+                            app.Users.fetch({local:true});
+                            
+                            var user = app.Users.first();
+                            
+                            if(!user || (user.get("thirdPartyId") != data.id)){
+                                
+                                user = new User({
+                                    thirdPartyId:data.id,
+                                    name:data.name,
+                                    email:data.email,
+                                    thumbnailPath:data.picture,
+                                    authenticated:true
+                                    });
+                                
+                                app.User = user;
+                                app.User.save();
+                                
+                                app.Users.reset();
+                                app.Users.create(app.User);
+                                
+                            }else{
+                                app.User = user;
+                            }
+                            app.Users.storage.sync.push();
                         }
                     });
 
@@ -986,15 +1007,34 @@ $(function($) {
                     // Get the user's data from the Google api.
                     $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                         success: function(data) {
-                            //login or create user
-                             app.User.set({
-                                 thirdPartyId:data.id,
-                                 name:data.name,
-                                 email:data.email,
-                                 thumbnailPath:data.picture,
-                                 authenticated:true
-                                 });
-
+                            app.Users = UserDetails();
+                            
+                            app.Users.fetch({local:true});
+                            
+                            var user = app.Users.first();
+                            
+                            if(!user || (user.get("thirdPartyId") != data.id)){
+                                
+                                user = new User({
+                                    thirdPartyId:data.id,
+                                    name:data.name,
+                                    email:data.email,
+                                    thumbnailPath:data.picture,
+                                    authenticated:true
+                                    });
+                                
+                                app.User = user;
+                                app.User.save();
+                                app.Users.reset();
+                                app.Users.create(app.User);
+                                
+                                
+                            }else{
+                                app.User = user;
+                                app.User.save();
+                            }
+                            
+                            app.Users.storage.sync.push();
                         }
                     });
                 }
@@ -1035,10 +1075,11 @@ $(function($) {
         initialize: function() {
             this.getCurrentUser();
             _.bindAll(this, "render");
+            app.User.bind('change:authenticated',this.render, this);
             this.render();
         },
         render: function() {
-            $(this.el).html(this.navigationTemplate());
+            $(this.el).html(this.navigationTemplate(app.User.toJSON()));
             return this;
         },
 
@@ -1053,16 +1094,17 @@ $(function($) {
             var user,
                 users;
 
-            users = new UserDetails();
-            users.fetch({local: true});
-            user = users.first();
+            app.Users = new UserDetails();
+            
+            app.Users.fetch({local: true});
+            app.User = app.Users.first();
+            
 
-            if (!user) {
-                users.create(new User());
-                user = users.first();
+            if (!app.User) {
+                app.Users.create(new User());
+                app.User = app.Users.first();
             }
-
-            app.User = user;
+            app.Users.storage.sync.push();
         }
 
     });

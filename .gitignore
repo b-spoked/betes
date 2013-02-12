@@ -163,3 +163,15 @@ pip-log.txt
 .DS_Store
 
 api/config.php
+
+beteslog_backend/.gitignore
+
+beteslog_backend/Gemfile
+
+beteslog_backend/Gemfile.lock
+
+beteslog_backend/README.rdoc
+
+beteslog_backend/Rakefile
+
+beteslog_backend/app/assets/images/rails.png

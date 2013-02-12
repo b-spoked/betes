@@ -81,12 +81,12 @@ class UserData
 	function dupCheck($thirdPartyId){
 		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId'";
 		
-		if(!$this->db->query($sql)){
-			return false;
+		if($this->db->query($sql)){
+			$existingRecord = $this->id2int($this->db->query($sql)->fetch());
+			return $existingRecord['id'];
 		}
 		
-		$existingRecord = $this->id2int($this->db->query($sql)->fetch());
-		return $existingRecord['id'];
+		return false;
 		
 	}
 

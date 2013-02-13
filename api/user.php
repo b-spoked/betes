@@ -53,6 +53,7 @@ class User
 		}
 		
 		$user = $this->userData->get($id);
+		
 		/*$results = $this->resultData->getAll($id);
 		if($results){
 			$user['results'] = $results;
@@ -67,14 +68,14 @@ class User
     }
 
 	/**
-     * @url GET /login/
+     * @url GET /existingusercheck/:id/
      */
-    function login($rec)
+    function getExistingUserCheck($id = NULL)
     {
-		if(is_null($rec)){
+		if(is_null($id)){
 			return false;
 		}
-        return $this->userData->getId($rec);
+        return $this->userData->getThirdPartyId($id);
     }
 
     /**

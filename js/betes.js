@@ -356,7 +356,7 @@ $(function($) {
         }
 
     });
-
+    
     //Add goalset
     app.AddGoalSetView = Backbone.View.extend({
         addGoalsTemplate: _.template($('#add-goal-template').html()),
@@ -963,31 +963,25 @@ $(function($) {
                     // Get the user's data from Facebook's graph api.
                     $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                         success: function(data) {
-                            app.Users = UserDetails();
+                            app.Users = new UserDetails();
                             app.Users.fetch({local:true});
                             
-                            var user = app.Users.first();
+                            app.User = app.Users.first();
                             
-                            if(!user || (user.get("thirdPartyId") != data.id)){
+                            if(!app.User || (app.User.get("thirdPartyId") != data.id)){
                                 
-                                user = new User({
+                                app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
                                     authenticated:true
                                     });
-                                
-                                app.User = user;
-                                app.User.save();
-                                
+                            
                                 app.Users.reset();
                                 app.Users.create(app.User);
                                 
-                            }else{
-                                app.User = user;
                             }
-                            app.Users.storage.sync.push();
                         }
                     });
 
@@ -1007,35 +1001,41 @@ $(function($) {
                     // Get the user's data from the Google api.
                     $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                         success: function(data) {
-                            app.Users = UserDetails();
-                            
+                            app.Users = new UserDetails();
                             app.Users.fetch({local:true});
                             
-                            var user = app.Users.first();
+                            app.User = app.Users.first();
                             
-                            if(!user || (user.get("thirdPartyId") != data.id)){
+                            if(!app.User || (app.User.get("thirdPartyId") != data.id)){
                                 
-                                user = new User({
+                                app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
                                     authenticated:true
                                     });
-                                
-                                app.User = user;
-                                app.User.save();
+                            
                                 app.Users.reset();
                                 app.Users.create(app.User);
                                 
-                                
-                            }else{
-                                app.User = user;
-                                app.User.save();
                             }
                             
-                            app.Users.storage.sync.push();
                         }
+                    });
+                },
+                checkIfExistingUser:function(thirdpartyId){
+                    $.ajax('http://app.beteslog.com/api/index.php/user.json/existingusercheck/' + thirdpartyId, {
+                            success: function(data) {
+                                app.User = new User({
+                                    sid:data.id,
+                                    thirdPartyId:data.thirdPartyId,
+                                    name:data.name,
+                                    email:data.email,
+                                    thumbnailPath:data.thumbnailPath,
+                                    authenticated:true
+                                });
+                            }
                     });
                 }
             });
@@ -1044,6 +1044,7 @@ $(function($) {
             GoogleAuthorisation.auth();
             $("#login-dialog").modal('hide');
         },
+        
         setLocalSave:function() {
             console.log('save local only');
             Offline.onLine = function() {
@@ -1222,8 +1223,7 @@ $(function($) {
         routes: {
             "":"showLogBook",
             "account" : "showAccount",
-            "about" : "showAbout",
-            "oauth2callback/" : "authorization"
+            "about" : "showAbout"
         },
 
         initialize: function() {
@@ -1245,9 +1245,6 @@ $(function($) {
         setActiveNav:function(activeId) {
             $(activeId).parent().parent().find('.active').removeClass('active');
             $(activeId).addClass('active');
-        },
-        authorization: function (params) {
-            alert('authorization: ' + params);
         }
     });
 

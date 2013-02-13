@@ -42,6 +42,24 @@ class UserData
         }
     }
 	
+	function getThirdPartyId($thirdPartyId, $installTableOnFailure = FALSE)
+    {
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try {
+            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE thirdPartyId = ' . mysql_escape_string(
+                $thirdPartyId);
+            return $this->id2int($this->db->query($sql)
+                                         ->fetch());
+        } catch (PDOException $e) {
+            if (!$installTableOnFailure && $e->getCode() == '42S02') {
+                //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
+                $this->install();
+                return $this->get($id, TRUE);
+            }
+            throw new RestException(501, 'MySQL: ' . $e->getMessage());
+        }
+    }
+	
     private function pwHash($pw){
         return hash('sha256', $pw);
     }
@@ -59,14 +77,17 @@ class UserData
         $newsletter = ($rec['newsletter']) ? 'true' : 'false';
         $testingUnits = mysql_escape_string($rec['testingUnits']);
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
-		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
+		$thirdPartyId = $rec['thirdPartyId'];
 		
 		//no 3rd party id or name no go
-		if($recordId = $this->dupCheck($thirdPartyId))
-		{		
+		$recordId = $this->dupCheck($thirdPartyId);
+		if($recordId)
+		{
 			$id = $recordId;
 				
 		}else{
+			
+			echo $sql;
 			
 			$sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
 		
@@ -85,7 +106,9 @@ class UserData
 		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId' LIMIT 1";
 		
 		if($this->db->query($sql)){
+			echo $sql;
 			$existingRecord = $this->id2int($this->db->query($sql)->fetch());
+			echo $existingRecord ;
 			return $existingRecord['id'];
 		}
 		

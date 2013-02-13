@@ -1098,13 +1098,14 @@ $(function($) {
             
             app.Users.fetch({local: true});
             app.User = app.Users.first();
-            
 
             if (!app.User) {
                 app.Users.create(new User());
                 app.User = app.Users.first();
+            }else if((app.User.get('thirdPartyId') > 0) && (app.User.get('authenticated'))){
+                app.Users.storage.sync.push();
             }
-            app.Users.storage.sync.push();
+            
         }
 
     });

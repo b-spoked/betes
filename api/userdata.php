@@ -28,7 +28,7 @@ class UserData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId FROM user WHERE id = ' . mysql_escape_string(
+            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE id = ' . mysql_escape_string(
                 $id);
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
@@ -61,25 +61,28 @@ class UserData
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
 		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
 		
-		$recordId = $this->dupCheck($thirdPartyId);
+		//no 3rd party id or name no go
+		if($recordId = $this->dupCheck($thirdPartyId))
+		{		
+			$id = $recordId;
+				
+		}else{
+			
+			$sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
 		
-		if($recordId){		
-			return $this->get($recordId);
+			if (!$this->db->query($sql)) {
+				return false;
+			}
+		
+			$id = $this->db->lastInsertId();
 		}
-
-        $sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
-
-        if (!$this->db->query($sql)) {
-            return false;
-        }
-
-        $id = $this->db->lastInsertId();
+			
+		return $this->get($id);
 		
-        return $this->get($id);
     }
 
 	function dupCheck($thirdPartyId){
-		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId'";
+		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId' LIMIT 1";
 		
 		if($this->db->query($sql)){
 			$existingRecord = $this->id2int($this->db->query($sql)->fetch());

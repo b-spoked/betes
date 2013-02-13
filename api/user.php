@@ -157,6 +157,14 @@ class User
             if (!isset($data[$field])) throw new RestException(417, "$field field missing");
             $user[$field] = $data[$field];
         }
+		
+		if($user['thirdPartyId'] <= 0){
+			throw new RestException(417, "user thirdPartyId not set");
+		}
+		if($user['name'] == ""){
+			throw new RestException(417, "user name not set");
+		}
+		
         return $user;
     }
 

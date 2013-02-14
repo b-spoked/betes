@@ -984,7 +984,7 @@ $(function($) {
                                 app.User.save();
 
                                 app.Users.reset();
-                                app.Users.add(app.User);
+                                app.Users.create(app.User,{local:true});
 
                             }
                         }
@@ -1025,7 +1025,7 @@ $(function($) {
                                 app.User.save();
 
                                 app.Users.reset();
-                                app.Users.add(app.User);
+                                app.Users.create(app.User,{local:true});
 
                             }
 

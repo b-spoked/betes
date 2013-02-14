@@ -117,7 +117,7 @@ class LogBookResultData
             exerciseIntensity TEXT NOT NULL,
             labels TEXT,
             comments TEXT,
-            userId INT NOT NULL,
+            userId BIGINT NOT NULL,
             updated_at DATETIME
         );");
     }

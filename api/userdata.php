@@ -28,8 +28,10 @@ class UserData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE id = ' . mysql_escape_string(
-                $id);
+			
+			$escapedId = mysql_escape_string($id);
+            $sql = "SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE thirdPartyId = '$escapedId'";
+			
             return $this->id2int($this->db->query($sql)
                                          ->fetch());
         } catch (PDOException $e) {
@@ -41,33 +43,6 @@ class UserData
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
-	
-	function getThirdPartyId($thirdPartyId, $installTableOnFailure = FALSE)
-    {
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        try {
-            $sql = 'SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE thirdPartyId = ' . mysql_escape_string(
-                $thirdPartyId);
-            return $this->id2int($this->db->query($sql)
-                                         ->fetch());
-        } catch (PDOException $e) {
-            if (!$installTableOnFailure && $e->getCode() == '42S02') {
-                //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
-                $this->install();
-                return $this->get($id, TRUE);
-            }
-            throw new RestException(501, 'MySQL: ' . $e->getMessage());
-        }
-    }
-	
-    private function pwHash($pw){
-        return hash('sha256', $pw);
-    }
-
-     private function pwRest($oldPw, $newPw){
-        $old = $this->pwHash($oldPw);
-        $updated = $this->pwHash($newPw);
-     }
 
     function insert($rec)
     {
@@ -79,42 +54,14 @@ class UserData
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
 		$thirdPartyId = $rec['thirdPartyId'];
 		
-		//no 3rd party id or name no go
-		$recordId = $this->dupCheck($thirdPartyId);
-		if($recordId)
-		{
-			$id = $recordId;
-				
-		}else{
-			
-			echo $sql;
-			
-			$sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
+		$sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
 		
-			if (!$this->db->query($sql)) {
-				return false;
-			}
-		
-			$id = $this->db->lastInsertId();
+		if (!$this->db->query($sql)) {
+			return false;
 		}
 			
-		return $this->get($id);
-		
+		return $this->get($thirdPartyId);
     }
-
-	function dupCheck($thirdPartyId){
-		$sql = "SELECT id FROM user WHERE thirdPartyId = '$thirdPartyId' LIMIT 1";
-		
-		if($this->db->query($sql)){
-			echo $sql;
-			$existingRecord = $this->id2int($this->db->query($sql)->fetch());
-			echo $existingRecord ;
-			return $existingRecord['id'];
-		}
-		
-		return false;
-		
-	}
 
     function update($id, $rec)
     {
@@ -125,15 +72,13 @@ class UserData
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
 		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
 
-        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', thumbnailPath='$thumbnailPath', thirdPartyId='$thirdPartyId',updated_at=NOW() WHERE id = $id";
+        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', thumbnailPath='$thumbnailPath',updated_at=NOW() WHERE thirdPartyId = '$thirdPartyId'";
 
         if (!$this->db->query($sql)) {
-
-            $rec['id'] = $id;
-            $this->insert($rec);
+			$this->insert($rec);
         }
 
-        return $this->get($id);
+        return $this->get($thirdPartyId);
     }
 
     function delete($id)
@@ -170,7 +115,7 @@ class UserData
             email TEXT NOT NULL,
             testingUnits TEXT NOT NULL,
 	        newsletter BOOL NOT NULL,
-			thirdPartyId INT NOT NULL,
+			thirdPartyId BIGINT unsigned NOT NULL,
 			thumbnailPath TEXT,
             updated_at DATETIME
         );");

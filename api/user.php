@@ -67,17 +67,6 @@ class User
 		
     }
 
-	/**
-     * @url GET /existingusercheck/:id/
-     */
-    function getExistingUserCheck($id = NULL)
-    {
-		if(is_null($id)){
-			return false;
-		}
-        return $this->userData->getThirdPartyId($id);
-    }
-
     /**
      * @url GET /logbook/:id/
      */

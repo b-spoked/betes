@@ -971,7 +971,7 @@ $(function($) {
                             app.User = app.Users.first();
 
                             if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
-
+                                console.log('3rd party id: '+data.id);
                                 app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
@@ -979,9 +979,12 @@ $(function($) {
                                     thumbnailPath:data.picture,
                                     authenticated:true
                                 });
+                                
+                                app.User.fetch();
+                                app.User.save();
 
                                 app.Users.reset();
-                                app.Users.create(app.User);
+                                app.Users.add(app.User);
 
                             }
                         }
@@ -1009,9 +1012,7 @@ $(function($) {
                             app.User = app.Users.first();
 
                             if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
-
-
-
+                                console.log('3rd party id: '+data.id);
                                 app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
@@ -1020,27 +1021,14 @@ $(function($) {
                                     authenticated:true
                                 });
                                 
-                                app.User().fetch();
+                                app.User.fetch();
+                                app.User.save();
 
                                 app.Users.reset();
-                                app.Users.create(app.User);
+                                app.Users.add(app.User);
 
                             }
 
-                        }
-                    });
-                },
-                checkIfExistingUser:function(thirdpartyId) {
-                    $.ajax('http://app.beteslog.com/api/index.php/user.json/existingusercheck/' + thirdpartyId, {
-                        success: function(data) {
-                            app.User = new User({
-                                sid:data.id,
-                                thirdPartyId:data.thirdPartyId,
-                                name:data.name,
-                                email:data.email,
-                                thumbnailPath:data.thumbnailPath,
-                                authenticated:true
-                            });
                         }
                     });
                 }
@@ -1107,7 +1095,7 @@ $(function($) {
             app.User = app.Users.first();
 
             if (!app.User) {
-                app.Users.create(new User());
+                app.Users.add(new User());
                 app.User = app.Users.first();
             } else if ((app.User.get('thirdPartyId') > 0) && (app.User.get('authenticated'))) {
                 app.Users.storage.sync.push();

@@ -132,6 +132,8 @@ $(function($) {
             userGoals:[]
         },
 
+        idAttribute: 'thirdPartyId',
+
         urlRoot: "/api/index.php/user.json",
 
         initialize: function() {
@@ -356,7 +358,7 @@ $(function($) {
         }
 
     });
-    
+
     //Add goalset
     app.AddGoalSetView = Backbone.View.extend({
         addGoalsTemplate: _.template($('#add-goal-template').html()),
@@ -965,22 +967,22 @@ $(function($) {
                         success: function(data) {
                             app.Users = new UserDetails();
                             app.Users.fetch({local:true});
-                            
+
                             app.User = app.Users.first();
-                            
-                            if(!app.User || (app.User.get("thirdPartyId") != data.id)){
-                                
+
+                            if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
+
                                 app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
                                     authenticated:true
-                                    });
-                            
+                                });
+
                                 app.Users.reset();
                                 app.Users.create(app.User);
-                                
+
                             }
                         }
                     });
@@ -1003,39 +1005,43 @@ $(function($) {
                         success: function(data) {
                             app.Users = new UserDetails();
                             app.Users.fetch({local:true});
-                            
+
                             app.User = app.Users.first();
-                            
-                            if(!app.User || (app.User.get("thirdPartyId") != data.id)){
-                                
+
+                            if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
+
+
+
                                 app.User = new User({
                                     thirdPartyId:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
                                     authenticated:true
-                                    });
-                            
+                                });
+                                
+                                app.User().fetch();
+
                                 app.Users.reset();
                                 app.Users.create(app.User);
-                                
+
                             }
-                            
+
                         }
                     });
                 },
-                checkIfExistingUser:function(thirdpartyId){
+                checkIfExistingUser:function(thirdpartyId) {
                     $.ajax('http://app.beteslog.com/api/index.php/user.json/existingusercheck/' + thirdpartyId, {
-                            success: function(data) {
-                                app.User = new User({
-                                    sid:data.id,
-                                    thirdPartyId:data.thirdPartyId,
-                                    name:data.name,
-                                    email:data.email,
-                                    thumbnailPath:data.thumbnailPath,
-                                    authenticated:true
-                                });
-                            }
+                        success: function(data) {
+                            app.User = new User({
+                                sid:data.id,
+                                thirdPartyId:data.thirdPartyId,
+                                name:data.name,
+                                email:data.email,
+                                thumbnailPath:data.thumbnailPath,
+                                authenticated:true
+                            });
+                        }
                     });
                 }
             });
@@ -1044,7 +1050,7 @@ $(function($) {
             GoogleAuthorisation.auth();
             $("#login-dialog").modal('hide');
         },
-        
+
         setLocalSave:function() {
             console.log('save local only');
             Offline.onLine = function() {
@@ -1076,7 +1082,7 @@ $(function($) {
         initialize: function() {
             this.getCurrentUser();
             _.bindAll(this, "render");
-            app.User.bind('change:authenticated',this.render, this);
+            app.User.bind('change:authenticated', this.render, this);
             this.render();
         },
         render: function() {
@@ -1096,17 +1102,17 @@ $(function($) {
                 users;
 
             app.Users = new UserDetails();
-            
+
             app.Users.fetch({local: true});
             app.User = app.Users.first();
 
             if (!app.User) {
                 app.Users.create(new User());
                 app.User = app.Users.first();
-            }else if((app.User.get('thirdPartyId') > 0) && (app.User.get('authenticated'))){
+            } else if ((app.User.get('thirdPartyId') > 0) && (app.User.get('authenticated'))) {
                 app.Users.storage.sync.push();
             }
-            
+
         }
 
     });

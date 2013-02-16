@@ -30,10 +30,10 @@ class UserData
         try {
 			
 			$escapedId = mysql_escape_string($id);
-            $sql = "SELECT id, name, email, newsletter, thumbnailPath, thirdPartyId, testingUnits FROM user WHERE thirdPartyId = '$escapedId'";
+            $sql = "SELECT id, name, email, newsletter, thumbnailPath, testingUnits FROM user WHERE id = '$escapedId'";
 			
-            return $this->id2int($this->db->query($sql)
-                                         ->fetch());
+            return $this->db->query($sql)->fetch();
+			
         } catch (PDOException $e) {
             if (!$installTableOnFailure && $e->getCode() == '42S02') {
                 //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
@@ -52,15 +52,15 @@ class UserData
         $newsletter = ($rec['newsletter']) ? 'true' : 'false';
         $testingUnits = mysql_escape_string($rec['testingUnits']);
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
-		$thirdPartyId = $rec['thirdPartyId'];
+		$id = $rec['id'];
 		
-		$sql = "INSERT INTO user (name,email,newsletter,testingUnits,thumbnailPath,thirdPartyId,updated_at) VALUES ('$name', '$email', '$newsletter','$testingUnits','$thumbnailPath','$thirdPartyId', NOW())";
+		$sql = "INSERT INTO user (id, name,email,newsletter,testingUnits,thumbnailPath,updated_at) VALUES ('$id', '$name', '$email', '$newsletter','$testingUnits','$thumbnailPath', NOW())";
 		
 		if (!$this->db->query($sql)) {
 			return false;
 		}
 			
-		return $this->get($thirdPartyId);
+		return $this->get($id);
     }
 
     function update($id, $rec)
@@ -70,15 +70,16 @@ class UserData
         $newsletter =  ($rec['newsletter']) ? 'true' : 'false';
         $testingUnits = mysql_escape_string($rec['testingUnits']);
 		$thumbnailPath= mysql_escape_string($rec['thumbnailPath']);
-		$thirdPartyId = mysql_escape_string($rec['thirdPartyId']);
 
-        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', thumbnailPath='$thumbnailPath',updated_at=NOW() WHERE thirdPartyId = '$thirdPartyId'";
+        $sql = "UPDATE user SET name = '$name', email ='$email' newsletter ='$newsletter', testingUnits='$testingUnits', thumbnailPath='$thumbnailPath',updated_at=NOW() WHERE id = '$id'";
+
+		$rec['id'] = $id;
 
         if (!$this->db->query($sql)) {
 			$this->insert($rec);
         }
 
-        return $this->get($thirdPartyId);
+        return $this->get($id);
     }
 
     function delete($id)
@@ -110,12 +111,11 @@ class UserData
     {
         $this->db->exec(
             "CREATE TABLE user (
-            id INT PRIMARY KEY,
+            id varchar(64) PRIMARY KEY,
             name TEXT NOT NULL ,
             email TEXT NOT NULL,
             testingUnits TEXT NOT NULL,
 	        newsletter BOOL NOT NULL,
-			thirdPartyId BIGINT unsigned NOT NULL,
 			thumbnailPath TEXT,
             updated_at DATETIME
         );");

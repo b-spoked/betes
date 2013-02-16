@@ -36,7 +36,7 @@ class User
 	 "dirty":true}
 	*/
 	
-    static $USER_FIELDS = array('name', 'email', 'testingUnits','newsletter','thumbnailPath','thirdPartyId');
+    static $USER_FIELDS = array('id','name', 'email', 'testingUnits','newsletter','thumbnailPath');
     static $LOGBOOK_FIELDS = array('name','bsLevel','insulinAmount','resultDate','exerciseDuration','exerciseIntensity','comments','labels','userId');
 
     function __construct()
@@ -148,8 +148,8 @@ class User
             $user[$field] = $data[$field];
         }
 		
-		if($user['thirdPartyId'] <= 0){
-			throw new RestException(417, "user thirdPartyId not set");
+		if($user['id'] <= 0){
+			throw new RestException(417, "user id not set");
 		}
 		if($user['name'] == ""){
 			throw new RestException(417, "user name not set");

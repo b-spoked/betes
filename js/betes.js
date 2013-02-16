@@ -124,15 +124,12 @@ $(function($) {
             name: '',
             email: 'na',
             newsletter: false,
-            thirdPartyId : 0,
             thumbnailPath: '',
             authenticated : false,
             testingUnits : 'mmol/l',
             logEntries :[],
             userGoals:[]
         },
-
-        idAttribute: 'thirdPartyId',
 
         urlRoot: "/api/index.php/user.json",
 
@@ -162,8 +159,6 @@ $(function($) {
         },
         url:'/api/index.php/user.json'
     });
-
-    //window.Users = new UserDetails();
 
     //Edit record modal view
     app.EditEntryView = Backbone.View.extend({
@@ -430,7 +425,7 @@ $(function($) {
                 exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
                 labels: $("#entry-labels").val().trim(),
                 comments: $("#entry-comments").val().trim(),
-                userId : app.User.get('sid')
+                userId : app.User.get('id')
             };
         }
 
@@ -454,7 +449,7 @@ $(function($) {
             app.User.logEntries.bind('add', this.addOne, this);
             app.User.logEntries.bind('reset', this.addAll, this);
             app.User.logEntries.bind('remove', this.refresh, this);
-            //app.User.logEntries.fetch();
+            app.User.logEntries.fetch();
         },
         render: function() {
             $(this.el).hide();
@@ -970,10 +965,10 @@ $(function($) {
 
                             app.User = app.Users.first();
 
-                            if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
+                            if (!app.User || (app.User.get("id") != data.id)) {
                                 console.log('3rd party id: '+data.id);
                                 app.User = new User({
-                                    thirdPartyId:data.id,
+                                    id:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
@@ -1011,10 +1006,10 @@ $(function($) {
 
                             app.User = app.Users.first();
 
-                            if (!app.User || (app.User.get("thirdPartyId") != data.id)) {
+                            if (!app.User || (app.User.get("id") != data.id)) {
                                 console.log('3rd party id: '+data.id);
                                 app.User = new User({
-                                    thirdPartyId:data.id,
+                                    id:data.id,
                                     name:data.name,
                                     email:data.email,
                                     thumbnailPath:data.picture,
@@ -1097,7 +1092,7 @@ $(function($) {
             if (!app.User) {
                 app.Users.add(new User());
                 app.User = app.Users.first();
-            } else if ((app.User.get('thirdPartyId') > 0) && (app.User.get('authenticated'))) {
+            } else if ((app.User.get('id') > 0) && (app.User.get('authenticated'))) {
                 app.Users.storage.sync.push();
             }
 

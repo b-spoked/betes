@@ -40,6 +40,23 @@ class LogBookResultData
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
+	
+	function get($id, $installTableOnFailure = FALSE)
+    {
+        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        try {
+            $sql = 'SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,userId,updated_at, id FROM result WHERE id = ' . mysql_escape_string(
+                $id);
+            return $this->id2int($this->db->query($sql)->fetch());
+        } catch (PDOException $e) {
+            if (!$installTableOnFailure && $e->getCode() == '42S02') {
+                //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
+                $this->install();
+                return $this->getAll($userId, TRUE);
+            }
+            throw new RestException(501, 'MySQL: ' . $e->getMessage());
+        }
+    }
 
     function insert($rec)
     {
@@ -58,7 +75,7 @@ class LogBookResultData
 		if (!$this->db->query($sql)){
             return false;
         }
-        return true;
+        return $this->get($this->db->lastInsertId());
     }
 
     function update($rec)
@@ -117,7 +134,7 @@ class LogBookResultData
             exerciseIntensity TEXT NOT NULL,
             labels TEXT,
             comments TEXT,
-            userId BIGINT NOT NULL,
+            userId varchar(64) NOT NULL,
             updated_at DATETIME
         );");
     }

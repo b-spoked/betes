@@ -14,6 +14,7 @@ $(function($) {
             comments : '',
             userId : 0
         },
+        urlRoot: "/api/index.php/user.json/logbook",
         initialize: function() {
             this.checkGoals();
         },
@@ -410,8 +411,9 @@ $(function($) {
             $("#add-entry-dialog").modal('show');
         },
         saveNewEntry:function() {
-
-            app.User.logEntries.create(this.entryValues());
+            logEntry = new Entry(this.entryValues());
+            logEntry.save();
+            app.User.logEntries.create(logEntry,{local:true});
             $("#add-entry-dialog").modal('hide');
         },
 
@@ -1050,8 +1052,6 @@ $(function($) {
         }
     });
     //Navigation View
-
-
     app.NavView = Backbone.View.extend({
 
         el: "#app-nav",
@@ -1099,112 +1099,7 @@ $(function($) {
         }
 
     });
-    /*app.NavView = Backbone.View.extend({
-
-     el: "#app-nav",
-
-     events: {
-     'click #login': 'userLogin',
-     'click #logout': 'userLogout'
-     },
-
-     navigationTemplate: _.template( $('#nav-template').html()),
-
-     initialize: function() {
-     this.getCurrentUser();
-     _.bindAll(this, "render");
-     app.FBUser.bind('change',this.updateUserStatus, this);
-     app.FBUser.on('facebook:unauthorized',this.fbUnauthorized, this);
-     app.FBUser.on('facebook:connected',this.fbConnected, this);
-     app.FBUser.on('facebook:disconnected',this.fbDisconnected, this);
-     this.render();
-     },
-     render: function() {
-     $(this.el).html(this.navigationTemplate(app.User.toJSON()));
-     return this;
-     },
-
-     fbUnauthorized:  function(model, response) {
-     console.info('facebook:unauthorized');
-     },
-
-     fbConnected: function(model, response) {
-     console.info('facebook:connected');
-     $('#login').attr('disabled', true);
-     $('#logout').attr('disabled', false);
-     },
-
-     fbDisconnected: function(model, response) {
-     console.info('facebook:disconnected');
-     $('#login').attr('disabled', false);
-     $('#logout').attr('disabled', true);
-     },
-     updateUserStatus:function(){
-     console.info('update user status');
-     var self = this;
-     if(app.FBUser.isConnected()){
-     console.log('authenticated');
-     self.fbConnected();
-     Offline.onLine = function() {
-     return navigator.onLine !== false;
-     };
-
-     app.User.set({thirdPartyId:app.FBUser.get('id'),
-     name:app.FBUser.get('name'),
-     email:'unknown',
-     testingUnits : 'mmol/l',
-     thumbnailPath:app.FBUser.get('pictures').square,
-     authenticated:true
-     });
-
-     app.User.save();
-
-     }else{
-
-     console.log('not authenticated');
-     self.fbDisconnected();
-
-     Offline.onLine = function() {
-     return false;
-     };
-     app.User.set({authenticated:false});
-     app.User.save();
-     }
-     },
-     setLocalSave:function(){
-     Offline.onLine = function() {
-     return false;
-     };
-     },
-
-     setServerSave:function(){
-     Offline.onLine = function() {
-     return navigator.onLine !== false;
-     };
-     },
-     getCurrentUser:function() {
-     var user,
-     users;
-
-     users = new UserDetails();
-     users.fetch();
-     user = users.first();
-
-     if (!user) {
-     users.create(new User());
-     user = users.first();
-     }
-
-     app.User = user;
-     },
-     userLogin : function(){
-     app.FBUser.login();
-     },
-     userLogout : function(){
-     app.FBUser.logout();
-     }
-
-     });*/
+    
     var ApplicationRouter = Backbone.Router.extend({
 
         navigationView : null,
@@ -1264,8 +1159,4 @@ $(function($) {
 
     AppRouter = new ApplicationRouter();
     Backbone.history.start();
-    //authorisation
-    // Configurate the Facebook OAuth settings.
-
-
 });

@@ -529,8 +529,8 @@ $(function($) {
             }
 
             var margin = {top: 10, right: 20, bottom: 20, left: 30},
-                width = 480;// - margin.left - margin.right,
-            height = 320;// - margin.top - margin.bottom;
+                width = 430;// - margin.left - margin.right,
+                height = 290;// - margin.top - margin.bottom;
 
             var x = d3.time.scale()
                 .range([0, width]);
@@ -814,15 +814,10 @@ $(function($) {
                 });
             }
 
-            /* var margin = {top: 20, right: 20, bottom: 30, left: 50},
-             width = 960,
-             height = 137,
-             cellSize = 17;*/ // cell size
-
             var margin = {top: 5, right: 20, bottom: 5, left: 5},
-                width = 480;// - margin.left - margin.right,
-            height = 100;// - margin.top - margin.bottom,
-            cellSize = 8; // cell size
+                width = 455;// - margin.left - margin.right,
+                height = 100;// - margin.top - margin.bottom,
+                cellSize = 8; // cell size
 
             var day = d3.time.format("%w"),
                 week = d3.time.format("%U"),

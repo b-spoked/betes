@@ -28,8 +28,8 @@ class LogBookResultData
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
-            $sql = 'SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,userId,updated_at, id FROM result WHERE userId = ' . mysql_escape_string(
-                $userId);
+            $sql = "SELECT name,bsLevel,insulinAmount,resultDate,exerciseDuration,exerciseIntensity,comments,labels,userId,updated_at, id FROM result WHERE userId = '$userId'";
+			
             return $this->id2int($this->db->query($sql)->fetchAll());
         } catch (PDOException $e) {
             if (!$installTableOnFailure && $e->getCode() == '42S02') {

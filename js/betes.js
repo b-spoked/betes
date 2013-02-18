@@ -94,7 +94,7 @@ $(function($) {
         },
         comparator: function(entry) {
             //latest entry first
-            var entryDate = new Date(entry.get('when'));
+            var entryDate = new Date(entry.get('resultDate'));
             return -entryDate.getTime();
         }
     });
@@ -141,11 +141,11 @@ $(function($) {
             this.userGoals = new GoalSet(this.get('userGoals'));
 
             this.logEntries.url = function () {
-                return self.urlRoot + '/logbook/';
+                return self.urlRoot + '/logbook/'+self.get('id');
             };
 
             this.userGoals.url = function () {
-                return self.urlRoot + '/goals/';
+                return self.urlRoot + '/goals/'+self.get('id');
             };
 
         }
@@ -187,7 +187,7 @@ $(function($) {
             return {
                 name: $("#edit-entry-name").val().trim(),
                 bsLevel: $("#edit-entry-level").val().trim(),
-                when: $("#edit-entry-date").val().trim(),
+                resultDate: $("#edit-entry-date").val().trim(),
                 insulinAmount: $("#edit-entry-insulin").val().trim(),
                 exerciseDuration: $("#edit-entry-exercise-duration").val().trim(),
                 exerciseIntensity: $("#edit-entry-exercise-intensity").val().trim(),
@@ -550,7 +550,7 @@ $(function($) {
             var averagedData = this.getAverageResults(data);
             var averagedLine = d3.svg.line()
                 .x(function(entry) {
-                    return x(entry.when);
+                    return x(entry.resultDate);
                 })
                 .y(function(entry) {
                     return y(entry.average);
@@ -564,13 +564,13 @@ $(function($) {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             data.forEach(function(entry) {
-                entry.when = new Date(entry.when);
+                entry.resultDate = new Date(entry.resultDate);
                 //console.log(entry.when);
                 entry.bsLevel = +entry.bsLevel;
             });
 
             x.domain(d3.extent(data, function(entry) {
-                return entry.when;
+                return entry.resultDate;
             }));
             y.domain(d3.extent(data, function(entry) {
                 return entry.bsLevel;
@@ -602,7 +602,7 @@ $(function($) {
                 .attr("class", "dot")
                 .attr("r", 3.5)
                 .attr("cx", function(d) {
-                    return x(d.when);
+                    return x(d.resultDate);
                 })
                 .attr("cy", function(d) {
                     return y(d.bsLevel);
@@ -663,7 +663,7 @@ $(function($) {
 
                 data.forEach(function(entry) {
                     if (entry.bsLevel) {
-                        var point = {when:new Date(entry.when),average:averageReading};
+                        var point = {resultDate:new Date(entry.resultDate),average:averageReading};
                         averaged.push(point);
                     }
                 });
@@ -708,7 +708,7 @@ $(function($) {
 
             var line = d3.svg.line()
                 .x(function(entry) {
-                    return x(entry.when);
+                    return x(entry.resultDate);
                 })
                 .y(function(entry) {
                     return y(entry.bsLevel);
@@ -716,7 +716,7 @@ $(function($) {
 
             var line2 = d3.svg.line()
                 .x(function(entry) {
-                    return x(entry.when);
+                    return x(entry.resultDate);
                 })
                 .y(function(entry) {
                     return y2(entry.exerciseDuration);
@@ -731,13 +731,13 @@ $(function($) {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             data.forEach(function(entry) {
-                entry.when = new Date(entry.when);
+                entry.resultDate = new Date(entry.resultDate);
                 entry.bsLevel = +entry.bsLevel;
                 entry.exerciseDuration = entry.exerciseDuration;
             });
 
             x.domain(d3.extent(data, function(entry) {
-                return entry.when;
+                return entry.resultDate;
             }));
             y.domain(d3.extent(data, function(entry) {
                 return entry.bsLevel;
@@ -778,7 +778,7 @@ $(function($) {
                 .attr("class", "dot")
                 .attr("r", 3.5)
                 .attr("cx", function(d) {
-                    return x(d.when);
+                    return x(d.resultDate);
                 })
                 .attr("cy", function(d) {
                     return y(d.bsLevel);
@@ -793,7 +793,7 @@ $(function($) {
                 .attr("class", "dot")
                 .attr("r", 3.5)
                 .attr("cx", function(d) {
-                    return x(d.when);
+                    return x(d.resultDate);
                 })
                 .attr("cy", function(d) {
                     return y(d.exerciseDuration);
@@ -879,7 +879,7 @@ $(function($) {
             //roll up goals for the day
             var goalsData = d3.nest()
                 .key(function(d) {
-                    return format(new Date(d.when));
+                    return format(new Date(d.resultDate));
                 })
                 .rollup(function(d) {
                     return .4;
@@ -1089,6 +1089,7 @@ $(function($) {
                 app.User = app.Users.first();
             } else if ((app.User.get('id') > 0) && (app.User.get('authenticated'))) {
                 app.Users.storage.sync.push();
+                
             }
 
         }

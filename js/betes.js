@@ -413,7 +413,7 @@ $(function($) {
         saveNewEntry:function() {
             logEntry = new Entry(this.entryValues());
             logEntry.save();
-            app.User.logEntries.create(logEntry,{local:true});
+            app.User.logEntries.create(logEntry, {local:true});
             $("#add-entry-dialog").modal('hide');
         },
 
@@ -530,7 +530,7 @@ $(function($) {
 
             var margin = {top: 10, right: 20, bottom: 20, left: 30},
                 width = 430;// - margin.left - margin.right,
-                height = 290;// - margin.top - margin.bottom;
+            height = 290;// - margin.top - margin.bottom;
 
             var x = d3.time.scale()
                 .range([0, width]);
@@ -816,8 +816,8 @@ $(function($) {
 
             var margin = {top: 5, right: 20, bottom: 5, left: 5},
                 width = 455;// - margin.left - margin.right,
-                height = 100;// - margin.top - margin.bottom,
-                cellSize = 8; // cell size
+            height = 100;// - margin.top - margin.bottom,
+            cellSize = 8; // cell size
 
             var day = d3.time.format("%w"),
                 week = d3.time.format("%U"),
@@ -963,7 +963,7 @@ $(function($) {
                             app.User = app.Users.first();
 
                             if (!app.User || (app.User.get("id") != data.id)) {
-                                console.log('3rd party id: '+data.id);
+                                console.log('3rd party id: ' + data.id);
                                 app.User = new User({
                                     id:data.id,
                                     name:data.name,
@@ -971,12 +971,12 @@ $(function($) {
                                     thumbnailPath:data.picture,
                                     authenticated:true
                                 });
-                                
+
                                 app.User.fetch();
                                 app.User.save();
 
                                 app.Users.reset();
-                                app.Users.create(app.User,{local:true});
+                                app.Users.create(app.User, {local:true});
 
                             }
                         }
@@ -1004,7 +1004,7 @@ $(function($) {
                             app.User = app.Users.first();
 
                             if (!app.User || (app.User.get("id") != data.id)) {
-                                console.log('3rd party id: '+data.id);
+                                console.log('3rd party id: ' + data.id);
                                 app.User = new User({
                                     id:data.id,
                                     name:data.name,
@@ -1012,12 +1012,12 @@ $(function($) {
                                     thumbnailPath:data.picture,
                                     authenticated:true
                                 });
-                                
+
                                 app.User.fetch();
                                 app.User.save();
 
                                 app.Users.reset();
-                                app.Users.create(app.User,{local:true});
+                                app.Users.create(app.User, {local:true});
 
                             }
 
@@ -1094,7 +1094,7 @@ $(function($) {
         }
 
     });
-    
+
     var ApplicationRouter = Backbone.Router.extend({
 
         navigationView : null,

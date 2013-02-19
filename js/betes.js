@@ -437,7 +437,10 @@ $(function($) {
         logBookTemplate: _.template($('#logbook-template').html()),
 
         events: {
-            'click .create-new-entry': 'showNewEntryDialog',
+            'click #create-new-entry': 'showEventDialog',
+            'click #create-new-result-entry': 'showNewResultEntryDialog',
+            'click #create-new-excercise-entry': 'showNewExcerciseEntryDialog',
+            'click #create-new-note-entry': 'showNoteEntryDialog',
             "keyup #filter-logbook" : "filterLogBook",
             "keyup #filter-bs-graph" : "filterBloodSugarGraph",
             'keyup #filter-bs-vs-exercise-graph': "filterBloodSugarVsExerciseGraph",
@@ -491,7 +494,38 @@ $(function($) {
             entries.each(this.addOne, this);
 
         },
+
         showNewEntryDialog: function() {
+
+           alert('todo'); 
+          //this.showEventDialog('all');
+
+        },
+        showNewEntryDialog: function() {
+            
+            alert('todo');
+            //this.showEventDialog('all');
+
+        },
+        showNewResultEntryDialog: function() {
+            
+           alert('todo');
+            //this.showEventDialog('result');
+
+        },
+        showNewExcerciseEntryDialog: function() {
+            
+            alert('todo');
+            //this.showEventDialog('excercise');
+
+        },
+        
+        showNoteEntryDialog: function() {
+
+          this.showEventDialog('');
+
+        },
+        showEventDialog: function() {
 
             var view = new app.AddEntryView();
             view.render();

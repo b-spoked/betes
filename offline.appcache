@@ -22,4 +22,4 @@ js/d3.v2.min.js
 js/jquery-1.8.2.min.js
 js/underscore-min.js
 js/backbone_offline.js
-js/FacebookConnect.js
+js/lib/backbone.oauth.js

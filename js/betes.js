@@ -34,6 +34,19 @@ $(function($) {
         goalPercentageForDay : function() {
             return .25;
         },
+        filterDates:function(timeSpan){
+            if(timeSpan=='today'){
+                return this.filterToday();
+            }else if(timeSpan=='week'){
+                
+                return this.filterWeek();
+            }else if(timeSpan=='month'){
+                
+                return this.filterMonth();
+            }
+            
+                return this.filterToday();
+        },
         filterEntries : function(letters) {
 
             if (letters == "") {
@@ -62,7 +75,37 @@ $(function($) {
             }
             return this;
         },
-
+        
+        filterToday: function() {
+            var today=new Date();
+            
+           return _(this.filter(function(data) {
+                var entryDate = new Date(data.get('resultDate'));
+                
+                return (entryDate.getDate() === today.getDate()
+                    && entryDate.getMonth() === today.getMonth()
+                    && entryDate.getFullYear() === today.getFullYear());
+            }));
+        },
+        filterDays : function(numberOfDays) {
+            
+            var today=new Date();
+            var endDate=new Date();
+            endDate.setDate(endDate.getDate()-numberOfDays);
+            
+            return _(this.filter(function(data) {
+                var entryDate = new Date(data.get('resultDate'));
+                var lessThan = (entryDate.getDate() <= endDate.getDate()
+                    && entryDate.getMonth() <= endDate.getMonth()
+                    && entryDate.getFullYear() <= endDate.getFullYear());
+                
+                 var greaterThan = (entryDate.getDate() >= today.getDate()
+                    && entryDate.getMonth() >= today.getMonth()
+                    && entryDate.getFullYear() >= today.getFullYear());
+            
+                return (lessThan || greaterThan);
+            }));
+        },
         filterString : function(letters) {
             var pattern = new RegExp(letters, "gi");
             return _(this.filter(function(data) {
@@ -394,7 +437,7 @@ $(function($) {
     //Add record modal view
     app.AddEntryView = Backbone.View.extend({
         addEntryTemplate: _.template($('#add-item-template').html()),
-
+    
         events: {
             'click .add-entry': 'saveNewEntry'
         },
@@ -439,13 +482,10 @@ $(function($) {
 
         events: {
             'click #create-new-entry': 'showEventDialog',
-            'click #create-new-result-entry': 'showNewResultEntryDialog',
-            'click #create-new-excercise-entry': 'showNewExcerciseEntryDialog',
-            'click #create-new-note-entry': 'showNoteEntryDialog',
+            'click #show-today': 'filterToday',
+            'click #show-week': 'filterWeek',
+            'click #show-month': 'filterMonth',
             "keyup #filter-logbook" : "filterLogBook",
-            'click #help-filter-logbook': 'filterLogBookHelp',
-            "keyup #filter-logbook-dates" : "filterLogBookDates",
-            'click #help-filter-logbook-dates': 'filterLogBookDatesHelp',
             "keyup #filter-bs-graph" : "filterBloodSugarGraph",
             'keyup #filter-bs-vs-exercise-graph': "filterBloodSugarVsExerciseGraph",
             'keyup #filter-goals-graph': "filterGoalsGraph",
@@ -453,6 +493,7 @@ $(function($) {
         },
 
         initialize: function() {
+            $('#filter-logbook-popover').popover('toggle');
             $(this.el).html(this.logBookTemplate());
             _.bindAll(this);
             app.User.logEntries.bind('add', this.addOne, this);
@@ -499,60 +540,26 @@ $(function($) {
                 entries.each(this.addOne, this);
             }
         },
-
-        showNewEntryDialog: function() {
-
-            alert('todo');
-            //this.showEventDialog('all');
-
-        },
-        showNewEntryDialog: function() {
-
-            alert('todo');
-            //this.showEventDialog('all');
-
-        },
-        showNewResultEntryDialog: function() {
-
-            alert('todo');
-            //this.showEventDialog('result');
-
-        },
-        showNewExcerciseEntryDialog: function() {
-
-            alert('todo');
-            //this.showEventDialog('excercise');
-
-        },
-
-        showNoteEntryDialog: function() {
-
-            this.showEventDialog('');
-
-        },
         showEventDialog: function() {
-
             var view = new app.AddEntryView();
             view.render();
 
             var $modalEl = $("#modal-dialog");
             $modalEl.html(view.el);
             view.showDialog();
-
+        },
+        filterToday:function(){
+            this.addAll(app.User.logEntries.filterDates('today'));
+        },
+        filterWeek:function(){
+            this.addAll(app.User.logEntries.filterDays(7));
+        },
+        filterMonth:function(){
+            this.addAll(app.User.logEntries.filterDays(31));
         },
         filterLogBook: function(e) {
             var searchString = $("#filter-logbook").val();
             this.addAll(app.User.logEntries.filterEntries(searchString));
-        },
-        filterLogBookHelp: function(e) {
-           $('#filter-logbook-popover').popover('toggle');
-        },
-        filterLogBookDates: function(e) {
-            var searchString = $("#filter-logbook").val();
-            this.addAll(app.User.logEntries.filterEntries(searchString));
-        },
-        filterLogBookDatesHelp: function(e) {
-            $('#filter-logbook-dates-popover').popover('toggle');
         },
         filterBloodSugarGraph: function(e) {
             var searchString = $("#filter-bs-graph").val();

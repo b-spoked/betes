@@ -141,11 +141,11 @@ $(function($) {
             this.userGoals = new GoalSet(this.get('userGoals'));
 
             this.logEntries.url = function () {
-                return self.urlRoot + '/logbook/'+self.get('id');
+                return self.urlRoot + '/logbook/' + self.get('id');
             };
 
             this.userGoals.url = function () {
-                return self.urlRoot + '/goals/'+self.get('id');
+                return self.urlRoot + '/goals/' + self.get('id');
             };
 
         }
@@ -326,9 +326,10 @@ $(function($) {
             if (goals == null) {
                 goals = app.User.userGoals.fetch();
             }
-            this.$('#goals-list').html('');
-            goals.each(this.addOne, this);
-
+            if(goals != null){
+                this.$('#goals-list').html('');
+                goals.each(this.addOne, this);
+            }
         },
         userProfileValues: function() {
             return {
@@ -442,6 +443,9 @@ $(function($) {
             'click #create-new-excercise-entry': 'showNewExcerciseEntryDialog',
             'click #create-new-note-entry': 'showNoteEntryDialog',
             "keyup #filter-logbook" : "filterLogBook",
+            'click #help-filter-logbook': 'filterLogBookHelp',
+            "keyup #filter-logbook-dates" : "filterLogBookDates",
+            'click #help-filter-logbook-dates': 'filterLogBookDatesHelp',
             "keyup #filter-bs-graph" : "filterBloodSugarGraph",
             'keyup #filter-bs-vs-exercise-graph': "filterBloodSugarVsExerciseGraph",
             'keyup #filter-goals-graph': "filterGoalsGraph",
@@ -490,39 +494,40 @@ $(function($) {
             if (entries == null) {
                 entries = app.User.logEntries.fetch();
             }
-            this.$('#events-list').html('');
-            entries.each(this.addOne, this);
-
+            if(entries != null){
+                this.$('#events-list').html('');
+                entries.each(this.addOne, this);
+            }
         },
 
         showNewEntryDialog: function() {
 
-           alert('todo'); 
-          //this.showEventDialog('all');
+            alert('todo');
+            //this.showEventDialog('all');
 
         },
         showNewEntryDialog: function() {
-            
+
             alert('todo');
             //this.showEventDialog('all');
 
         },
         showNewResultEntryDialog: function() {
-            
-           alert('todo');
+
+            alert('todo');
             //this.showEventDialog('result');
 
         },
         showNewExcerciseEntryDialog: function() {
-            
+
             alert('todo');
             //this.showEventDialog('excercise');
 
         },
-        
+
         showNoteEntryDialog: function() {
 
-          this.showEventDialog('');
+            this.showEventDialog('');
 
         },
         showEventDialog: function() {
@@ -538,6 +543,16 @@ $(function($) {
         filterLogBook: function(e) {
             var searchString = $("#filter-logbook").val();
             this.addAll(app.User.logEntries.filterEntries(searchString));
+        },
+        filterLogBookHelp: function(e) {
+           $('#filter-logbook-popover').popover('toggle');
+        },
+        filterLogBookDates: function(e) {
+            var searchString = $("#filter-logbook").val();
+            this.addAll(app.User.logEntries.filterEntries(searchString));
+        },
+        filterLogBookDatesHelp: function(e) {
+            $('#filter-logbook-dates-popover').popover('toggle');
         },
         filterBloodSugarGraph: function(e) {
             var searchString = $("#filter-bs-graph").val();
@@ -1123,7 +1138,7 @@ $(function($) {
                 app.User = app.Users.first();
             } else if ((app.User.get('id') > 0) && (app.User.get('authenticated'))) {
                 app.Users.storage.sync.push();
-                
+
             }
 
         }

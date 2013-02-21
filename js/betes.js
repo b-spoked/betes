@@ -595,7 +595,7 @@ $(function($) {
             if (entries) {
                 data = new Array();
                 entries.forEach(function(entry) {
-                    if (entry.get("bsLevel") != "") {
+                    if((entry.get("bsLevel") != "") && (entry.get("bsLevel") > 0)) {
                         data.push(entry.toJSON());
                     }
                 });
@@ -651,13 +651,13 @@ $(function($) {
 
             svg.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
+                .attr("transform", "translate(10," + height + ")")
                 .call(xAxis)
                 .append("text")
-                .attr("y", 6)
+                .attr("y", -10)
                 .attr("dy", ".75em")
-                .style("text-anchor", "end")
-                .text("Date")
+                .style("text-anchor", "middle")
+                .text("Reading Date")
 
             svg.append("g")
                 .attr("class", "y axis")
@@ -673,7 +673,7 @@ $(function($) {
                 .data(data)
                 .enter().append("circle")
                 .attr("class", "dot")
-                .attr("r", 3.5)
+                .attr("r", 2)
                 .attr("cx", function(d) {
                     return x(d.resultDate);
                 })
@@ -700,21 +700,19 @@ $(function($) {
                 });
 
             legend.append("rect")
-                .attr("x", width - 10)
-                .attr("width", 10)
-                .attr("height", 10)
+                .attr("x", width - 5)
+                .attr("width", 5)
+                .attr("height", 5)
                 .style("fill", color);
 
             legend.append("text")
-                .attr("x", width - 18)
-                .attr("y", 5)
-                .attr("dy", ".35em")
+                .attr("x", width - 13)
+                .attr("y", 3)
+                .attr("dy", ".25em")
                 .style("text-anchor", "end")
                 .text(function(d) {
                     return d;
                 });
-
-
         },
         getAverageResults : function(data) {
 

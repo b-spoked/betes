@@ -204,10 +204,14 @@
 					</div>
 				</div>
 				<div class="tab-pane" id="bs-graph">
-					<div class="input-prepend">
-								<span class="add-on">Filter Results</span>
-								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-graph" >
-					</div>
+                    <div class="row-fluid">
+                        <div class="span2">
+                            <div class="input-prepend">
+                                        <span class="add-on">Filter Results</span>
+                                        <input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-graph" >
+                            </div>
+                        </div>
+                    </div>    
 					<div id="bs-results">
 					</div>
 				</div>
@@ -223,9 +227,8 @@
 					
 		</script>			
 		<script type="text/template" id="goal-template">
-			<td><% if(bsLowerRange) { %> <%= bsLowerRange %> <% } %> </td>
-			<td><% if(bsUpperRange) { %> <%= bsUpperRange %> <% } %></td>
-			<td><% if(bsFrequency) { %> <%= bsFrequency %> u<% } %></td>
+			<td><% if(bsLowerRange) { %> <%= bsLowerRange %> <% } %> - <% if(bsUpperRange) { %> <%= bsUpperRange %> <% } %></td>
+			<td><% if(bsFrequency) { %> <%= bsFrequency %> <% } %></td>
 			<td><% if(exerciseDuration) { %> <%= exerciseDuration %> <% } %></td>
 			<td><% if(exerciseFrequency) { %> <%= exerciseFrequency %> <% } %></td>			
 			<td><% if(longTermGoal) { %> <%= longTermGoal %> <% } %></td>
@@ -358,8 +361,7 @@
 				<table class="table table-bordered table-condensed">
 					<thead>
 						<tr>
-							<th>&lt;</th>
-							<th>&gt;</th>
+							<th>Results range</th>
 							<th>Tests/day</th>
 							<th>Exercise mins/week</th>
 							<th>Long Term</th>

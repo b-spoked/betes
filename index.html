@@ -155,12 +155,18 @@
                                 <button id="create-new-entry" class="btn btn-primary">Add Event</button>
                             </div>
                         </div>
-                        <div class="span4">
+                        <div class="span2">
                             <div class="btn-group">
                                 <button id="show-today" class="btn">Today</button>
-                                <button id="show-week" class="btn">Week</button>
-                                <button id="show-month" class="btn">Month</button>
-                            </div>
+                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                  <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a id="show-yesterday" href="#">Yesterday</a></li>
+                                    <li><a id="show-seven" href="#">Last 7 days</a></li>
+                                    <li><a id="show-thirty" href="#">Last 30 days</a></li>
+                                </ul>
+                              </div>
                         </div>                  
                         <div class="span4">
                              <div class="input-prepend input-append">

@@ -87,23 +87,36 @@ $(function($) {
                     && entryDate.getFullYear() === today.getFullYear());
             }));
         },
+        filterYesterday: function() {
+            var yesterday=new Date();
+            yesterday.setDate(yesterday.getDate()-1);
+            
+           return _(this.filter(function(data) {
+                var entryDate = new Date(data.get('resultDate'));
+                
+                return (entryDate.getDate() === yesterday.getDate()
+                    && entryDate.getMonth() === yesterday.getMonth()
+                    && entryDate.getFullYear() === yesterday.getFullYear());
+            }));
+        },
         filterDays : function(numberOfDays) {
             
             var today=new Date();
             var endDate=new Date();
-            endDate.setDate(endDate.getDate()-numberOfDays);
+            endDate.setDate(endDate.getDate()-parseInt(numberOfDays));
             
             return _(this.filter(function(data) {
                 var entryDate = new Date(data.get('resultDate'));
-                var lessThan = (entryDate.getDate() <= endDate.getDate()
-                    && entryDate.getMonth() <= endDate.getMonth()
-                    && entryDate.getFullYear() <= endDate.getFullYear());
                 
-                 var greaterThan = (entryDate.getDate() >= today.getDate()
-                    && entryDate.getMonth() >= today.getMonth()
-                    && entryDate.getFullYear() >= today.getFullYear());
+                var lessThan = (entryDate.getDate() >= endDate.getDate()
+                    && entryDate.getMonth() >= endDate.getMonth()
+                    && entryDate.getFullYear() >= endDate.getFullYear());
+                
+                 var greaterThan = (entryDate.getDate() <= today.getDate()
+                    && entryDate.getMonth() <= today.getMonth()
+                    && entryDate.getFullYear() <= today.getFullYear());
             
-                return (lessThan || greaterThan);
+                return (lessThan||greaterThan);
             }));
         },
         filterString : function(letters) {
@@ -483,8 +496,9 @@ $(function($) {
         events: {
             'click #create-new-entry': 'showEventDialog',
             'click #show-today': 'filterToday',
-            'click #show-week': 'filterWeek',
-            'click #show-month': 'filterMonth',
+            'click #show-yesterday': 'filterYesterday',
+            'click #show-seven': 'filterSeven',
+            'click #show-thirty': 'filterThirty',
             "keyup #filter-logbook" : "filterLogBook",
             "keyup #filter-bs-graph" : "filterBloodSugarGraph",
             'keyup #filter-bs-vs-exercise-graph': "filterBloodSugarVsExerciseGraph",
@@ -548,14 +562,17 @@ $(function($) {
             $modalEl.html(view.el);
             view.showDialog();
         },
-        filterToday:function(){
-            this.addAll(app.User.logEntries.filterDates('today'));
+        filterToday:function(){;
+             this.addAll(app.User.logEntries.filterToday());
         },
-        filterWeek:function(){
-            this.addAll(app.User.logEntries.filterDays(7));
+        filterYesterday:function(){
+            this.addAll(app.User.logEntries.filterYesterday());
         },
-        filterMonth:function(){
-            this.addAll(app.User.logEntries.filterDays(31));
+        filterSeven:function(){
+            this.addAll(app.User.logEntries.filterDays('7'));
+        },
+        filterThirty:function(){
+            this.addAll(app.User.logEntries.filterDays('30'));
         },
         filterLogBook: function(e) {
             var searchString = $("#filter-logbook").val();

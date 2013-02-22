@@ -139,52 +139,48 @@
 		</div>
 		</script>
 		<script type="text/template" id="logbook-template">
-		
+            
 			<ul class="nav nav-tabs" id="myTab">
-				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>				
+				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
+                <li><a href="#insights-graph" data-toggle="tab">Insights</a></li>
 				<li><a href="#bs-graph" data-toggle="tab">Results</a></li>
 				<li><a href="#goals-graph" data-toggle="tab">Goals</a></li>
 			</ul>
 		       
 			<div class="tab-content">
 				<div class="tab-pane active" id="logbook">
-					
+					<% if((app.User) && (app.User.logBook!=null)) { %>
 					<div class="row-fluid">
 						<div class="span2">
                             <div class="btn-group">
-                                <button id="create-new-entry" class="btn btn-primary">Add Event</button>
+                               <button class="btn btn-primary create-new-entry">Add Event</button>
                             </div>
                         </div>
                         <div class="span2">
                             <div class="btn-group">
-                                <button id="show-today" class="btn">Today</button>
-                                <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                  <span class="caret"></span>
-                                </button>
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                    Show Events
+                                    <span class="caret"></span>
+                                </a>
                                 <ul class="dropdown-menu">
-                                    <li><a id="show-yesterday" href="#">Yesterday</a></li>
-                                    <li><a id="show-seven" href="#">Last 7 days</a></li>
-                                    <li><a id="show-thirty" href="#">Last 30 days</a></li>
+                                    <li><a href="#" class="show-today">Today</a></li>
+                                    <li><a href="#" class="show-yesterday">Yesterday</a></li>
+                                    <li><a href="#" class="show-seven">Last 7</a></li>
+                                    <li><a href="#" class="show-thirty">Last 30</a></li>
                                 </ul>
-                              </div>
+                            </div>
                         </div>                  
-                        <div class="span4">
+                        <div class="span3">
                              <div class="input-prepend input-append">
 								<span class="add-on">Filter Events</span>
 								<input type="text" placeholder="e.g. 'dinner' or 'sickday'" id="filter-logbook" >
                                 <a id="filter-logbook-popover" href="#" class="btn" data-toggle="popover" title="help" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">?</a>
                              </div>
                         </div>
-                        <!--<div class="span4">
-                             <div class="input-prepend input-append">
-								<span class="add-on">Filter Date</span>
-								<input type="text" placeholder="e.g. 'today' or 'week'" id="filter-logbook-dates" >
-                                 <a href="#" class="btn" data-toggle="popover" title="help" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">?</a>
-                             </div>
-                        </div>-->
 					</div>
 					
 					<div id="modal-item"></div>
+
 					<table class="table table-bordered table-condensed">
 						<thead>
 						  <tr>
@@ -197,7 +193,44 @@
 						</thead>
 						<tbody id="events-list">
 						</tbody>
-					</table>	
+					</table>
+                    <% } else { %>
+                        <div class="hero-unit">
+                            <h1>Get Started</h1>
+                            <p>To get started you just need to start adding events to your logbook.
+                            You can add results, exercise and comments to help you track and understand your diabetes.</p>
+                            <p>
+                                <button class="btn btn-primary create-new-entry">Add First Event</button>
+                            </p>
+                        </div>
+                    <% } %>
+				</div>
+                <div class="tab-pane" id="insights-graph">
+                    <div>
+                        <div class="btn-group" data-toggle="buttons-radio">
+                            <button id="insights-today" class="btn">Today</button>
+                            <button id="insights-yesterday" class="btn">Yesterday</button>
+                            <button id="insights-seven" class="btn">Last 7</button>
+                            <button id="insights-thirty" class="btn">Last 30</button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <caption>Quick insights into your diabetes</caption>
+                        <thead>
+                            <tr>
+                                <th>Lows</th>
+                                <th>Highs</th>
+                                <th>Exercise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge">1</span></td>
+                                <td><span class="badge">10</span></td>
+                                <td><span class="badge">120 mins</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
 				</div>
 				<div class="tab-pane" id="goals-graph">					
 					<div id="goals">

@@ -34,18 +34,18 @@ $(function($) {
         goalPercentageForDay : function() {
             return .25;
         },
-        filterDates:function(timeSpan){
-            if(timeSpan=='today'){
+        filterDates:function(timeSpan) {
+            if (timeSpan == 'today') {
                 return this.filterToday();
-            }else if(timeSpan=='week'){
-                
+            } else if (timeSpan == 'week') {
+
                 return this.filterWeek();
-            }else if(timeSpan=='month'){
-                
+            } else if (timeSpan == 'month') {
+
                 return this.filterMonth();
             }
-            
-                return this.filterToday();
+
+            return this.filterToday();
         },
         filterEntries : function(letters) {
 
@@ -75,48 +75,48 @@ $(function($) {
             }
             return this;
         },
-        
+
         filterToday: function() {
-            var today=new Date();
-            
-           return _(this.filter(function(data) {
+            var today = new Date();
+
+            return _(this.filter(function(data) {
                 var entryDate = new Date(data.get('resultDate'));
-                
+
                 return (entryDate.getDate() === today.getDate()
                     && entryDate.getMonth() === today.getMonth()
                     && entryDate.getFullYear() === today.getFullYear());
             }));
         },
         filterYesterday: function() {
-            var yesterday=new Date();
-            yesterday.setDate(yesterday.getDate()-1);
-            
-           return _(this.filter(function(data) {
+            var yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            return _(this.filter(function(data) {
                 var entryDate = new Date(data.get('resultDate'));
-                
+
                 return (entryDate.getDate() === yesterday.getDate()
                     && entryDate.getMonth() === yesterday.getMonth()
                     && entryDate.getFullYear() === yesterday.getFullYear());
             }));
         },
         filterDays : function(numberOfDays) {
-            
-            var today=new Date();
-            var endDate=new Date();
-            endDate.setDate(endDate.getDate()-parseInt(numberOfDays));
-            
+
+            var today = new Date();
+            var endDate = new Date();
+            endDate.setDate(endDate.getDate() - parseInt(numberOfDays));
+
             return _(this.filter(function(data) {
                 var entryDate = new Date(data.get('resultDate'));
-                
+
                 var lessThan = (entryDate.getDate() >= endDate.getDate()
                     && entryDate.getMonth() >= endDate.getMonth()
                     && entryDate.getFullYear() >= endDate.getFullYear());
-                
-                 var greaterThan = (entryDate.getDate() <= today.getDate()
+
+                var greaterThan = (entryDate.getDate() <= today.getDate()
                     && entryDate.getMonth() <= today.getMonth()
                     && entryDate.getFullYear() <= today.getFullYear());
-            
-                return (lessThan||greaterThan);
+
+                return (lessThan || greaterThan);
             }));
         },
         filterString : function(letters) {
@@ -382,7 +382,7 @@ $(function($) {
             if (goals == null) {
                 goals = app.User.userGoals.fetch();
             }
-            if(goals != null){
+            if (goals != null) {
                 this.$('#goals-list').html('');
                 goals.each(this.addOne, this);
             }
@@ -450,7 +450,7 @@ $(function($) {
     //Add record modal view
     app.AddEntryView = Backbone.View.extend({
         addEntryTemplate: _.template($('#add-item-template').html()),
-    
+
         events: {
             'click .add-entry': 'saveNewEntry'
         },
@@ -494,20 +494,17 @@ $(function($) {
         logBookTemplate: _.template($('#logbook-template').html()),
 
         events: {
-            'click #create-new-entry': 'showEventDialog',
-            'click #show-today': 'filterToday',
-            'click #show-yesterday': 'filterYesterday',
-            'click #show-seven': 'filterSeven',
-            'click #show-thirty': 'filterThirty',
+            'click .create-new-entry': 'showEventDialog',
+            'click .show-today': 'filterToday',
+            'click .show-yesterday': 'filterYesterday',
+            'click .show-seven': 'filterSeven',
+            'click .show-thirty': 'filterThirty',
             "keyup #filter-logbook" : "filterLogBook",
             "keyup #filter-bs-graph" : "filterBloodSugarGraph",
-            'keyup #filter-bs-vs-exercise-graph': "filterBloodSugarVsExerciseGraph",
-            'keyup #filter-goals-graph': "filterGoalsGraph",
             'shown a[data-toggle="tab"]': "showGraph"
         },
 
         initialize: function() {
-            $('#filter-logbook-popover').popover('toggle');
             $(this.el).html(this.logBookTemplate());
             _.bindAll(this);
             app.User.logEntries.bind('add', this.addOne, this);
@@ -549,7 +546,7 @@ $(function($) {
             if (entries == null) {
                 entries = app.User.logEntries.fetch();
             }
-            if(entries != null){
+            if (entries != null) {
                 this.$('#events-list').html('');
                 entries.each(this.addOne, this);
             }
@@ -562,16 +559,16 @@ $(function($) {
             $modalEl.html(view.el);
             view.showDialog();
         },
-        filterToday:function(){;
-             this.addAll(app.User.logEntries.filterToday());
+        filterToday:function() {
+            this.addAll(app.User.logEntries.filterToday());
         },
-        filterYesterday:function(){
+        filterYesterday:function() {
             this.addAll(app.User.logEntries.filterYesterday());
         },
-        filterSeven:function(){
+        filterSeven:function() {
             this.addAll(app.User.logEntries.filterDays('7'));
         },
-        filterThirty:function(){
+        filterThirty:function() {
             this.addAll(app.User.logEntries.filterDays('30'));
         },
         filterLogBook: function(e) {
@@ -583,10 +580,6 @@ $(function($) {
 
             this.showBloodSugarGraph(app.User.logEntries.filterEntries(searchString));
         },
-        filterBloodSugarVsExerciseGraph: function(e) {
-            var searchString = $("#filter-bs-vs-exercise-graph").val();
-            this.filterBloodSugarVsExerciseGraph(app.User.logEntries.filterEntries(searchString));
-        },
         showBloodSugarGraph : function(entries) {
 
             var data = null;
@@ -595,7 +588,7 @@ $(function($) {
             if (entries) {
                 data = new Array();
                 entries.forEach(function(entry) {
-                    if((entry.get("bsLevel") != "") && (entry.get("bsLevel") > 0)) {
+                    if ((entry.get("bsLevel") != "") && (entry.get("bsLevel") > 0)) {
                         data.push(entry.toJSON());
                     }
                 });
@@ -741,139 +734,6 @@ $(function($) {
             }
             return averaged;
         },
-        filterBloodSugarVsExerciseGraph : function(entries) {
-
-            var data = null;
-            var color = d3.scale.category10();
-
-
-            if (entries) {
-                data = new Array();
-                entries.forEach(function(entry) {
-                    data.push(entry.toJSON());
-                });
-            }
-
-            var margin = {top: 20, right: 20, bottom: 30, left: 50},
-                width = 960 - margin.left - margin.right,
-                height = 500 - margin.top - margin.bottom;
-
-            var x = d3.time.scale()
-                .range([0, width]);
-            //blood sugars
-            var y = d3.scale.linear().range([height, 0]);
-            //exercise
-            var y2 = d3.scale.linear().range([height, 0]);
-
-            var xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("bottom");
-
-            var yAxisLeft = d3.svg.axis()
-                .scale(y)
-                .orient("left");
-
-            var yAxisRight = d3.svg.axis()
-                .scale(y2)
-                .orient("right");
-
-            var line = d3.svg.line()
-                .x(function(entry) {
-                    return x(entry.resultDate);
-                })
-                .y(function(entry) {
-                    return y(entry.bsLevel);
-                });
-
-            var line2 = d3.svg.line()
-                .x(function(entry) {
-                    return x(entry.resultDate);
-                })
-                .y(function(entry) {
-                    return y2(entry.exerciseDuration);
-                });
-
-            $("#bs-vs-exercise").html('');
-
-            var svg = d3.select("#bs-vs-exercise").append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            data.forEach(function(entry) {
-                entry.resultDate = new Date(entry.resultDate);
-                entry.bsLevel = +entry.bsLevel;
-                entry.exerciseDuration = entry.exerciseDuration;
-            });
-
-            x.domain(d3.extent(data, function(entry) {
-                return entry.resultDate;
-            }));
-            y.domain(d3.extent(data, function(entry) {
-                return entry.bsLevel;
-            }));
-            y2.domain(d3.extent(data, function(entry) {
-                return entry.exerciseDuration;
-            }));
-
-            svg.append("g")
-                .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
-
-            svg.append("g")
-                .attr("class", "y axis")
-                .call(yAxisLeft)
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", "1em")
-                .style("text-anchor", "end")
-                .text("Reading (mmol)");
-
-            svg.append("g")
-                .attr("class", "y axis axisRight")
-                .call(yAxisRight)
-                .attr("transform", "translate(" + (width - 10) + ",0)")
-                .append("text")
-                .attr("transform", "rotate(-90)")
-                .attr("y", 6)
-                .attr("dy", "1em")
-                .style("text-anchor", "end")
-                .text("exercise (mins)");
-
-            svg.selectAll(".dot")
-                .data(data)
-                .enter().append("circle")
-                .attr("class", "dot")
-                .attr("r", 3.5)
-                .attr("cx", function(d) {
-                    return x(d.resultDate);
-                })
-                .attr("cy", function(d) {
-                    return y(d.bsLevel);
-                })
-                .style("fill", function(d) {
-                    return color(d.exerciseDuration);
-                });
-
-            svg.selectAll(".dot")
-                .data(data)
-                .enter().append("circle")
-                .attr("class", "dot")
-                .attr("r", 3.5)
-                .attr("cx", function(d) {
-                    return x(d.resultDate);
-                })
-                .attr("cy", function(d) {
-                    return y(d.exerciseDuration);
-                })
-                .style("fill", function(d) {
-                    return color(d.exerciseDuration);
-                });
-
-        },
         showGoalsGraph : function(entries) {
 
             var data = null;
@@ -981,11 +841,6 @@ $(function($) {
             }
 
         },
-        filterGoalsGraph: function(e) {
-            var searchString = $("#filter-goals-graph").val();
-            this.showGoalsGraph(e, app.User.logEntries.filterEntries(searchString));
-        },
-
         shareGraph : function(e) {
             var graphCanvas = document.getElementById("mycanvas");
             var graphImg = graphCanvas.toDataURL("image/png");

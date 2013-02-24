@@ -184,6 +184,8 @@ $(function($) {
             thumbnailPath: '',
             authenticated : false,
             testingUnits : 'mmol/l',
+            logUsed:false,
+            goalsUsed:false,
             logEntries :[],
             userGoals:[]
         },
@@ -191,7 +193,7 @@ $(function($) {
         urlRoot: "/api/index.php/user.json",
 
         initialize: function() {
-
+            _.bindAll(this);
             var self = this;
             this.logEntries = new Entries(this.get('logEntries'));
             this.userGoals = new GoalSet(this.get('userGoals'));
@@ -203,8 +205,41 @@ $(function($) {
             this.userGoals.url = function () {
                 return self.urlRoot + '/goals/' + self.get('id');
             };
-
+        },
+        hasLogEntries: function(){
+            this.logUsed = (this.logEntries.length > 0);
+            return this.logUsed;
+        },
+        hasGoals: function(){
+            this.goalsUsed = (this.userGoals.length > 0);
+            return this.goalsUsed;
+        },
+        highs: function(){
+            return _(this.logEntries.filter(function(entry) {
+                return (parseInt(entry.get("bsLevel")) > 10);
+            }));
+        },
+        lows: function(){
+            return _(this.logEntries.filter(function(entry) {
+                return (parseInt(entry.get("bsLevel")) > 0 && parseInt(entry.get("bsLevel")) < 4);
+            }));
+            
+        },
+        tests: function(){
+            
+            return _(this.logEntries.filter(function(entry) {
+                return (parseInt(entry.get("bsLevel")) > 0);
+            }));
+            
+        },
+        excercise: function(){
+            
+            return _(this.logEntries.filter(function(entry) {
+                return (parseInt(entry.get("exerciseDuration")) > 0);
+            }));
+            
         }
+        
     });
 
     var UserDetails = Backbone.Collection.extend({
@@ -499,18 +534,22 @@ $(function($) {
             'click .show-yesterday': 'filterYesterday',
             'click .show-seven': 'filterSeven',
             'click .show-thirty': 'filterThirty',
-            "keyup #filter-logbook" : "filterLogBook",
-            "keyup #filter-bs-graph" : "filterBloodSugarGraph",
+            "keyup .filter-logbook" : "filterLogEntries",
             'shown a[data-toggle="tab"]': "showGraph"
         },
 
         initialize: function() {
             $(this.el).html(this.logBookTemplate());
             _.bindAll(this);
+            
             app.User.logEntries.bind('add', this.addOne, this);
             app.User.logEntries.bind('reset', this.addAll, this);
             app.User.logEntries.bind('remove', this.refresh, this);
+            
+            //app.User.on('change:logUsed', this.refresh, this);
+            
             app.User.logEntries.fetch();
+            //app.User.hasLogEntries();
         },
         render: function() {
             $(this.el).hide();
@@ -530,10 +569,10 @@ $(function($) {
         showGraph :function(e) {
             if (e.target.hash == "#bs-graph") {
                 this.showBloodSugarGraph(app.User.logEntries);
-            } else if (e.target.hash == "#bs-vs-exercise-graph") {
-                this.showBloodSugarVsexerciseGraph(app.User.logEntries);
             } else if (e.target.hash == "#goals-graph") {
                 this.showGoalsGraph(app.User.logEntries);
+            } else if (e.target.hash == "#insights-graph") {
+                this.showInsights(app.User.logEntries);
             }
         },
         addOne: function(entry) {
@@ -541,6 +580,7 @@ $(function($) {
                 model: entry
             });
             this.$('#events-list').append(view.render().el);
+            this.onShow();
         },
         addAll: function(entries) {
             if (entries == null) {
@@ -571,14 +611,25 @@ $(function($) {
         filterThirty:function() {
             this.addAll(app.User.logEntries.filterDays('30'));
         },
-        filterLogBook: function(e) {
-            var searchString = $("#filter-logbook").val();
+        filterLogEntries: function(e) {
+            var searchString = $(".filter-logbook").val();
             this.addAll(app.User.logEntries.filterEntries(searchString));
         },
         filterBloodSugarGraph: function(e) {
             var searchString = $("#filter-bs-graph").val();
-
             this.showBloodSugarGraph(app.User.logEntries.filterEntries(searchString));
+        },
+        showInsights:function(entries){
+            
+            if (entries) {
+                data = new Array();
+                entries.forEach(function(entry) {
+                    if ((entry.get("bsLevel") != "") && (entry.get("bsLevel") > 0)) {
+                        data.push(entry.toJSON());
+                    }
+                });
+            }
+                   
         },
         showBloodSugarGraph : function(entries) {
 

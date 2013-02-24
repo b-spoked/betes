@@ -149,31 +149,23 @@
 		       
 			<div class="tab-content">
 				<div class="tab-pane active" id="logbook">
-					<% if((app.User) && (app.User.logBook!=null)) { %>
 					<div class="row-fluid">
-						<div class="span2">
+						<div class="span4">
                             <div class="btn-group">
-                               <button class="btn btn-primary create-new-entry">Add Event</button>
+                                <button class="btn btn-primary create-new-entry">Add Event</button>
                             </div>
                         </div>
-                        <div class="span2">
-                            <div class="btn-group">
-                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                    Show Events
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#" class="show-today">Today</a></li>
-                                    <li><a href="#" class="show-yesterday">Yesterday</a></li>
-                                    <li><a href="#" class="show-seven">Last 7</a></li>
-                                    <li><a href="#" class="show-thirty">Last 30</a></li>
-                                </ul>
+                        <div class="span4">
+                            <div class="btn-group" data-toggle="buttons-radio">
+                                <button class="btn show-today">Today</button>
+                                <button class="btn show-yesterday">Yesterday</button>
+                                <button class="btn show-seven">Last 7</button>
                             </div>
-                        </div>                  
-                        <div class="span3">
+                        </div>
+                        <div class="span4">
                              <div class="input-prepend input-append">
 								<span class="add-on">Filter Events</span>
-								<input type="text" placeholder="e.g. 'dinner' or 'sickday'" id="filter-logbook" >
+								<input type="text" placeholder="e.g. 'dinner' or 'sickday'" class="filter-logbook" >
                                 <a id="filter-logbook-popover" href="#" class="btn" data-toggle="popover" title="help" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">?</a>
                              </div>
                         </div>
@@ -194,30 +186,21 @@
 						<tbody id="events-list">
 						</tbody>
 					</table>
-                    <% } else { %>
-                        <div class="hero-unit">
-                            <h1>Get Started</h1>
-                            <p>To get started you just need to start adding events to your logbook.
-                            You can add results, exercise and comments to help you track and understand your diabetes.</p>
-                            <p>
-                                <button class="btn btn-primary create-new-entry">Add First Event</button>
-                            </p>
-                        </div>
-                    <% } %>
+                    
 				</div>
                 <div class="tab-pane" id="insights-graph">
                     <div>
                         <div class="btn-group" data-toggle="buttons-radio">
-                            <button id="insights-today" class="btn">Today</button>
-                            <button id="insights-yesterday" class="btn">Yesterday</button>
-                            <button id="insights-seven" class="btn">Last 7</button>
-                            <button id="insights-thirty" class="btn">Last 30</button>
+                            <button class="btn show-today">Today</button>
+                            <button class="btn show-yesterday">Yesterday</button>
+                            <button class="btn show-seven">Last 7</button>
                         </div>
                     </div>
                     <table class="table table-bordered">
                         <caption>Quick insights into your diabetes</caption>
                         <thead>
                             <tr>
+                                <th>Tests</th>
                                 <th>Lows</th>
                                 <th>Highs</th>
                                 <th>Exercise</th>
@@ -225,9 +208,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="badge">1</span></td>
-                                <td><span class="badge">10</span></td>
-                                <td><span class="badge">120 mins</span></td>
+                                <td><span class="badge badge-success">4</span></td>    
+                                <td><span class="badge badge-warning">1</span></td>
+                                <td><span class="badge badge-important">10</span></td>
+                                <td><span class="badge badge-success">120 mins</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -241,19 +225,11 @@
                         <div class="span2">
                             <div class="input-prepend">
                                         <span class="add-on">Filter Results</span>
-                                        <input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-graph" >
+                                        <input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" class="filter-logbook" >
                             </div>
                         </div>
                     </div>    
 					<div id="bs-results">
-					</div>
-				</div>
-				<div class="tab-pane" id="bs-vs-exercise-graph">
-					<div class="input-prepend">
-								<span class="add-on">Filter</span>
-								<input type="text" placeholder="e.g. 'Dinner' or 'Sickday'" id="filter-bs-vs-exercise-graph" >	
-					</div>
-					<div id="bs-vs-exercise">
 					</div>
 				</div>
 			</div>

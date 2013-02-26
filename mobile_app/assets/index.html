@@ -28,13 +28,11 @@
 		<div class="navbar navbar-inverse">
 			<div class="navbar-inner">
 				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
-				<ul class="nav">
-					<li id="log-page" class="active"><a href="#">Log Book</a></li>
-					<li id="settings-page"><a href="#/account">Account</a></li>
-				</ul>
+				
                 <div class="pull-right">
                     <%if(authenticated) {%>
-                        <a href="#/account" class="btn">Hi <%= name%></a>
+                        Hi <%= name%>
+						<button id="logout" class="btn btn-primary"> Logout</button>
                     <%} else { %>
                         <button id="login" class="btn btn-primary"> Login</button>
                     <%}%>    
@@ -44,10 +42,9 @@
 		</script>
 		<script type="text/template" id="item-template">
             <td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
-			<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u<% } %></td>
-			<td><% if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
-			<td><% if(labels) { %> <%= labels %> <% } %></td>
-            <td><% if(comments) { %> <%= comments %> <% } %></td>
+			<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u
+			<% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+			
 		</script>
 		<script type="text/template" id="edit-item-template">
 		<div id="edit-entry" class="modal hide fade">
@@ -112,11 +109,8 @@
 				</select>
                 
 				<input type="text" name="entry-date" id="entry-date">
-                <% if(dialogType=="glucoseResult" || dialogType=="allOptions") {%>
 				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
 				<input type="text" id="entry-insulin" placeholder="Insulin Given">
-                <%}%>
-                <% if(dialogType=="exerciseResult" || dialogType=="allOptions") {%>
                 <label for="entry-exercise-duration">exercise</label>
 				<input type="text" id="entry-exercise-duration" placeholder="exercise duration?">				
 				<select id="entry-exercise-intensity">
@@ -127,7 +121,6 @@
 					<option value="Moderate-Intense">Moderate-Intense</option>
 					<option value="Intense">Intense</option>
 				</select>
-                <%}%>
 				<label for="entry-labels">Labels</label>
 				<input class="span12" type="text" id="entry-labels" placeholder="e.g. sickday, traveling (comma seperated)">
 				<label for="entry-comments">Comments</label>
@@ -143,60 +136,36 @@
 		<script type="text/template" id="logbook-template">
             
 			<ul class="nav nav-tabs" id="myTab">
-                <li class="active"><a href="#add-events" data-toggle="tab">Events</a></li>
-				<li><a href="#logbook" data-toggle="tab">Logbook</a></li>
+				<li class="active"><a href="#logbook" data-toggle="tab">Logbook</a></li>
                 <li><a href="#insights-graph" data-toggle="tab">Insights</a></li>
 			</ul>
 		       
-			<div class="tab-content">
-                <div class="tab-pane active" id="add-events">
-					<div class="row-fluid">
-						<div class="hero-unit">
-                            <p>
-                                 <button class="btn btn-block btn-primary btn-large add-result"><i class="icon-ok icon-large"></i> Add Result</button>
-                            </p>
-                            <p>
-                                <button class="btn btn-block btn-success btn-large add-exercise"><i class="icon-ok icon-large"></i> Add Exercise</button>
-                            </p>
-                            <p>
-                                <button class="btn btn-block btn-success btn-large add-note"><i class="icon-ok icon-large"></i> Add Note</button>
-                            </p>
-                        </div>
+			<div class="tab-content">                
+				<div class="tab-pane active" id="logbook">
+				<div class="btn-toolbar">
+					<div class="btn-group">
+						<button class="btn btn-primary add-all">Add New Event</button>
 					</div>
-				</div>
-				<div class="tab-pane" id="logbook">
-					<div class="row-fluid">
-						<div class="span4">
-                            <div class="btn-group">
-                                <button class="btn btn-primary add-all">Add Event</button>
-                            </div>
-                        </div>
-                        <div class="span4">
-                            <div class="btn-group" data-toggle="buttons-radio">
+					<div class="btn-group" data-toggle="buttons-radio">
                                 <button class="btn show-today">Today</button>
                                 <button class="btn show-yesterday">Yesterday</button>
                                 <button class="btn show-seven">Last 7</button>
-                            </div>
-                        </div>
-                        <div class="span4">
-                             <div class="input-prepend input-append">
+                    </div>
+					</div>	
+					<div class="input-prepend input-append">
 								<span class="add-on">Filter Events</span>
 								<input type="text" placeholder="e.g. 'dinner' or 'sickday'" class="filter-logbook" >
                                 <a id="filter-logbook-popover" href="#" class="btn" data-toggle="popover" title="help" data-content="And here's some amazing content. It's very engaging. right?" data-original-title="A Title">?</a>
-                             </div>
-                        </div>
-					</div>
+                    </div>
+					
 					
 					<div id="modal-item"></div>
 
 					<table class="table table-bordered table-condensed">
 						<thead>
 						  <tr>
-						    <th style="width:20%">At</th>
-						    <th style="width:15%">result (and insulin)</th>
-						    <th style="width:15%">exercise</th>
-						    <th style="width:15%">labels</th>
-						    <th style="width:35%">other</th>
+						    <th style="width:30%">When</th>
+						    <th style="width:70%">What</th>
 						  </tr>
 						</thead>
 						<tbody id="events-list">

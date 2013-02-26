@@ -508,7 +508,7 @@ $(function($) {
     //The fill log book
     app.LogBookView = Backbone.View.extend({
         logBookTemplate: _.template($('#logbook-template').html()),
-
+			
         events: {
             'click .add-all': 'showEventDialog',
             'click .add-result': 'showResultEventDialog',
@@ -656,7 +656,6 @@ $(function($) {
             _.extend(Backbone.OAuth.configs.Facebook, {
 
                 onSuccess: function(params) {
-                    console.log('FB ' + params.access_token);
 
                     // Get the user's data from Facebook's graph api.
                     $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
@@ -697,7 +696,6 @@ $(function($) {
             _.extend(Backbone.OAuth.configs.Google, {
 
                 onSuccess: function(params) {
-                    console.log('Google: ' + params.access_token);
 
                     // Get the user's data from the Google api.
                     $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {

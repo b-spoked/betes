@@ -232,7 +232,7 @@ $(function($) {
             }));
             
         },
-        excercise: function(){
+        exercise: function(){
             
             return _(this.logEntries.filter(function(entry) {
                 return (parseInt(entry.get("exerciseDuration")) > 0);

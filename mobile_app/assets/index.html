@@ -6,9 +6,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Betes Log - Your Diabetes Log Book</title>
-		<link rel="stylesheet" href="css/bootstrap.min.css" />
-		<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
-		<link rel="stylesheet" href="css/font-awesome.css" />
+		<link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
+		<link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
+		<link rel="stylesheet" href="css/vendor/font-awesome.css" />
 		<link rel="stylesheet" href="css/graphs.css" />
 	</head>
 	  
@@ -427,7 +427,22 @@
         <script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
         <script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
         <script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
-        <script type="text/javascript" src="js/betes.js"></script>
+		<script type="text/javascript" src="js/models/Entry.js"></script>
+		<script type="text/javascript" src="js/models/User.js"></script>
+		<script type="text/javascript" src="js/models/Goal.js"></script>
+		
+		<script type="text/javascript" src="js/views/AccountView.js"></script>
+		<script type="text/javascript" src="js/views/AddGoalsView.js"></script>
+		<script type="text/javascript" src="js/views/AddLogbookEntryView.js"></script>
+		<script type="text/javascript" src="js/views/EditLogbookEntryView.js"></script>
+		<script type="text/javascript" src="js/views/GoalsView.js"></script>
+		<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
+		<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
+		<script type="text/javascript" src="js/views/LogbookView.js"></script>
+		<script type="text/javascript" src="js/views/LoginView.js"></script>
+		<script type="text/javascript" src="js/views/NavigationView.js"></script>
+		
+        <script type="text/javascript" src="js/main.js"></script>
         <script>
             var hash=window.location.hash;
             window.close();

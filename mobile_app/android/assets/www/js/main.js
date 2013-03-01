@@ -10,10 +10,12 @@ var ApplicationRouter = Backbone.Router.extend({
 	},
 
 	initialize : function() {
+		console.log('load nav');
 		this.navigationView = new NavigationView();
 	},
 
 	showLogBook : function() {
+		console.log('load logbook');
 		this.setActiveNav("#log-page");
 		RegionManager.show(new LogBookView());
 	},
@@ -55,6 +57,9 @@ RegionManager = (function(Backbone, $) {
 })(Backbone, jQuery);
 
 function startApp() {
+	
+	console.log('lets start!!');
+	
 	app = new ApplicationRouter();
 	Backbone.history.start();
 }

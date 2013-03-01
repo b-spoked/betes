@@ -7,7 +7,6 @@
  */
 window.LogBookView = Backbone.View
 		.extend({
-			logBookTemplate : _.template($('#logbook-template').html()),
 
 			events : {
 				'click .create-new-entry' : 'showEventDialog',
@@ -20,7 +19,7 @@ window.LogBookView = Backbone.View
 			},
 
 			initialize : function() {
-				$(this.el).html(this.logBookTemplate());
+				
 				_.bindAll(this);
 
 				window.BetesApp.User.logEntries.bind('add', this.addOne, this);
@@ -31,6 +30,9 @@ window.LogBookView = Backbone.View
 				window.BetesApp.User.logEntries.fetch();
 			},
 			render : function() {
+				var viewHtml =  _.template($('#logbook-template').html());
+				$(this.el).html(viewHtml);
+				
 				$(this.el).hide();
 			},
 			close : function() {
@@ -55,7 +57,7 @@ window.LogBookView = Backbone.View
 				}
 			},
 			addOne : function(entry) {
-				var view = new app.LogBookEntryView({
+				var view = new LogBookEntryView({
 					model : entry
 				});
 				this.$('#events-list').append(view.render().el);
@@ -71,7 +73,7 @@ window.LogBookView = Backbone.View
 				}
 			},
 			showEventDialog : function() {
-				var view = new app.AddEntryView();
+				var view = new AddEntryView();
 				view.render();
 
 				var $modalEl = $("#modal-dialog");

@@ -13,8 +13,6 @@ window.NavigationView = Backbone.View.extend({
 		'click #login' : 'showLoginDialog'
 	},
 
-	navigationTemplate : _.template($('#nav-template').html()),
-
 	initialize : function() {
 		this.getCurrentUser();
 		_.bindAll(this, "render");
@@ -22,7 +20,8 @@ window.NavigationView = Backbone.View.extend({
 		this.render();
 	},
 	render : function() {
-		$(this.el).html(this.navigationTemplate(window.BetesApp.User.toJSON()));
+		var viewHtml =  _.template($('#nav-template').html(),window.BetesApp.User.toJSON());
+		$(this.el).html(viewHtml);
 		return this;
 	},
 

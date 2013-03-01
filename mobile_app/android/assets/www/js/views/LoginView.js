@@ -16,7 +16,7 @@ window.LoginView = Backbone.View.extend({
 
     initialize: function() {
         _.bindAll(this);
-        app.User.on('change:authenticated', this.setUserSaveStatus, this);
+        window.BetesApp.User.on('change:authenticated', this.setUserSaveStatus, this);
     },
     render: function() {
         $(this.el).html(this.loginTemplate());
@@ -40,14 +40,14 @@ window.LoginView = Backbone.View.extend({
                 // Get the user's data from Facebook's graph api.
                 $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                     success: function(data) {
-                        app.Users = new UserDetails();
-                        app.Users.fetch({local:true});
+                    	window.BetesApp.Users = new UserDetails();
+                    	window.BetesApp.Users.fetch({local:true});
 
-                        app.User = app.Users.first();
+                    	window.BetesApp.User = window.BetesApp.Users.first();
 
-                        if (!app.User || (app.User.get("id") != data.id)) {
+                        if (!window.BetesApp.User || (window.BetesApp.User.get("id") != data.id)) {
                             console.log('3rd party id: ' + data.id);
-                            app.User = new User({
+                            window.BetesApp.User = new User({
                                 id:data.id,
                                 name:data.name,
                                 email:data.email,
@@ -55,11 +55,11 @@ window.LoginView = Backbone.View.extend({
                                 authenticated:true
                             });
 
-                            app.User.fetch();
-                            app.User.save();
+                            window.BetesApp.User.fetch();
+                            window.BetesApp.User.save();
 
-                            app.Users.reset();
-                            app.Users.create(app.User, {local:true});
+                            window.BetesApp.Users.reset();
+                            window.BetesApp.Users.create(window.BetesApp.User, {local:true});
 
                         }
                     }
@@ -81,14 +81,14 @@ window.LoginView = Backbone.View.extend({
                 // Get the user's data from the Google api.
                 $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                     success: function(data) {
-                        app.Users = new UserDetails();
-                        app.Users.fetch({local:true});
+                        window.BetesApp.Users = new UserDetails();
+                        window.BetesApp.Users.fetch({local:true});
 
-                        app.User = app.Users.first();
+                        window.BetesApp.User = window.BetesApp.Users.first();
 
-                        if (!app.User || (app.User.get("id") != data.id)) {
+                        if (!window.BetesApp.User || (window.BetesApp.User.get("id") != data.id)) {
                             console.log('3rd party id: ' + data.id);
-                            app.User = new User({
+                            window.BetesApp.User = new User({
                                 id:data.id,
                                 name:data.name,
                                 email:data.email,
@@ -96,11 +96,11 @@ window.LoginView = Backbone.View.extend({
                                 authenticated:true
                             });
 
-                            app.User.fetch();
-                            app.User.save();
+                            window.BetesApp.User.fetch();
+                            window.BetesApp.User.save();
 
-                            app.Users.reset();
-                            app.Users.create(app.User, {local:true});
+                            window.BetesApp.Users.reset();
+                            window.BetesApp.Users.create(window.BetesApp.User, {local:true});
 
                         }
 

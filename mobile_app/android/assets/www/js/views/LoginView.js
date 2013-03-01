@@ -7,19 +7,18 @@
  */
 window.LoginView = Backbone.View.extend({
 
-    loginTemplate: _.template($('#login-template').html()),
-
     events: {
         'click #login-fb': 'loginWithFB',
         'click #login-google': 'loginWithGoogle'
     },
 
     initialize: function() {
+    	this.template = _.template(tpl.get('LoginView'));
         _.bindAll(this);
         window.BetesApp.User.on('change:authenticated', this.setUserSaveStatus, this);
     },
     render: function() {
-        $(this.el).html(this.loginTemplate());
+    	 $(this.el).html(this.template());
     },
     showDialog:function() {
         $("#login-dialog").modal('show');

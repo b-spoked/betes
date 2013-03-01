@@ -6,14 +6,17 @@
  * To change this template use File | Settings | File Templates.
  */
 window.AddLogbookEntryView = Backbone.View.extend({
-    addEntryTemplate: _.template($('#add-item-template').html()),
-
-    events: {
+    
+	events: {
         'click .add-entry': 'saveNewEntry'
+    },
+    initialize: function() {
+    	this.template = _.template(tpl.get('AddLogbookEntryView'));
     },
 
     render: function() {
-        $(this.el).html(this.addEntryTemplate());
+    	
+		$(this.el).html(this.template());
         return this;
     },
 

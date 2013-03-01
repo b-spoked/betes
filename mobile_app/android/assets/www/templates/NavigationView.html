@@ -1,0 +1,14 @@
+<div class="navbar navbar-inverse">
+			<div class="navbar-inner">
+				<a class="brand" href="#"><i class="icon-tint"></i> Betes Log</a>
+				
+                <div class="pull-right">
+                    <%if(authenticated) {%>
+                        Hi <%= name%>
+						<button id="logout" class="btn btn-primary"> Logout</button>
+                    <%} else { %>
+                        <button id="login" class="btn btn-primary"> Login</button>
+                    <%}%>    
+				</div>
+			</div>
+		</div>

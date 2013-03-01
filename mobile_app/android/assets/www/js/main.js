@@ -57,9 +57,11 @@ RegionManager = (function(Backbone, $) {
 })(Backbone, jQuery);
 
 function startApp() {
-	
-	console.log('lets start!!');
-	
-	app = new ApplicationRouter();
-	Backbone.history.start();
+
+	tpl.loadTemplates([ 'AddLogbookEntryView', 'EditLogbookEntryView',
+			'LogbookEntryView', 'LogbookView', 'LoginView', 'NavigationView' ],
+			function() {
+				app = new ApplicationRouter();
+				Backbone.history.start();
+			});
 }

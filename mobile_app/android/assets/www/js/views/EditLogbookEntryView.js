@@ -7,14 +7,17 @@
  */
 //Edit record modal view
 window.EditLogbookEntryView = Backbone.View.extend({
-    editEntryTemplate: _.template($('#edit-item-template').html()),
-
+	
     events: {
         'click .save-edit': 'saveEdits'
     },
 
+    initialize: function() {
+    	this.template = _.template(tpl.get('EditLogbookEntryView'));
+    },
+    
     render: function() {
-        $(this.el).html(this.editEntryTemplate(this.model.toJSON()));
+		$(this.el).html(this.template(this.model.toJSON()));
         return this;
     },
 

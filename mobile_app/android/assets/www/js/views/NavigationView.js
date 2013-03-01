@@ -1,9 +1,6 @@
 /**
- * Created by JetBrains PhpStorm.
- * User: Jamie
- * Date: 27/02/13
- * Time: 3:55 PM
- * To change this template use File | Settings | File Templates.
+ * Created by JetBrains PhpStorm. User: Jamie Date: 27/02/13 Time: 3:55 PM To
+ * change this template use File | Settings | File Templates.
  */
 window.NavigationView = Backbone.View.extend({
 
@@ -14,14 +11,16 @@ window.NavigationView = Backbone.View.extend({
 	},
 
 	initialize : function() {
+		
 		this.getCurrentUser();
 		_.bindAll(this, "render");
 		window.BetesApp.User.bind('change:authenticated', this.render, this);
+		 this.template = _.template(tpl.get('NavigationView'));
+	   
 		this.render();
 	},
 	render : function() {
-		var viewHtml =  _.template($('#nav-template').html(),window.BetesApp.User.toJSON());
-		$(this.el).html(viewHtml);
+		 $(this.el).html(this.template(window.BetesApp.User.toJSON()));
 		return this;
 	},
 

@@ -19,7 +19,7 @@ window.LogBookView = Backbone.View
 			},
 
 			initialize : function() {
-				
+				this.template = _.template(tpl.get('LogBookView'));
 				_.bindAll(this);
 
 				window.BetesApp.User.logEntries.bind('add', this.addOne, this);
@@ -30,9 +30,8 @@ window.LogBookView = Backbone.View
 				window.BetesApp.User.logEntries.fetch();
 			},
 			render : function() {
-				var viewHtml =  _.template($('#logbook-template').html());
-				$(this.el).html(viewHtml);
 				
+				$(this.el).html(this.template());
 				$(this.el).hide();
 			},
 			close : function() {

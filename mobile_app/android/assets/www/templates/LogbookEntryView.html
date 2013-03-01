@@ -1,0 +1,3 @@
+<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
+<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+			

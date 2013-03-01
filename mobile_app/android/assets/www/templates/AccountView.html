@@ -1,0 +1,95 @@
+<script type="text/javascript">
+<ul class="nav nav-tabs" id="user-tabs">
+	<li><a href="#user-account-tab" data-toggle="tab">Account</a></li>
+	<li><a href="#user-goals-tab" data-toggle="tab">Goals</a></li>
+</ul>
+<div class="tab-content">
+	<div class="tab-pane" id="user-goals-tab">
+		<div>
+			<form class="form-inline">
+				<button class="btn btn-primary add-new-goals">Add Goal Set</button>
+			</form>
+		</div>
+		<div id="modal-goal"></div>
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>Results range</th>
+					<th>Tests/day</th>
+					<th>Exercise mins/week</th>
+					<th>Long Term</th>
+					<th>Achieved by</th>
+				</tr>
+			</thead>
+			<tbody id="goals-list">
+			</tbody>
+		</table>
+
+	</div>
+	<div class="tab-pane" id="user-account-tab">
+		<div id="profile-saved-message" class="alert alert-success">
+			<button type="button" class="close" data-dismiss="alert">×</button>
+			Profile Updated
+		</div>
+		<div>
+			<h3>Details</h3>
+			<div>
+				<div>
+					<img<% if(thumbnailPath) { %> src="<%= thumbnailPath %>" <% }
+					%> class="img-polaroid pull-left">
+				</div>
+				<div>
+					<p class="lead">
+						<b>Name:</b> <%= name %>
+					</p>
+					<p class="lead">
+						<b>Email:</b> <%= email %>
+					</p>
+
+					<p class="lead">
+						<b>Recieve Newsletter?</b> <input type="checkbox" id="newsletter">
+					</p>
+					<p class="lead">
+						<b>Result Units:</b> <select name="account-testing-units"
+							id="account-testing-units">
+							<option value="mg/dl">mg/dl</option>
+							<option value="mmol/l">mmol/l</option>
+						</select>
+					</p>
+					<button id="save-profile" class="btn btn-large">Update
+						Details</button>
+				</div>
+			</div>
+
+		</div>
+		<div>
+			<h3>Actions</h3>
+			<div>
+				<div>
+					<button id="upload-results" class="btn btn-large btn-block"
+						type="button">
+						<i class="icon-upload-alt"></i> Upload My Results
+					</button>
+				</div>
+				<div>
+					<p class="lead">Upload your results from a CareLink csv file to
+						your logbook.</p>
+				</div>
+			</div>
+			<div>
+				<h3>Help</h3>
+				<div>
+					<div>
+						<a class="btn btn-large btn-block"
+							href="mailto:jamie@almservices.co.nz"><i
+							class="icon-envelope"></i> Email Jamie</a>
+					</div>
+					<div>
+						<p class="lead">Do you need help with anything?</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</script>

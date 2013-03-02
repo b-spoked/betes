@@ -15,8 +15,8 @@ window.User = Backbone.Model.extend({
 		testingUnits : 'mmol/l',
 		logUsed : false,
 		goalsUsed : false,
-		logEntries : [],
-		userGoals : []
+		logEntries : []
+		//userGoals : []
 	},
 
 	urlRoot : "/api/index.php/user.json",
@@ -25,23 +25,22 @@ window.User = Backbone.Model.extend({
 		_.bindAll(this);
 		var self = this;
 		this.logEntries = new Entries(this.get('logEntries'));
-		this.userGoals = new GoalSet(this.get('userGoals'));
+		//this.userGoals = new GoalSet(this.get('userGoals'));
 
 		this.logEntries.url = function() {
 			return self.urlRoot + '/logbook/' + self.get('id');
 		};
 
-		this.userGoals.url = function() {
+		/*this.userGoals.url = function() {
 			return self.urlRoot + '/goals/' + self.get('id');
-		};
+		};*/
 	},
 	hasLogEntries : function() {
 		this.logUsed = (this.logEntries.length > 0);
 		return this.logUsed;
 	},
 	hasGoals : function() {
-		this.goalsUsed = (this.userGoals.length > 0);
-		return this.goalsUsed;
+		return false;
 	},
 	highs : function() {
 		return _(this.logEntries.filter(function(entry) {

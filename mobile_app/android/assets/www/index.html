@@ -1,36 +1,294 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="format-detection" content="telephone=no" />
-<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-<title>Betes Log</title>
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 <link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
 <link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="css/vendor/font-awesome.css" />
 <link rel="stylesheet" href="css/main.css" />
-
-<script type="text/javascript">
-        function onBodyLoad() {
-            //document.addEventListener("deviceready", startApp, false);
-            startApp();
-        }
-
-    </script>
+<title>Betes Log</title>
 </head>
-<body onload="onBodyLoad()">
-
-	<section id="app-nav"><h1>Nav Bar</h1></section>
+<body>
 	<div class="container">
+		<div id="modal-dialog"></div>
 		<div id="app">
-			<div id="modal-dialog"></div>
-			<section id="main"><h2>The App</h2></section>
 		</div>
 	</div>
-	<!-- App Source -->
-	<script type="text/javascript">
+	<script type="text/template" id="insights-template">
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li class="active"><a href="#/insights">Insights</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<button id="logout" class="btn btn-primary"> Logout</button>
+				<%} else { %>
+					<button id="login" class="btn btn-primary"> Login</button>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="insights">
+		<div>
+			<div class="btn-group" data-toggle="buttons-radio">
+				<button class="btn show-today">Today</button>
+				<button class="btn show-yesterday">Yesterday</button>
+					<button class="btn show-seven">Last 7</button>
+			</div>
+		</div>
+		<table class="table table-bordered">
+			<caption>Quick insights into your diabetes</caption>
+			<thead>
+				<tr>
+					<th>Tests</th>
+					<th>Lows</th>
+					<th>Highs</th>
+					<th>Exercise</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="badge badge-success">4</span></td>
+					<td><span class="badge badge-warning">1</span></td>
+					<td><span class="badge badge-important">10</span></td>
+					<td><span class="badge badge-success">120 mins</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	</script>
+	<script type="text/template" id="settings-template">
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li class="active"><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<button id="logout" class="btn btn-primary"> Logout</button>
+				<%} else { %>
+					<button id="login" class="btn btn-primary"> Login</button>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="settings">
+		<div class="btn-toolbar">
+			<div class="btn-group">
+				<button class="btn btn-primary add-settings">Add</button>
+			</div>
+		</div>
+		<div id="modal-item"></div>
+		<div class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th style="width: 30%">When</th>
+					<th style="width: 70%">What</th>
+				</tr>
+			</thead>
+			<tbody id="settings-list">
+			</tbody>
+		</table>
+	</div>
+	</script>
+	<script type="text/template" id="logbook-template">
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<button id="logout" class="btn btn-primary"> Logout</button>
+				<%} else { %>
+					<button id="login" class="btn btn-primary"> Login</button>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="logbook">
+		<div class="btn-toolbar">
+			<div class="btn-group">
+				<button class="btn btn-primary create-new-entry">Add</button>
+			</div>
+			<div class="btn-group" data-toggle="buttons-radio">
+				<button class="btn show-today">Today</button>
+				<button class="btn show-yesterday">Yesterday</button>
+				<button class="btn show-seven">Last 7</button>
+			</div>
+		</div>
+		<div class="input-prepend input-append">
+			<span class="add-on">Filter Events</span> <input type="text"
+					placeholder="e.g. 'dinner' or 'sickday'" class="filter-logbook">
+		</div>
+		<div id="modal-item"></div>
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th style="width: 30%">When</th>
+					<th style="width: 70%">What</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>
+	</div>
+	</script>
+	<script type="text/template" id="login-template">
+	<div id="login-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Sign In/ Sign Up</h3>
+		</div>
+		<div class="modal-body">
 	
+			<button id="login-fb" class="btn btn-block btn-primary btn-large">
+				<i class="icon-facebook icon-large"></i> Login with Facebook
+			</button>
+			<button id="login-google" class="btn btn-block btn-primary btn-large">
+				<i class="icon-google-plus icon-large"></i> Login with Google
+			</button>
+	
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="add-logbookitem-template">
+	<div id="add-entry-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Add a new log book entry</h3>
+		</div>
+		<div class="modal-body">
+			<label for="entry-name">Basics</label> <select id="entry-name"
+				autofocus>
+				<option value="Waking">Waking</option>
+				<option value="Breakfast">Breakfast</option>
+				<option value="Lunch">Lunch</option>
+				<option value="Dinner">Dinner</option>
+				<option value="Bed">Bed</option>
+				<option value="Mid-Morning">Mid-Morning</option>
+				<option value="Mid-Afternoon">Mid-Afternoon</option>
+				<option value="Evening">Evening</option>
+				<option value="Other">Other</option>
+			</select> <input type="text" name="entry-date" id="entry-date"> <input
+				type="text" id="entry-level" placeholder="Your Blood Sugar">
+			<input type="text" id="entry-insulin" placeholder="Insulin Given">
+			<label for="entry-exercise-duration">exercise</label> <input
+				type="text" id="entry-exercise-duration"
+				placeholder="exercise duration?"> <select
+				id="entry-exercise-intensity">
+				<option value="">NA</option>
+				<option value="Easy">Easy</option>
+				<option value="Easy-Moderate">Easy-Moderate</option>
+				<option value="Moderate">Moderate</option>
+				<option value="Moderate-Intense">Moderate-Intense</option>
+				<option value="Intense">Intense</option>
+			</select> <label for="entry-labels">Labels</label> <input type="text"
+				id="entry-labels"
+				placeholder="e.g. sickday, traveling (comma seperated)"> <label
+				for="entry-comments">Comments</label>
+			<textarea rows="3" id="entry-comments" placeholder="General Comments"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary add-entry">Save</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="edit-logbookitem-template">
+	<div id="edit-entry" class="modal hide fade">
+		<div class="modal-header">
+			<h3 id="myModalLabel">Editing Result</h3>
+		</div>
+		<div class="modal-body">
+			<h4>Basics</h4>
+			<select id="edit-entry-name" autofocus>
+				<option<%if (name=="Waking") {%>selected<%}%>
+					value="Waking">Waking</option>
+				<option<%if (name=="Breakfast") {%>selected<%}%>
+					value="Breakfast">Breakfast</option>
+				<option<%if (name=="Mid-Morning") {%>selected<%}%>
+					value="Mid-Morning">Mid-Morning</option>
+				<option<%if (name=="Lunch") {%>selected<%}%>
+					value="Lunch">Lunch</option>
+				<option<%if (name=="Mid-Afternoon") {%>selected<%}%>
+					value="Mid-Afternoon">Mid-Afternoon</option>
+				<option<%if (name=="Dinner") {%>selected<%}%>
+					value="Dinner">Dinner</option>
+				<option<%if (name=="Evening") {%>selected<%}%>
+					value="Evening">Evening</option>
+				<option<%if (name=="Bed") {%>selected<%}%> value="Bed">Bed</option>
+				<option<%if (name=="Other") {%>selected<%}%>
+					value="Other">Other</option>
+			</select> <input type="text" class="when-picker" name="when-picker"
+				id="edit-entry-date" value="<%= resultDate %>"> <input
+				type="text" id="edit-entry-level" value="<%= bsLevel %>"> <input
+				type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
+			<h4>exercise</h4>
+			<input type="text" id="edit-entry-exercise-duration"
+				value="<%= exerciseDuration %>"> <select
+				id="edit-entry-exercise-intensity">
+				<option<%if (exerciseIntensity=="") {%>selected<%}%>
+					value="">NA</option>
+				<option<%if (exerciseIntensity=="Easy") {%>selected<%}%>
+					value="Easy">Easy</option>
+				<option<%if (exerciseIntensity=="Easy-Moderate")
+					{%>selected<%}%> value="Easy-Moderate">Easy-Moderate</option>
+				<option<%if (exerciseIntensity=="Moderate")
+					{%>selected<%}%> value="Moderate">Moderate</option>
+				<option<%if (exerciseIntensity=="Moderate-Intense")
+					{%>selected<%}%> value="Moderate-Intense">Moderate-Intense</option>
+				<option<%if (exerciseIntensity=="Intense") {%>selected<%}%>
+					value="Intense">Intense</option>
+			</select>
+			<h4>Labels</h4>
+			<input type="text" id="edit-entry-labels" value="<%= labels %>">
+			<h4>Comments</h4>
+			<textarea rows="3" id="edit-entry-comments"><%= comments %></textarea>
+	
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary save-edit">Save</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="logbookitem-template">
+	<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
+	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+	</script>
 	<script type="text/javascript" src="cordova-2.4.0.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery-1.8.2.min.js"></script>
 	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
@@ -39,28 +297,17 @@
 	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
 	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
-	
-	
-	<script type="text/javascript" src="js/Templates.js"></script>
-	
+
 	<script type="text/javascript" src="js/models/Entry.js"></script>
 	<script type="text/javascript" src="js/models/User.js"></script>
-	<script type="text/javascript" src="js/models/Goal.js"></script>
-
-	<script type="text/javascript" src="js/views/AddLogbookEntryView.js"></script>
-	<script type="text/javascript" src="js/views/EditLogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/AddLogbookEntryModal.js"></script>
+	<script type="text/javascript" src="js/views/EditLogbookEntryModal.js"></script>
 	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/LoginModal.js"></script>
 	<script type="text/javascript" src="js/views/LogbookView.js"></script>
-	<script type="text/javascript" src="js/views/LoginView.js"></script>
-	<script type="text/javascript" src="js/views/NavigationView.js"></script>
+	<script type="text/javascript" src="js/views/InsightsView.js"></script>
+	<script type="text/javascript" src="js/views/SettingsView.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	
-	<script>
-            var hash=window.location.hash;
-            window.close();
-            if(opener != null){
-                opener.OAuthRedirect(hash);
-            }
-        </script>
 </body>
 </html>

@@ -11,14 +11,13 @@ window.LogBookEntryView = Backbone.View.extend({
 
     className: 'success',
 
-    
-
     events: {
         'click .update': 'editEntry',
         'click .delete': 'deleteEntry'
     },
     initialize: function() {
-    	this.template = _.template(tpl.get('LogBookEntryView'));
+    	this.template = _.template($('#logbookitem-template').html());
+    	
         _.bindAll(this);
         this.model.on('change', this.render, this);
     },

@@ -6,18 +6,18 @@
  * To change this template use File | Settings | File Templates.
  */
 //Edit record modal view
-window.EditLogbookEntryView = Backbone.View.extend({
+window.EditLogbookEntryModal = Backbone.View.extend({
 	
     events: {
         'click .save-edit': 'saveEdits'
     },
 
     initialize: function() {
-    	this.template = _.template(tpl.get('EditLogbookEntryView'));
+    	this.template = _.template($('#edit-logbookitem-template').html());
     },
     
     render: function() {
-		$(this.el).html(this.template(this.model.toJSON()));
+    	$(this.el).html(this.template(this.model.toJSON()));
         return this;
     },
 

@@ -1,67 +1,68 @@
+document.addEventListener("deviceready", startApplication, false);
+
 window.BetesApp = window.BetesApp || {};
 
-var ApplicationRouter = Backbone.Router.extend({
+Backbone.View.prototype.close = function () {
+    console.log('Closing view ' + this);
+    if (this.beforeClose) {
+        this.beforeClose();
+    }
+    this.remove();
+    this.unbind();
+};
 
-	navigationView : null,
+var AppRouter = Backbone.Router.extend({
 
-	routes : {
+	routes: {
 		"" : "showLogBook",
-		"account" : "showAccount"
+		"insights" : "showInsights",
+		"settings" : "showSettings"
 	},
-
 	initialize : function() {
-		console.log('load nav');
-		this.navigationView = new NavigationView();
+		this.getCurrentUser();
 	},
 
-	showLogBook : function() {
-		console.log('load logbook');
-		this.setActiveNav("#log-page");
-		RegionManager.show(new LogBookView());
-	},
-	showAccount : function() {
-		this.setActiveNav("#settings-page");
-		RegionManager.show(new AccountView({
-			model : app.User
-		}));
-	},
-	setActiveNav : function(activeId) {
-		$(activeId).parent().parent().find('.active').removeClass('active');
-		$(activeId).addClass('active');
+	showLogBook: function() {
+            app.showView( new LogbookView({model:window.BetesApp.User}) );
+  	},
+	
+	showInsights: function() {
+            app.showView( new InsightsView({model:window.BetesApp.User}));
+  	},
+
+	showSettings: function() {
+        
+		    app.showView( new SettingsView({model:window.BetesApp.User}));
+  	},
+
+    showView: function(view) {
+        if (this.currentView)
+            this.currentView.close();
+        $('#app').html(view.render().el);
+        this.currentView = view;
+        return view;
+    },
+	getCurrentUser : function() {
+		var user, users;
+		
+		window.BetesApp.Users = new UserDetails();
+		
+		window.BetesApp.Users.fetch({
+			local : true
+		});
+		window.BetesApp.User = window.BetesApp.Users.first();
+		
+		if (!window.BetesApp.User) {
+			window.BetesApp.Users.add(new User());
+			window.BetesApp.User = window.BetesApp.Users.first();
+		} else if ((window.BetesApp.User.get('id') > 0)
+			&& (window.BetesApp.User.get('authenticated'))) {
+			window.BetesApp.Users.storage.sync.push();	
+		}
 	}
 });
 
-RegionManager = (function(Backbone, $) {
-	var currentView;
-	var el = "#main";
-	var region = {};
-
-	var closeView = function(view) {
-		if (view && view.close) {
-			view.close();
-		}
-	};
-	var openView = function(view) {
-		view.render();
-		$(el).html(view.el);
-		if (view.onShow) {
-			view.onShow();
-		}
-	};
-	region.show = function(view) {
-		closeView(currentView);
-		currentView = view;
-		openView(currentView);
-	};
-	return region;
-})(Backbone, jQuery);
-
-function startApp() {
-
-	tpl.loadTemplates([ 'AddLogbookEntryView', 'EditLogbookEntryView',
-			'LogbookEntryView', 'LogbookView', 'LoginView', 'NavigationView' ],
-			function() {
-				app = new ApplicationRouter();
-				Backbone.history.start();
-			});
+function startApplication() {
+    app = new AppRouter();
+    Backbone.history.start();
 }

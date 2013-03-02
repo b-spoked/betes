@@ -5,18 +5,17 @@
  * Time: 3:49 PM
  * To change this template use File | Settings | File Templates.
  */
-window.AddLogbookEntryView = Backbone.View.extend({
+window.AddLogbookEntryModal = Backbone.View.extend({
     
 	events: {
         'click .add-entry': 'saveNewEntry'
     },
     initialize: function() {
-    	this.template = _.template(tpl.get('AddLogbookEntryView'));
+    	this.template = _.template($('#add-logbookitem-template').html());
     },
 
     render: function() {
-    	
-		$(this.el).html(this.template());
+    	$(this.el).html(this.template());
         return this;
     },
 

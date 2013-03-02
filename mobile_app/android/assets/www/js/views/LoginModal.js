@@ -5,7 +5,7 @@
  * Time: 3:53 PM
  * To change this template use File | Settings | File Templates.
  */
-window.LoginView = Backbone.View.extend({
+window.LoginModal = Backbone.View.extend({
 
     events: {
         'click #login-fb': 'loginWithFB',
@@ -13,8 +13,8 @@ window.LoginView = Backbone.View.extend({
     },
 
     initialize: function() {
-    	this.template = _.template(tpl.get('LoginView'));
-        _.bindAll(this);
+		_.bindAll(this);
+    	this.template = _.template($('#login-template').html());
         window.BetesApp.User.on('change:authenticated', this.setUserSaveStatus, this);
     },
     render: function() {

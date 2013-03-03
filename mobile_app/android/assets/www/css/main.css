@@ -3,6 +3,20 @@
    Author's custom styles
    ========================================================================== */
 
+
+/* modal fix*/
+.modal { 
+    position: fixed; 
+    top: 3%; 
+    right: 3%; 
+    left: 3%; 
+    width: auto; 
+    margin: 0; 
+}
+.modal-body { 
+    height: 50%; 
+}
+
 /* Graph */
 svg, #container{
     height: 95%;

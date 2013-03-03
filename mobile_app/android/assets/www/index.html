@@ -101,6 +101,20 @@
 		</div>
 	</div>
 	<div id="settings">
+		
+		<div class="well">
+			<div class="media">
+  				<a class="pull-left" href="#">
+    				<img class="media-object" data-src="<%= thumbnailPath%>">
+  				</a>
+  				<div class="media-body">
+    				<h4 class="media-heading">Name:</h4>
+					<p><%= name%></p>
+					<h4 class="media-heading">Email:</h4>
+					<p><%= email%></p>    
+  				</div>
+			</div>
+		</div>
 		<div class="accordion" id="accordion2">
   			<div class="accordion-group">
     			<div class="accordion-heading">
@@ -113,18 +127,25 @@
         				<div class="well">
 				<form id="excercise-settings" class="form-horizontal">
   					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Time</label>
-						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
+    					<label class="control-label" for="lowReading">Low</label>						
     					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
+      						<input type="text" id="lowReading" placeholder="4">
     					</div>
+						<span class="help-block">A reading below this level you consider a low</span>
   					</div>
 					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Frequency</label>
-						<span class="help-block">The minimum number of times per week you aim to excercise</span>
+    					<label class="control-label" for="highReading">High</label>						
     					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
+      						<input type="text" id="highReading" placeholder="12">
     					</div>
+						<span class="help-block">A reading above this level you consider too high</span>
+  					</div>
+					<div class="control-group">
+    					<label class="control-label" for="highReading">High</label>						
+    					<div class="controls">
+      						<input type="text" id="highReading" placeholder="12">
+    					</div>
+						<span class="help-block">A reading above this level you consider too high</span>
   					</div>
 					<div class="control-group">
 						<button class="btn">Cancel</button>
@@ -146,18 +167,18 @@
         				<div class="well">
 				<form id="excercise-settings" class="form-horizontal">
   					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Time</label>
-						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
+    					<label class="control-label" for="excerciseTime">Time</label>						
     					<div class="controls">
       						<input type="text" id="excerciseTime" placeholder="30">
     					</div>
+						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
   					</div>
 					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Frequency</label>
-						<span class="help-block">The minimum number of times per week you aim to excercise</span>
+    					<label class="control-label" for="excerciseFreq">Frequency</label>						
     					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
+      						<input type="text" id="excerciseFreq" placeholder="5">
     					</div>
+						<span class="help-block">The minimum number of times per week you aim to excercise</span>
   					</div>
 					<div class="control-group">
 						<button class="btn">Cancel</button>
@@ -174,24 +195,16 @@
         				Account Settings
       				</a>
     			</div>
-    			<div id="collapseThree" class="accordion-body collapse in">
+    			<div id="collapseThree" class="accordion-body collapse">
       				<div class="accordion-inner">
         				<div class="well">
-				<form id="excercise-settings" class="form-horizontal">
+
+				<form id="account-settings" class="form-horizontal">
   					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Time</label>
-						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
-    					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
-    					</div>
-  					</div>
-					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Frequency</label>
-						<span class="help-block">The minimum number of times per week you aim to excercise</span>
-    					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
-    					</div>
-  					</div>
+    					 <label class="checkbox">
+        					<input id="userNewsletter" type="checkbox"> Receive Newsletter
+      				     </label>
+  					</div>					
 					<div class="control-group">
 						<button class="btn">Cancel</button>
 						<button type="submit" class="btn btn-primary">Save</button>

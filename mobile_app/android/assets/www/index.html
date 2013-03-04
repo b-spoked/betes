@@ -245,12 +245,16 @@
 				<button class="btn btn-small show-yesterday">Last 2</button>
 				<button class="btn btn-small show-seven">Last 7</button>
 			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-small" data-toggle="collapse" data-target="#filter-details">
+  				Filter
+				</button>
+			</div>
 		</div>
-		<div class="input-prepend input-append">
+		<div id="filter-details" class="collapse input-prepend input-append">
 			<span class="add-on">Filter Events</span> <input type="text"
 					placeholder="e.g. 'dinner' or 'sickday'" class="filter-logbook">
-		</div>
-		<div id="modal-item"></div>
+		</div>		
 		<table class="table table-bordered table-condensed">
 			<thead>
 				<tr>
@@ -261,6 +265,11 @@
 			<tbody id="events-list">
 			</tbody>
 		</table>
+		<div class="well">
+			<h3>Getting started</h3>
+			<p>Start by adding events for test results, insulin, food, excercise or notes.</p>
+			<button class="btn btn-large btn-primary create-new-entry">Get Started</button>
+		</div>
 	</div>
 	</script>
 	<script type="text/template" id="login-template">
@@ -388,7 +397,7 @@
 	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
 	</script>
 	<script type="text/javascript" src="cordova-2.4.0.js"></script>
-	<script type="text/javascript" src="js/vendor/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone-min.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
@@ -406,6 +415,9 @@
 	<script type="text/javascript" src="js/views/InsightsView.js"></script>
 	<script type="text/javascript" src="js/views/SettingsView.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
+	<!-- <script type="text/javascript">
+	startApplication();
+	</script>-->
 	
 </body>
 </html>

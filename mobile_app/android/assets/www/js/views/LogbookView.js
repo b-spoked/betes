@@ -41,7 +41,7 @@ window.LogbookView = Backbone.View
 					model : entry
 				});
 				this.$('#events-list').append(view.render().el);
-				this.onShow();
+				//this.onShow();
 			},
 			addAll : function(entries) {
 				if (entries == null) {

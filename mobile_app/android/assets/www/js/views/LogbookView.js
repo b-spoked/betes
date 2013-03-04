@@ -12,7 +12,7 @@ window.LogbookView = Backbone.View
 				'click .create-new-entry' : 'showEventDialog',
 				'click #login' : 'showLoginDialog',
 				'click .show-today' : 'filterToday',
-				'click .show-yesterday' : 'filterYesterday',
+				'click .show-two' : 'filterTwo',
 				'click .show-seven' : 'filterSeven',
 				'click .show-thirty' : 'filterThirty',
 				"keyup .filter-logbook" : "filterLogEntries"
@@ -22,18 +22,24 @@ window.LogbookView = Backbone.View
 				_.bindAll(this);
 				this.template = _.template($('#logbook-template').html());
 				this.model.logEntries.bind('add', this.addOne, this);
-				this.model.logEntries
-						.bind('reset', this.addAll, this);
-				this.model.logEntries.bind('remove', this.refresh,
-						this);
+				this.model.logEntries.bind('reset', this.addAll, this);
+				this.model.logEntries.bind('remove', this.refresh, this);
+				this.model.logEntries.bind('change:length', this.gettingStarted, this);
+				
 				this.model.logEntries.fetch();
 			},
 			render : function() {
-				$(this.el).html(this.template(this.model.toJSON()));
+				$(this.el).html(this.template(this.model.toJSON()));										
 				return this;
 			},
+			gettingStarted : function(){
+				if(this.model.logEntries.length>0){
+					$("#getting-started").hide();
+				}
+			},			
 			refresh : function() {
 				this.model.logEntries.fetch();
+				
 				this.render();
 			},
 			addOne : function(entry) {
@@ -41,7 +47,6 @@ window.LogbookView = Backbone.View
 					model : entry
 				});
 				this.$('#events-list').append(view.render().el);
-				//this.onShow();
 			},
 			addAll : function(entries) {
 				if (entries == null) {
@@ -53,7 +58,7 @@ window.LogbookView = Backbone.View
 				}
 			},
 			showEventDialog : function() {
-				var addEntryDialog = new AddLogbookEntryModal();
+				var addEntryDialog = new AddLogbookEntryModal({model:this.model});
 				addEntryDialog.render();
 
 				var $modalEl = $("#modal-dialog");
@@ -70,8 +75,8 @@ window.LogbookView = Backbone.View
 			filterToday : function() {
 				this.addAll(this.model.logEntries.filterToday());
 			},
-			filterYesterday : function() {
-				this.addAll(this.model.logEntries.filterYesterday());
+			filterTwo : function() {
+				this.addAll(this.model.logEntries.filterDays('2'));
 			},
 			filterSeven : function() {
 				this.addAll(this.model.logEntries.filterDays('7'));

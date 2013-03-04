@@ -28,7 +28,7 @@ window.AddLogbookEntryModal = Backbone.View.extend({
     },
     saveNewEntry:function() {
         var logEntry = new Entry(this.entryValues());
-        app.User.logEntries.create(logEntry);
+        this.model.logEntries.create(logEntry);
         //logEntry.save();
         //app.User.logEntries.create(logEntry, {local:true});
 
@@ -45,7 +45,7 @@ window.AddLogbookEntryModal = Backbone.View.extend({
             exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
             labels: $("#entry-labels").val().trim(),
             comments: $("#entry-comments").val().trim(),
-            userId : app.User.get('id')
+            userId : this.model.get('id')
         };
     }
 

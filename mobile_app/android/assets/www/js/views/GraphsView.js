@@ -14,7 +14,7 @@ window.GraphsView = Backbone.View
 
 			initialize : function() {
 				_.bindAll(this);
-				this.template = _.template($('#LogbookView').html());
+				this.template = _.template($('#graphs-template').html());
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
@@ -248,9 +248,5 @@ window.GraphsView = Backbone.View
 							* cellSize + "Z";
 				}
 
-			},
-			shareGraph : function(e) {
-				var graphCanvas = document.getElementById("mycanvas");
-				var graphImg = graphCanvas.toDataURL("image/png");
 			}
 		});

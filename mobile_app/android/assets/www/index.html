@@ -90,6 +90,36 @@
 		</table>
 	</div>
 	</script>
+	<script type="text/template" id="graphs-template">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li class="active"><a href="#/graphs">Graphs</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<a href="#" id="logout" class="btn btn-small"><i class="icon-signout"></i> Logout</a>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="graphs">		
+		<div id="graphs-getting-started" class="alert alert-info">
+  				<button type="button" class="close" data-dismiss="alert">&times;</button>						
+				<p>These graphs are to help give you a long term view of your diabetes.</p>
+		</div>
+		<div id="bs-results">					
+		</div>		
+		<div id="goals">					
+		</div>
+	</div>
+	</script>
 	<script type="text/template" id="settings-template">
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">

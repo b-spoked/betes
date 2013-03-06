@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+<link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
+<link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/vendor/font-awesome.css" />
+<link rel="stylesheet" href="css/main.css" />
+<title>Betes Log</title>
+</head>
+<body>
+	<div class="container">
+		<div id="modal-dialog"></div>
+		<div id="app">
+		</div>
+	</div>
+	<script type="text/template" id="insights-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li class="active"><a href="#/insights">Insights</a></li>
+				<li><a href="#/graphs">Graphs</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<a href="#" id="logout" class="btn btn-small"><i class="icon-signout"></i> Logout</a>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="insights">
+		<div class="btn-toolbar">
+			<div class="btn-group" data-toggle="buttons-radio">
+				<button class="btn btn-small show-today">Show: Today</button>
+				<button class="btn btn-small show-yesterday">Last 2</button>
+				<button class="btn btn-small show-seven">Last 7</button>
+			</div>
+		</div>
+		<div id="settings-getting-started" class="alert alert-info">
+  				<button type="button" class="close" data-dismiss="alert">&times;</button>		
+				<h3>Getting started?</h3>
+				<p>These insights are powered by your personal settings.</p>
+				<a class="btn btn-primary btn-large" href="#/settings">
+        			Start Adding Your Settings
+      			</a>
+			</div>
+		<table class="table table-bordered">
+			
+			<thead>
+				<tr>
+					<th>Tests</th>
+					<th>Lows</th>
+					<th>Highs</th>
+					<th>Exercise</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><span class="badge badge-success">4</span></td>
+					<td><span class="badge badge-warning">1</span></td>
+					<td><span class="badge badge-important">10</span></td>
+					<td><span class="badge badge-success">120 mins</span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</script>
+	<script type="text/template" id="graphs-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li class="active"><a href="#/graphs">Graphs</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<a href="#" id="logout" class="btn btn-small"><i class="icon-signout"></i> Logout</a>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="graphs">		
+		<div id="graphs-getting-started" class="alert alert-info">
+  				<button type="button" class="close" data-dismiss="alert">&times;</button>						
+				<p>These graphs are to help give you a long term view of your diabetes.</p>
+		</div>
+		<div id="bs-results">					
+		</div>		
+		<div id="goals">					
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="settings-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li><a href="#/graphs">Graphs</a></li>
+				<li class="active"><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<a href="#" id="logout" class="btn btn-small"><i class="icon-signout"></i> Logout</a>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="settings">		
+		<div class="well">
+			<div class="media">
+  				<a class="pull-left" href="#">
+    				<img class="media-object" data-src="<%= thumbnailPath%>">
+  				</a>
+  				<div class="media-body">
+    				<h4 class="media-heading">Name:</h4>
+					<p><%= name%></p>    
+  				</div>
+			</div>
+		</div>	
+		</div>			
+		<div class="accordion" id="accordion2">
+				
+			<div id="settings-getting-started" class="alert alert-info">
+  				<button type="button" class="close" data-dismiss="alert">&times;</button>		
+				<h3>Getting started?</h3>
+				<p>Seetings are used to power your insights. Tell us your ideal sugar range, how much you are aiming to excercise ... </p>
+				<a class="btn btn-primary btn-large accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+        			Start Adding Settings
+      			</a>
+			</div>
+  			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+        				Diabetes Settings
+      				</a>
+    			</div>
+    			<div id="collapseOne" class="accordion-body collapse">
+      				<div class="accordion-inner">
+        				<div class="well">
+				<form id="excercise-settings" class="form-horizontal">
+  					<div class="control-group">
+    					<label class="control-label" for="lowReading">Low</label>						
+    					<div class="controls">
+      						<input type="text" id="lowReading" placeholder="4">
+    					</div>
+						<span class="help-block">A reading below this level you consider a low</span>
+  					</div>
+					<div class="control-group">
+    					<label class="control-label" for="highReading">High</label>						
+    					<div class="controls">
+      						<input type="text" id="highReading" placeholder="12">
+    					</div>
+						<span class="help-block">A reading above this level you consider too high</span>
+  					</div>
+					<div class="control-group">
+    					<label class="control-label" for="highReading">High</label>						
+    					<div class="controls">
+      						<input type="text" id="highReading" placeholder="12">
+    					</div>
+						<span class="help-block">A reading above this level you consider too high</span>
+  					</div>
+					<div class="control-group">
+						<button class="btn">Cancel</button>
+						<button type="submit" class="btn btn-primary">Save</button>
+  					</div>
+ 				</form>
+			</div>
+      				</div>
+    			</div>
+  			</div>
+			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+        				Excercise Settings
+      				</a>
+    			</div>
+    			<div id="collapseTwo" class="accordion-body collapse">
+      				<div class="accordion-inner">
+        				<div class="well">
+				<form id="excercise-settings" class="form-horizontal">
+  					<div class="control-group">
+    					<label class="control-label" for="excerciseTime">Time</label>						
+    					<div class="controls">
+      						<input type="text" id="excerciseTime" placeholder="30">
+    					</div>
+						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
+  					</div>
+					<div class="control-group">
+    					<label class="control-label" for="excerciseFreq">Frequency</label>						
+    					<div class="controls">
+      						<input type="text" id="excerciseFreq" placeholder="5">
+    					</div>
+						<span class="help-block">The minimum number of times per week you aim to excercise</span>
+  					</div>
+					<div class="control-group">
+						<button class="btn">Cancel</button>
+						<button type="submit" class="btn btn-primary">Save</button>
+  					</div>
+ 				</form>
+			</div>
+      				</div>
+    			</div>
+  			</div>
+			<div class="accordion-group">
+    			<div class="accordion-heading">
+      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+        				Account Settings
+      				</a>
+    			</div>
+    			<div id="collapseThree" class="accordion-body collapse">
+      				<div class="accordion-inner">
+        				<div class="well">
+
+				<form id="account-settings" class="form-horizontal">
+  					<div class="control-group">
+    					 <label class="checkbox">
+        					<input id="userNewsletter" type="checkbox"> Receive Newsletter
+      				     </label>
+  					</div>					
+					<div class="control-group">
+						<button class="btn">Cancel</button>
+						<button type="submit" class="btn btn-primary">Save</button>
+  					</div>
+ 				</form>
+			</div>
+      				</div>
+    			</div>
+  			</div>	
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="logbook-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a href="#">Log</a></li>
+				<li><a href="#/insights">Insights</a></li>
+				<li><a href="#/graphs">Graphs</a></li>
+				<li><a href="#/settings">Settings</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					Hi <%= name%>
+					<a href="#" id="logout" class="btn btn-small"><i class="icon-signout"></i> Logout</a>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="logbook">
+		<div class="btn-toolbar">
+			<div class="btn-group">
+				<button class="btn btn-small btn-primary create-new-entry">Add</button>
+			</div>
+
+			<div class="btn-group" data-toggle="buttons-radio">
+				<button class="btn btn-small show-today">Show: Today</button>
+				<button class="btn btn-small show-two">Last 2</button>
+				<button class="btn btn-small show-seven">Last 7</button>
+			</div>
+
+			<div class="btn-group">
+				<button type="button" class="btn btn-small" data-toggle="collapse" data-target="#filter-details">
+  				Filter
+				</button>
+			</div>
+		</div>
+		<div id="filter-details" class="collapse input-prepend input-append">
+			<span class="add-on">Filter Shown Events</span> <input type="text"
+					placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
+		</div>
+		<div id="logbook-getting-started" class="alert alert-info">
+  			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<h3>Getting started?</h3>
+			<p>Start by adding events for test results, insulin, food, excercise or notes.</p>
+			<button class="btn btn-large btn-primary create-new-entry">Get Started</button>
+		</div>		
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th style="width: 30%">When</th>
+					<th style="width: 70%">What</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>		
+		
+	</div>
+	</script>
+	<script type="text/template" id="login-template">
+	<div id="login-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Sign In/ Sign Up</h3>
+		</div>
+		<div class="modal-body">
+	
+			<button id="login-fb" class="btn btn-block btn-primary btn-large">
+				<i class="icon-facebook icon-large"></i> Login with Facebook
+			</button>
+			<button id="login-google" class="btn btn-block btn-primary btn-large">
+				<i class="icon-google-plus icon-large"></i> Login with Google
+			</button>
+	
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="add-logbookitem-template">
+	<div id="add-entry-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Add a new log book entry</h3>
+		</div>
+		<div class="modal-body">
+			<label for="entry-name">Basics</label> <select id="entry-name"
+				autofocus>
+				<option value="Breakfast">Breakfast</option>
+				<option value="Lunch">Lunch</option>
+				<option value="Dinner">Dinner</option>
+				<option value="Bed">Bed</option>
+				<option value="Other">Other</option>
+			</select> <input type="text" name="entry-date" id="entry-date"> <input
+				type="text" id="entry-level" placeholder="Your Blood Sugar">
+			<input type="text" id="entry-insulin" placeholder="Insulin Given">
+			<label for="entry-exercise-duration">exercise</label> <input
+				type="text" id="entry-exercise-duration"
+				placeholder="exercise duration?"> <select
+				id="entry-exercise-intensity">
+				<option value="">NA</option>
+				<option value="Easy">Easy</option>
+				<option value="Easy-Moderate">Easy-Moderate</option>
+				<option value="Moderate">Moderate</option>
+				<option value="Moderate-Intense">Moderate-Intense</option>
+				<option value="Intense">Intense</option>
+			</select> <label for="entry-labels">Labels</label> <input type="text"
+				id="entry-labels"
+				placeholder="e.g. sickday, traveling (comma seperated)"> <label
+				for="entry-comments">Comments</label>
+			<textarea rows="3" id="entry-comments" placeholder="General Comments"></textarea>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary add-entry">Save</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="edit-logbookitem-template">
+	<div id="edit-entry" class="modal hide fade">
+		<div class="modal-header">
+			<h3 id="myModalLabel">Editing Result</h3>
+		</div>
+		<div class="modal-body">
+			<h4>Basics</h4>
+			<select id="edit-entry-name" autofocus>
+				<option<%if (name=="Breakfast") {%>selected<%}%>
+					value="Breakfast">Breakfast</option>
+				<option<%if (name=="Lunch") {%>selected<%}%>
+					value="Lunch">Lunch</option>
+				<option<%if (name=="Dinner") {%>selected<%}%>
+					value="Dinner">Dinner</option>
+				<option<%if (name=="Bed") {%>selected<%}%> 
+					value="Bed">Bed</option>
+				<option<%if (name=="Other") {%>selected<%}%>
+					value="Other">Other</option>
+			</select> <input type="text" class="when-picker" name="when-picker"
+				id="edit-entry-date" value="<%= resultDate %>"> <input
+				type="text" id="edit-entry-level" value="<%= bsLevel %>"> <input
+				type="text" id="edit-entry-insulin" value="<%= insulinAmount %>">
+			<h4>exercise</h4>
+			<input type="text" id="edit-entry-exercise-duration"
+				value="<%= exerciseDuration %>"> <select
+				id="edit-entry-exercise-intensity">
+				<option<%if (exerciseIntensity=="") {%>selected<%}%>
+					value="">NA</option>
+				<option<%if (exerciseIntensity=="Easy") {%>selected<%}%>
+					value="Easy">Easy</option>
+				<option<%if (exerciseIntensity=="Easy-Moderate")
+					{%>selected<%}%> value="Easy-Moderate">Easy-Moderate</option>
+				<option<%if (exerciseIntensity=="Moderate")
+					{%>selected<%}%> value="Moderate">Moderate</option>
+				<option<%if (exerciseIntensity=="Moderate-Intense")
+					{%>selected<%}%> value="Moderate-Intense">Moderate-Intense</option>
+				<option<%if (exerciseIntensity=="Intense") {%>selected<%}%>
+					value="Intense">Intense</option>
+			</select>
+			<h4>Labels</h4>
+			<input type="text" id="edit-entry-labels" value="<%= labels %>">
+			<h4>Comments</h4>
+			<textarea rows="3" id="edit-entry-comments"><%= comments %></textarea>
+	
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary save-edit">Save</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="logbookitem-template">
+	<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
+	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+	</script>
+	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone-min.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
+	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
+
+	<script type="text/javascript" src="js/models/Entry.js"></script>
+	<script type="text/javascript" src="js/models/User.js"></script>
+	<script type="text/javascript" src="js/views/AddLogbookEntryModal.js"></script>
+	<script type="text/javascript" src="js/views/EditLogbookEntryModal.js"></script>
+	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/LoginModal.js"></script>
+	<script type="text/javascript" src="js/views/LogbookView.js"></script>
+	<script type="text/javascript" src="js/views/InsightsView.js"></script>
+	<script type="text/javascript" src="js/views/GraphsView.js"></script>
+	<script type="text/javascript" src="js/views/SettingsView.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript">
+		startApplication();
+		
+		var hash=window.location.hash;
+        window.close();
+		if(opener != null){
+            opener.OAuthRedirect(hash);
+        }
+	</script>
+	
+</body>
+</html>

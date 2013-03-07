@@ -8,7 +8,7 @@
 window.Entry = Backbone.Model.extend({
 	defaults : {
 		name : '',
-		bsLevel : 0,
+		bsLevel : 0.0,
 		insulinAmount : 0,
 		resultDate : new Date(),
 		exerciseDuration : 0,

@@ -57,7 +57,7 @@ var AppRouter = Backbone.Router.extend({
 			window.BetesApp.User = window.BetesApp.Users.first();
 		} else if ((window.BetesApp.User.get('id') > 0)
 			&& (window.BetesApp.User.get('authenticated'))) {
-			window.BetesApp.Users.storage.sync.push();	
+			window.BetesApp.User.storage.sync.incremental();	
 		}
 	}
 });

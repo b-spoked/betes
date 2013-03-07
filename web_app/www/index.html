@@ -82,10 +82,10 @@
 			</thead>
 			<tbody>
 				<tr>
-					<td><span class="badge badge-success">4</span></td>
-					<td><span class="badge badge-warning">1</span></td>
-					<td><span class="badge badge-important">10</span></td>
-					<td><span class="badge badge-success">120 mins</span></td>
+					<td><span class="badge badge-success"><%=tests%></span></td>
+					<td><span class="badge badge-warning"><%=lows%></span></td>
+					<td><span class="badge badge-important"><%=highs%></span></td>
+					<td><span class="badge badge-success"><%=exercise%></span></td>
 				</tr>
 			</tbody>
 		</table>
@@ -465,6 +465,18 @@
             opener.OAuthRedirect(hash);
         }
 	</script>
-	
+	<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-39000912-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </body>
 </html>

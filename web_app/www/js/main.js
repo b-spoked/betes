@@ -53,15 +53,16 @@ var AppRouter = Backbone.Router.extend({
 		window.BetesApp.Users.fetch({
 			local : true
 		});
-		window.BetesApp.User = window.BetesApp.Users.first();
 		
-		if (!window.BetesApp.User) {
-			window.BetesApp.Users.add(new User());
-			window.BetesApp.User = window.BetesApp.Users.first();
-		} else if ((window.BetesApp.User.get('id') > 0)
-			&& (window.BetesApp.User.get('authenticated'))) {
-			window.BetesApp.Users.storage.sync.push();	
-		}
+		 var usr = window.BetesApp.Users.first();
+		 
+		 if(usr &&  usr.get('authenticated') && usr.get('id') > 0){
+			window.BetesApp.User = usr;
+			window.BetesApp.User.logEntries.storage.sync.incremental();	
+		 }else{
+			window.BetesApp.User = new User({name:"temp"});
+			window.BetesApp.Users.add(window.BetesApp.User);
+		 }
 	}
 });
 

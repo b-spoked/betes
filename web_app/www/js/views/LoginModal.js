@@ -53,12 +53,12 @@ window.LoginModal = Backbone.View.extend({
                                 thumbnailPath:data.picture,
                                 authenticated:true
                             });
-
+	
                             window.BetesApp.User.fetch();
                             window.BetesApp.User.save();
-
-                            window.BetesApp.Users.reset();
-                            window.BetesApp.Users.create(window.BetesApp.User, {local:true});
+							window.BetesApp.Users.reset();
+                            
+                            window.BetesApp.Users.unshift(window.BetesApp.User, {local:true});
 
                         }
                     }
@@ -97,9 +97,9 @@ window.LoginModal = Backbone.View.extend({
 
                             window.BetesApp.User.fetch();
                             window.BetesApp.User.save();
-
-                            window.BetesApp.Users.reset();
-                            window.BetesApp.Users.create(window.BetesApp.User, {local:true});
+							window.BetesApp.Users.reset();
+                            
+                            window.BetesApp.Users.unshift(window.BetesApp.User, {local:true});
 
                         }
 

@@ -25,8 +25,7 @@ window.LogbookView = Backbone.View
 				this.model.logEntries.bind('reset', this.addAll, this);
 				this.model.logEntries.bind('remove', this.refresh, this);
 				this.model.logEntries.bind('change:length', this.gettingStarted, this);
-				
-				this.model.logEntries.fetch();
+				this.model.logEntries.storage.sync.incremental();
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));										

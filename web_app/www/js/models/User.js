@@ -16,7 +16,7 @@ window.User = Backbone.Model.extend({
 		logUsed : false,
 		goalsUsed : false,
 		logEntries : []
-		//userGoals : []
+		//userSettings : []
 	},
 
 	urlRoot : "/api/index.php/user.json",
@@ -25,14 +25,14 @@ window.User = Backbone.Model.extend({
 		_.bindAll(this);
 		var self = this;
 		this.logEntries = new Entries(this.get('logEntries'));
-		//this.userGoals = new GoalSet(this.get('userGoals'));
+		//this.userSettings = new Settings(this.get('userSettings'));
 
 		this.logEntries.url = function() {
 			return self.urlRoot + '/logbook/' + self.get('id');
 		};
 
-		/*this.userGoals.url = function() {
-			return self.urlRoot + '/goals/' + self.get('id');
+		/*this.userSettings.url = function() {
+			return self.urlRoot + '/settings/' + self.get('id');
 		};*/
 	},
 	hasLogEntries : function() {

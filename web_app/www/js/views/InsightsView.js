@@ -19,7 +19,7 @@ window.InsightsView = Backbone.View
 				this.template = _.template($('#insights-template').html());
 			},
 			render : function() {
-				$(this.el).html(this.template(this.model.toJSON()));
+				$(this.el).html(this.template({name:this.model.get('name'),authenticated:this.model.get('authenticated'),lows:4,highs:12,tests:3,exercise:120}));
 				return this;
 			},
 			refresh : function() {
@@ -27,7 +27,8 @@ window.InsightsView = Backbone.View
 				this.render();
 			},
 			filterToday : function() {
-				this.showInsights(this.model.logEntries.filterToday());
+				this.model.logEntries.filterToday();
+				this.render();
 			},
 			filterYesterday : function() {
 				this.showInsights(this.model.logEntries.filterYesterday());
@@ -37,15 +38,6 @@ window.InsightsView = Backbone.View
 			},
 			showInsights : function(entries) {
 
-				if (entries) {
-					data = new Array();
-					entries.forEach(function(entry) {
-						if ((entry.get("bsLevel") != "")
-								&& (entry.get("bsLevel") > 0)) {
-							data.push(entry.toJSON());
-						}
-					});
-				}
 
 			}
 		});

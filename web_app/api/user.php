@@ -43,7 +43,7 @@ class User
     {
         $this->userData = new UserData();
         $this->resultData = new LogBookResultData();
-        $this->goalData = new GoalData();
+        //$this->goalData = new GoalData();
     }
 	
 	function get($id = NULL)
@@ -96,30 +96,30 @@ class User
 
     /**
      * @url GET /goals/:id/
-     */
+     
     function getGoals($id = NULL)
     {
 		if(is_null($id)){
 			return false;
 		}
         return $this->goalData->get($id);
-    }
+    }*/
 
     /**
      * @url POST /goals/
-     */
+     
     function addGoal($rec)
     {
         return $this->goalData->insert($rec);
-    }
+    }*/
 
     /**
      * @url PUT /goals/
-     */
+     
     function updateGoal($id,$rec)
     {
         return $this->goalData->update($id,$rec);
-    }
+    }*/
 
     function post($request_data = NULL)
     {

@@ -98,14 +98,14 @@
     Facebook: {
       auth_url: 'https://www.facebook.com/dialog/oauth',
       client_id :'226520900725004',
-      redirect_url: 'http://test.beteslog.com',
+      redirect_url: 'http://app.beteslog.com',
       scope: 'email' 
       
     },
     Google: {
       auth_url: 'https://accounts.google.com/o/oauth2/auth',
-      client_id :'860380290684.apps.googleusercontent.com',
-      redirect_url: 'http://test.beteslog.com',
+      client_id :'860380290684-496q46pj26ifk97p6ftpd5qnvlkdhdar.apps.googleusercontent.com',
+      redirect_url: 'http://app.beteslog.com',
       scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
     }
   };

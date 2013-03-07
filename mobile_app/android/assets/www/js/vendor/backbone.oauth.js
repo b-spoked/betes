@@ -105,7 +105,7 @@
     Google: {
       auth_url: 'https://accounts.google.com/o/oauth2/auth',
       client_id :'860380290684.apps.googleusercontent.com',
-      redirect_url: 'http://test.beteslog.com',
+      redirect_url: 'http://app.beteslog.com',
       scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
     }
   };

@@ -19,7 +19,8 @@ window.LogBookEntryView = Backbone.View.extend({
     	this.template = _.template($('#logbookitem-template').html());
     	
         _.bindAll(this);
-        this.model.on('change', this.render, this);
+        this.model.bind('change', this.render, this);
+        this.model.bind("destroy", this.close, this);
     },
     render: function() {
         this.$el.html(this.template(this.model.toJSON()));

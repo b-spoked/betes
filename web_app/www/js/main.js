@@ -10,7 +10,7 @@ Backbone.View.prototype.close = function () {
 };
 
 var AppRouter = Backbone.Router.extend({
-
+	
 	routes: {
 		"" : "showLogBook",
 		"insights" : "showInsights",
@@ -22,7 +22,11 @@ var AppRouter = Backbone.Router.extend({
 	},
 
 	showLogBook: function() {
-            app.showView( new LogbookView({model:window.BetesApp.User}) );
+		
+		 this.before(function() {
+			 app.showView( new LogbookView({model:app.appUser}) );
+	     });
+		
   	},
 	
 	showInsights: function() {
@@ -30,7 +34,9 @@ var AppRouter = Backbone.Router.extend({
   	},
 	
 	showGraphs: function() {
-            app.showView( new GraphsView({model:window.BetesApp.User}));
+		this.before(function() {
+			app.showView( new LogbookView({model:window.BetesApp.User}) );
+	    });
   	},
 
 	showSettings: function() {
@@ -46,24 +52,33 @@ var AppRouter = Backbone.Router.extend({
         return view;
     },
 	getCurrentUser : function() {
-		var user, users;
+		var currentUser, users;
 		
-		window.BetesApp.Users = new UserDetails();
+		users = new UserDetails();
 		
-		window.BetesApp.Users.fetch({
+		users.fetch({
 			local : true
 		});
 		
-		 var usr = window.BetesApp.Users.first();
+		 var currentUser = users.first();
 		 
-		 if(usr &&  usr.get('authenticated') && usr.get('id') > 0){
-			window.BetesApp.User = usr;
-			window.BetesApp.User.logEntries.storage.sync.incremental();	
+		 if(currentUser &&  currentUser.get('authenticated') && currentUser.get('id') > 0){
+			 this.appUser = currentUser;
+			//window.BetesApp.User.logEntries.storage.sync.incremental();	
 		 }else{
-			window.BetesApp.User = new User({name:"temp"});
-			window.BetesApp.Users.add(window.BetesApp.User);
+			 this.appUser = new User({name:"temp"});
+			 users.add(this.appUser);
 		 }
-	}
+	},
+	before: function(callback) {
+        if (this.appUser.logEntries && this.appUser.logEntries.length > 0) {
+            callback();
+        } else {
+        	this.appUser.logEntries.storage.sync.full({success: function() {
+               callback();
+            }});
+        }
+    }
 });
 
 function startApplication() {

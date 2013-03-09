@@ -21,21 +21,36 @@ window.LogbookView = Backbone.View
 			initialize : function() {
 				_.bindAll(this);
 				this.template = _.template($('#logbook-template').html());
-				this.model.logEntries.bind('add', this.addOne, this);
-				this.model.logEntries.bind('reset', this.addAll, this);
-				this.model.logEntries.bind('remove', this.refresh, this);
+				//this.model.logEntries.bind('add', this.addOne, this);
+				this.model.logEntries.bind('reset', this.render, this);
+				this.model.logEntries.bind("add", function(result) {
+					$(this.el).append(new LogBookEntryView({model: result}).render().el);
+				});
+				//this.model.logEntries.bind('change', this.addAll, this);
+				//this.model.logEntries.bind('remove', this.render, this);
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
 				
-				this.model.logEntries.fetch({local:true});
+				var logList = $('#events-list', $(this.el));
+				
+				if (this.model.logEntries != null && this.model.logEntries.length > 0) {
+					this.closeHelp();
+					logList.html('');
+					
+					this.model.logEntries.each(function(result) {
+						logList.append(new LogBookEntryView({model: result}).render().el);
+					}, this);
+					
+				}
+				
 				return this;
 			},
 			closeHelp : function(){
 				$("#logbook-getting-started").alert('close');
 			},			
 			refresh : function() {
-				this.model.logEntries.fetch();
+				//this.model.logEntries.fetch();
 				this.render();
 			},
 			addOne : function(entry) {

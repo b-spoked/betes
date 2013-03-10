@@ -13,7 +13,7 @@ window.LogBookEntryView = Backbone.View.extend({
 
     events: {
         'click .update': 'editEntry',
-        'click .delete': 'deleteEntry'
+        'click .delete-entry': 'deleteEntry'
     },
     initialize: function() {
     	this.template = _.template($('#logbookitem-template').html());
@@ -27,7 +27,7 @@ window.LogBookEntryView = Backbone.View.extend({
         return this;
     },
     editEntry: function(e) {
-        var view = new EditLogbookEntryView({model:this.model});
+        var view = new EditLogbookEntryModal({model:this.model});
         view.render();
 
         var $modalEl = $("#modal-dialog");

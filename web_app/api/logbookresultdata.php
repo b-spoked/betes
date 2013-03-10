@@ -97,11 +97,11 @@ class LogBookResultData
         return $this->get($id);
     }
 
-    function delete($id)
+    function delete($userId,$entryId)
     {
-        $r = $this->get($id);
+        $r = $this->get($entryId);
         if (!$r || !$this->db->query(
-            'DELETE FROM result WHERE id = ' . mysql_escape_string($id))
+            'DELETE FROM result WHERE id = '. mysql_escape_string($entryId).' AND userId = '. mysql_escape_string($userId))
         )
             return FALSE;
         return $r;

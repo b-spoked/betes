@@ -27,10 +27,7 @@ window.AddLogbookEntryModal = Backbone.View.extend({
         $("#add-entry-dialog").modal('show');
     },
     saveNewEntry:function() {
-        var logEntry = new Entry(this.entryValues());
-        this.model.logEntries.create(logEntry);
-        this.model.logEntries.storage.sync.push()
-
+        this.model.logEntries.create(this.entryValues());
         $("#add-entry-dialog").modal('hide');
     },
 

@@ -311,7 +311,8 @@
 			<thead>
 				<tr>
 					<th style="width: 30%">When</th>
-					<th style="width: 70%">What</th>
+					<th style="width: 65%">What</th>
+					<th style="width: 5%">Delete</th>
 				</tr>
 			</thead>
 			<tbody id="events-list">
@@ -431,11 +432,14 @@
 	</script>
 	<script type="text/template" id="logbookitem-template">
 	<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
-	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %> <% if(comments) { %><%=comments%><%}%></td>
+	<td><button type="button" class="btn btn-link delete-entry">&times;</button></td>
+	
 	</script>
 	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
-	<script type="text/javascript" src="js/vendor/backbone-min.js"></script>
+	<!-- <script type="text/javascript" src="js/vendor/backbone-min.js"></script>-->
+	<script type="text/javascript" src="js/vendor/backbone.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
 	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>

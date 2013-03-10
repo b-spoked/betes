@@ -17,7 +17,6 @@ window.Entry = Backbone.Model.extend({
 		comments : '',
 		userId : 0
 	},
-	urlRoot : "/api/index.php/user.json/logbook",
 	initialize : function() {
 		this.checkGoals();
 	},

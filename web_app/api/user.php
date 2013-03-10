@@ -77,9 +77,20 @@ class User
 		}
         return $this->resultData->getAll($id);
     }
+	
+	/**
+     * @url DELETE /logbook/:id/:entryId/
+     */
+    function deleteLogBookItem($id = NULL, $entryId = NULL)
+    {
+		if(is_null($id) || is_null($entryId)){
+			return false;
+		}
+        return $this->resultData->delete($id,$entryId);
+    }
 
     /**
-     * @url POST /logbook/
+     * @url POST /logbook/:id/
      */
     function addLogBookResult($request_data=null)
     {
@@ -87,7 +98,7 @@ class User
     }
 
     /**
-     * @url PUT /logbook/
+     * @url PUT /logbook/:id/
      */
     function updateLogBookResult($request_data=null)
     {

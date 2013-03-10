@@ -43,29 +43,43 @@ window.User = Backbone.Model.extend({
 		return false;
 	},
 	highs : function() {
-		return _(this.logEntries.filter(function(entry) {
-			return (parseInt(entry.get("bsLevel")) > 10);
-		}));
+		var highs = this.logEntries.filter(function(entry) {
+			return ( parseInt(entry.get("bsLevel")) > 10);
+		}).length;
+		
+		return highs;
 	},
 	lows : function() {
-		return _(this.logEntries.filter(function(entry) {
+		
+		var lows = this.logEntries.filter(function(entry) {
 			return (parseInt(entry.get("bsLevel")) > 0 && parseInt(entry
 					.get("bsLevel")) < 4);
-		}));
-
+		}).length;
+		
+		return lows;
 	},
 	tests : function() {
-
-		return _(this.logEntries.filter(function(entry) {
-			return (parseInt(entry.get("bsLevel")) > 0);
-		}));
+		
+		var tests = this.logEntries.filter(function(entry) {
+			return (parseInt(entry.get("bsLevel")) > 0 );
+		}).length;
+		
+		return tests;
 
 	},
 	exercise : function() {
-
-		return _(this.logEntries.filter(function(entry) {
-			return (parseInt(entry.get("exerciseDuration")) > 0);
-		}));
+		
+		var exercise = this.logEntries.filter(function(entry) {
+			return (parseInt(entry.get("exerciseDuration")) > 0 );
+		});
+		
+		var total;
+		
+		exercise.forEach(function(entry) {
+			console.log(entry);
+		});
+		
+		return total;
 
 	}
 

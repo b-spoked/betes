@@ -19,7 +19,7 @@ window.InsightsView = Backbone.View
 				this.template = _.template($('#insights-template').html());
 			},
 			render : function() {
-				$(this.el).html(this.template({name:this.model.get('name'),authenticated:this.model.get('authenticated'),lows:4,highs:12,tests:3,exercise:120}));
+				$(this.el).html(this.template({name:this.model.get('name'),authenticated:this.model.get('authenticated'),lows:this.model.lows(),highs:this.model.highs(),tests:this.model.tests(),exercise:this.model.exercise()}));
 				return this;
 			},
 			refresh : function() {

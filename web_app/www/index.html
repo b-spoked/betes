@@ -306,19 +306,9 @@
 			<h3>Getting started?</h3>
 			<p>Start by adding events for test results, insulin, food, excercise or notes.</p>
 			<button class="btn btn-large btn-primary create-new-entry">Get Started</button>
-		</div>		
-		<table class="table table-bordered table-condensed">
-			<thead>
-				<tr>
-					<th style="width: 30%">When</th>
-					<th style="width: 65%">What</th>
-					<th style="width: 5%">Delete</th>
-				</tr>
-			</thead>
-			<tbody id="events-list">
-			</tbody>
-		</table>		
-		
+		</div>
+		<ul id="events-list" class="media-list">
+		</ul>
 	</div>
 	</script>
 	<script type="text/template" id="login-template">
@@ -431,10 +421,30 @@
 	</div>
 	</script>
 	<script type="text/template" id="logbookitem-template">
-	<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
-	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %> <% if(comments) { %><%=comments%><%}%></td>
-	<td><button type="button" class="btn btn-link delete-entry">&times;</button></td>
-	
+	<% if(bsLevel>0) { %>
+	<div class="alert alert-success pull-left">
+		<h3><%= bsLevel %></h3>
+		<small>mmol <br /> <%= insulinAmount %> u</small>
+	</div>
+	<% } else if(exerciseDuration>0) { %>
+	<div class="alert alert-info pull-left">
+		<h3><%= exerciseDuration %></h3>
+		<small>mins @ <%= exerciseIntensity %></small>
+	</div>
+	<% } %>
+	<div class="media-body">
+		<div class="btn-group pull-right">
+        	<button class="btn update">Edit</button>
+            <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a class="delete-entry" href="#">Delete</a></li>
+        	</ul>
+        </div>
+		<div class="clearfix"></div>
+		<h4 class="media-heading"><%= name %> @ <%= resultDate.substring(0, 10) %></h4>
+    	<p><%=comments%></p>
+		<small><%=labels%></small>
+	</div>
 	</script>
 	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>

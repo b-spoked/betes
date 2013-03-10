@@ -7,9 +7,9 @@
  */
 window.LogBookEntryView = Backbone.View.extend({
     
-    tagName:  'tr',
+    tagName:  'li',
 
-    className: 'success',
+    className: 'media well well-small',
 
     events: {
         'click .update': 'editEntry',

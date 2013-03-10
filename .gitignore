@@ -175,3 +175,5 @@ beteslog_backend/README.rdoc
 beteslog_backend/Rakefile
 
 beteslog_backend/app/assets/images/rails.png
+
+web_app/www/test.html

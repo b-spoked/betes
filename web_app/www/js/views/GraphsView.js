@@ -15,6 +15,8 @@ window.GraphsView = Backbone.View
 			initialize : function() {
 				_.bindAll(this);
 				this.template = _.template($('#graphs-template').html());
+				this.model.logEntries.bind('reset', this.render, this);
+				
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
@@ -65,8 +67,6 @@ window.GraphsView = Backbone.View
 					return y(entry.average);
 				});
 
-				$("#bs-results").html('');
-
 				var svg = d3.select("#bs-results").append("svg").attr(
 						"viewBox",
 						"0 0 " + (width + margin.left + margin.right) + " "
@@ -78,7 +78,8 @@ window.GraphsView = Backbone.View
 
 				data.forEach(function(entry) {
 					entry.resultDate = new Date(entry.resultDate);
-					//console.log(entry.when);
+					console.log(entry.resultDate);
+					console.log(entry.bsLevel);
 					entry.bsLevel = +entry.bsLevel;
 				});
 

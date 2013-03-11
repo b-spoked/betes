@@ -16,7 +16,7 @@ window.User = Backbone.Model.extend({
 		logUsed : false,
 		goalsUsed : false,
 		logEntries : []
-		//userSettings : []
+	//userSettings : []
 	},
 
 	urlRoot : "/api/index.php/user.json",
@@ -44,41 +44,42 @@ window.User = Backbone.Model.extend({
 	},
 	highs : function() {
 		var highs = this.logEntries.filter(function(entry) {
-			return ( parseInt(entry.get("bsLevel")) > 10);
+			return (parseInt(entry.get("bsLevel")) > 10);
 		}).length;
-		
+
 		return highs;
 	},
 	lows : function() {
-		
+
 		var lows = this.logEntries.filter(function(entry) {
 			return (parseInt(entry.get("bsLevel")) > 0 && parseInt(entry
 					.get("bsLevel")) < 4);
 		}).length;
-		
+
 		return lows;
 	},
 	tests : function() {
-		
+
 		var tests = this.logEntries.filter(function(entry) {
-			return (parseInt(entry.get("bsLevel")) > 0 );
+			return (parseInt(entry.get("bsLevel")) > 0);
 		}).length;
-		
+
 		return tests;
 
 	},
 	exercise : function() {
-		
+
 		var exercise = this.logEntries.filter(function(entry) {
-			return (parseInt(entry.get("exerciseDuration")) > 0 );
+			return (parseInt(entry.get("exerciseDuration")) > 0);
 		});
-		
-		var total;
-		
+
+		var total = 0;
+
 		exercise.forEach(function(entry) {
-			console.log(entry);
+			total += parseInt(entry.get("exerciseDuration"));
+			console.log(total);
 		});
-		
+
 		return total;
 
 	}

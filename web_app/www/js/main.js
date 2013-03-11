@@ -1,5 +1,3 @@
-window.BetesApp = window.BetesApp || {};
-
 Backbone.View.prototype.close = function() {
 	console.log('Closing view ' + this);
 	if (this.beforeClose) {
@@ -41,7 +39,7 @@ var AppRouter = Backbone.Router.extend({
 
 	showGraphs : function() {
 		this.loadEntries(function() {
-			app.showView(new LogbookView({
+			app.showView(new GraphsView({
 				model : app.appUser
 			}));
 		});
@@ -84,12 +82,12 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	loadEntries : function(callback) {
-		if (this.appUser.logEntries && this.appUser.logEntries.length > 0) {
-			callback();
+		if (this.appUser.logEntries) {
+			if (callback) callback();
 		} else {
-			this.appUser.logEntries.storage.sync.full({
+			this.appUser.logEntries.fetch({
 				success : function() {
-					callback();
+					if (callback) callback();
 				}
 			});
 		}
@@ -98,7 +96,7 @@ var AppRouter = Backbone.Router.extend({
 		if (this.appUser.logEntries && this.appUser.logEntries.length > 0) {
 			callback();
 		} else {
-			this.appUser.logEntries.storage.sync.full({
+			this.appUser.logEntries.fetch({
 				success : function() {
 					callback();
 				}

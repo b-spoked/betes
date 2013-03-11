@@ -15,7 +15,7 @@ window.LoginModal = Backbone.View.extend({
     initialize: function() {
 		_.bindAll(this);
     	this.template = _.template($('#login-template').html());
-        window.BetesApp.User.on('change:authenticated', this.setUserSaveStatus, this);
+        this.model.on('change:authenticated', this.setUserSaveStatus, this);
     },
     render: function() {
     	 $(this.el).html(this.template());
@@ -24,7 +24,7 @@ window.LoginModal = Backbone.View.extend({
         $("#login-dialog").modal('show');
     },
     setUserSaveStatus:function() {
-        if (app.User.get('authenticated')) {
+        if (this.model.get('authenticated')) {
             this.setServerSave();
             return;
         }
@@ -39,14 +39,14 @@ window.LoginModal = Backbone.View.extend({
                 // Get the user's data from Facebook's graph api.
                 $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                     success: function(data) {
-                    	window.BetesApp.Users = new UserDetails();
-                    	window.BetesApp.Users.fetch({local:true});
+                    	var users = new UserDetails();
+                    	users.fetch({local:true});
 
-                    	window.BetesApp.User = window.BetesApp.Users.first();
+                    	app.appUser = users.first();
 
-                        if (!window.BetesApp.User || (window.BetesApp.User.get("id") != data.id)) {
+                        if (!app.appUser || (app.appUser.get("id") != data.id)) {
                             console.log('3rd party id: ' + data.id);
-                            window.BetesApp.User = new User({
+                            app.appUser = new User({
                                 id:data.id,
                                 name:data.name,
                                 email:data.email,
@@ -54,11 +54,11 @@ window.LoginModal = Backbone.View.extend({
                                 authenticated:true
                             });
 	
-                            window.BetesApp.User.fetch();
-                            window.BetesApp.User.save();
-							window.BetesApp.Users.reset();
+                            app.appUser.fetch();
+                            app.appUser.save();
+							users.reset();
                             
-                            window.BetesApp.Users.unshift(window.BetesApp.User, {local:true});
+                            users.unshift(app.appUser, {local:true});
 
                         }
                     }
@@ -81,13 +81,14 @@ window.LoginModal = Backbone.View.extend({
                 $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                     success: function(data) {
                         window.BetesApp.Users = new UserDetails();
-                        window.BetesApp.Users.fetch({local:true});
+                        var users = new UserDetails();
+                    	users.fetch({local:true});
 
-                        window.BetesApp.User = window.BetesApp.Users.first();
+                    	app.appUser = users.first();
 
-                        if (!window.BetesApp.User || (window.BetesApp.User.get("id") != data.id)) {
+                        if (!app.appUser || (app.appUser.get("id") != data.id)) {
                             console.log('3rd party id: ' + data.id);
-                            window.BetesApp.User = new User({
+                            app.appUser = new User({
                                 id:data.id,
                                 name:data.name,
                                 email:data.email,
@@ -95,11 +96,11 @@ window.LoginModal = Backbone.View.extend({
                                 authenticated:true
                             });
 
-                            window.BetesApp.User.fetch();
-                            window.BetesApp.User.save();
-							window.BetesApp.Users.reset();
+                            app.appUser.fetch();
+                            app.appUser.save();
+							users.reset();
                             
-                            window.BetesApp.Users.unshift(window.BetesApp.User, {local:true});
+                            users.unshift(app.appUser, {local:true});
 
                         }
 

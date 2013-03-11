@@ -308,18 +308,8 @@
 			<span class="add-on">Filter Shown Events</span> <input type="text"
 					placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
 		</div>
-				
-		<table class="table table-bordered table-condensed">
-			<thead>
-				<tr>
-					<th style="width: 30%">When</th>
-					<th style="width: 70%">What</th>
-				</tr>
-			</thead>
-			<tbody id="events-list">
-			</tbody>
-		</table>		
-		
+		<ul id="events-list" class="media-list">
+		</ul>
 	</div>
 	</script>
 	<script type="text/template" id="login-template">
@@ -432,8 +422,28 @@
 	</div>
 	</script>
 	<script type="text/template" id="logbookitem-template">
-	<td><% if(resultDate) { %> <a class="update" href="#"><i class="icon-edit"></i> <%= resultDate.substring(0, 10) %> @ <%= name %></a><% } %></td>
-	<td><% if(bsLevel>0) { %> <%= bsLevel %> mmol <% } %><% if(insulinAmount>0) { %>and <%= insulinAmount %> u <% } else if(exerciseDuration>0) { %> <%= exerciseDuration %> mins @ <%= exerciseIntensity %> <% } %></td>
+	<% if(bsLevel>0) { %>
+	<div class="alert alert-success pull-left">
+		<h4><%= bsLevel %></h4>
+		<small>mmol <br /> <%= insulinAmount %> u</small>
+	</div>
+	<% } else if(exerciseDuration>0) { %>
+	<div class="alert alert-info pull-left">
+  			<h4><%= exerciseDuration %></h4>
+  			<small>mins @ <%= exerciseIntensity %></small>
+	</div>
+	<% } %>
+	<div class="media-body">
+		<div class="btn-toolbar pull-right">
+			<div class="btn-group">
+        		<button class="btn btn-primary update">Edit</button>
+				<button class="btn delete-entry">Delete</button>
+        	</div>
+		</div>
+		<h4 class="media-heading"><%= name %> @ <%= resultDate.substring(0, 10) %></h4>
+    	<p><%=comments%></p>
+		<small><%=labels%></small>
+	</div>
 	</script>
 	<script type="text/javascript" src="cordova-2.4.0.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
@@ -452,10 +462,12 @@
 	<script type="text/javascript" src="js/views/LoginModal.js"></script>
 	<script type="text/javascript" src="js/views/LogbookView.js"></script>
 	<script type="text/javascript" src="js/views/InsightsView.js"></script>
+	<script type="text/javascript" src="js/views/GraphsView.js"></script>
 	<script type="text/javascript" src="js/views/SettingsView.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
-	startApplication();
+	document.addEventListener("deviceready", startApplication, true);
+	//startApplication();
 	</script>
 	
 </body>

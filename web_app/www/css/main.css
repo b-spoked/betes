@@ -17,6 +17,20 @@
     height: 50%; 
 }*/
 
+/* list */
+li.media.well.well-small {
+    padding: 5px;
+}
+
+div.alert.alert-success.pull-left {
+    margin: 5px;
+}
+
+div.alert.alert-info.pull-left {
+    margin: 5px;
+}
+
+
 /* Graph */
 svg, #container{
     height: 95%;

@@ -423,24 +423,22 @@
 	<script type="text/template" id="logbookitem-template">
 	<% if(bsLevel>0) { %>
 	<div class="alert alert-success pull-left">
-		<h3><%= bsLevel %></h3>
+		<h4><%= bsLevel %></h4>
 		<small>mmol <br /> <%= insulinAmount %> u</small>
 	</div>
 	<% } else if(exerciseDuration>0) { %>
 	<div class="alert alert-info pull-left">
-		<h3><%= exerciseDuration %></h3>
-		<small>mins @ <%= exerciseIntensity %></small>
+  			<h4><%= exerciseDuration %></h4>
+  			<small>mins @ <%= exerciseIntensity %></small>
 	</div>
 	<% } %>
 	<div class="media-body">
-		<div class="btn-group pull-right">
-        	<button class="btn update">Edit</button>
-            <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-            <ul class="dropdown-menu">
-                <li><a class="delete-entry" href="#">Delete</a></li>
-        	</ul>
-        </div>
-		<div class="clearfix"></div>
+		<div class="btn-toolbar pull-right">
+			<div class="btn-group">
+        		<button class="btn btn-primary update">Edit</button>
+				<button class="btn delete-entry">Delete</button>
+        	</div>
+		</div>
 		<h4 class="media-heading"><%= name %> @ <%= resultDate.substring(0, 10) %></h4>
     	<p><%=comments%></p>
 		<small><%=labels%></small>

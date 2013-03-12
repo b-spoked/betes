@@ -1,0 +1,2 @@
+<root path>\betes\mobile_app\android\assets\www>mklink /D css <root path>\betes\web_app\www\css
+<root path>\betes\mobile_app\android\assets\www>mklink /D js <root path>\betes\web_app\www\js

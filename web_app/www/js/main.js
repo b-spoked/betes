@@ -94,12 +94,12 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	loadSettings : function(callback) {
-		if (this.appUser.logEntries && this.appUser.logEntries.length > 0) {
-			callback();
+		if (this.appUser.logEntries) {
+			if (callback) callback();
 		} else {
 			this.appUser.logEntries.fetch({
 				success : function() {
-					callback();
+					if (callback) callback();
 				}
 			});
 		}

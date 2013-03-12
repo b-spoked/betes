@@ -9,7 +9,8 @@ window.GraphsView = Backbone.View
 		.extend({
 
 			events : {
-				"keyup .filter-logbook" : "filterBloodSugarGraph"
+				"keyup .filter-graph" : "filterBloodSugarGraph",
+				"click .show-graph" : "showAllBloodSugarGraph"
 			},
 
 			initialize : function() {
@@ -20,16 +21,20 @@ window.GraphsView = Backbone.View
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
-				this.showBloodSugarGraph(this.model.logEntries);
 				return this;
 			},
 			filterBloodSugarGraph : function(e) {
-				var searchString = $("#filter-bs-graph").val();
+				var searchString = $(".filter-graph").val();
 				this.showBloodSugarGraph(this.model.logEntries
 						.filterEntries(searchString));
 			},
+			showAllBloodSugarGraph : function(e) {
+				this.showBloodSugarGraph(this.model.logEntries);
+			},
 			showBloodSugarGraph : function(entries) {
-
+				
+				$("#bs-results").html('');
+				
 				var data = null;
 				var color = d3.scale.category10();
 

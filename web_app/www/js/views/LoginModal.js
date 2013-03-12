@@ -15,20 +15,13 @@ window.LoginModal = Backbone.View.extend({
     initialize: function() {
 		_.bindAll(this);
     	this.template = _.template($('#login-template').html());
-        this.model.on('change:authenticated', this.setUserSaveStatus, this);
     },
     render: function() {
     	 $(this.el).html(this.template());
+    	 return this;
     },
     showDialog:function() {
         $("#login-dialog").modal('show');
-    },
-    setUserSaveStatus:function() {
-        if (this.model.get('authenticated')) {
-            this.setServerSave();
-            return;
-        }
-        this.setLocalSave();
     },
     loginWithFB: function() {
         _.extend(Backbone.OAuth.configs.Facebook, {
@@ -56,6 +49,7 @@ window.LoginModal = Backbone.View.extend({
 	
                             app.appUser.fetch();
                             app.appUser.save();
+                            app.appUser.logEntries.fetch();
 							users.reset();
                             
                             users.unshift(app.appUser, {local:true});
@@ -98,8 +92,9 @@ window.LoginModal = Backbone.View.extend({
 
                             app.appUser.fetch();
                             app.appUser.save();
-							users.reset();
+                            app.appUser.logEntries.fetch();
                             
+							users.reset();
                             users.unshift(app.appUser, {local:true});
 
                         }
@@ -112,20 +107,5 @@ window.LoginModal = Backbone.View.extend({
         var GoogleAuthorisation = new Backbone.OAuth(Backbone.OAuth.configs.Google);
         GoogleAuthorisation.auth();
         $("#login-dialog").modal('hide');
-    },
-
-    setLocalSave:function() {
-        console.log('save local only');
-        Offline.onLine = function() {
-            return false;
-        };
-    },
-
-    setServerSave:function() {
-
-        console.log('save to server if online');
-        Offline.onLine = function() {
-            return navigator.onLine !== false;
-        };
     }
 });

@@ -179,7 +179,8 @@ beteslog_backend/app/assets/images/rails.png
 web_app/www/test.html
 
 ##############
-mobile_app/android/assets/www/css/
-mobile_app/android/assets/www/js/
+-mobile_app/android/assets/www/css
+-mobile_app/android/assets/www/js
+
 
 

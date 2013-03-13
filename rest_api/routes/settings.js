@@ -16,7 +16,7 @@ exports.findById = function(req, res) {
 	});
 };
 
-exports.addUser = function(req, res) {
+exports.addSetting = function(req, res) {
 	res.send({
 		id : req.params.id,
 		name : "The Name",
@@ -24,7 +24,7 @@ exports.addUser = function(req, res) {
 	});
 };
 
-exports.updateUser = function(req, res) {
+exports.updateSetting = function(req, res) {
 	res.send({
 		id : req.params.id,
 		name : "The Name",
@@ -32,7 +32,7 @@ exports.updateUser = function(req, res) {
 	});
 };
 
-exports.deleteUser = function(req, res) {
+exports.deleteSetting = function(req, res) {
 	res.send({
 		id : req.params.id,
 		name : "The Name",

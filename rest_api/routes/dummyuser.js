@@ -18,16 +18,7 @@ connection.connect(function(err) {
 exports.findById = function(req, res) {
 	var userId = req.params.id;
 	var sql = 'SELECT * FROM user WHERE id = ' + connection.escape(userId);
-	connection.query(sql, function(err, results) {
-		if (err) {
-			res.send({
-				'error' : 'An error has occurred'
-			});
-		} else {
-			console.log('Success: ' + JSON.stringify(results[0]));
-			res.send(results[0]);
-		}
-	});
+	console.log(sql);
 };
 
 exports.addUser = function(req, res) {
@@ -39,19 +30,8 @@ exports.addUser = function(req, res) {
 		newsletter : req.body.newsletter,
 		updated_at : new Date()
 	};
-
-	connection.query('INSERT INTO user SET ? ', user,
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
-
+	
+	console.log(JSON.stringify(user));
 };
 
 exports.updateUser = function(req, res) {
@@ -66,33 +46,19 @@ exports.updateUser = function(req, res) {
 
 	var resultId = req.params.id;
 
-	connection.query('UPDATE user SET ? WHERE id = ?', user, resultId,
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
+
+	console.log(JSON.stringify(user));
+	console.log("update for result:"+resultId);
+	
 };
 
 exports.findAllResults = function(req, res) {
 	var userId = req.params.id;
 	var sql = 'SELECT * FROM result WHERE userId = '
-			+ connection.escape(userId);
-	connection.query(sql, function(err, results) {
-		if (err) {
-			res.send({
-				'error' : 'An error has occurred'
-			});
-		} else {
-			console.log('Success: ' + JSON.stringify(results));
-			res.send(results);
-		}
-	});
+			+ userId;
+
+	console.log(sql);
+	
 };
 
 exports.addResult = function(req, res) {
@@ -109,19 +75,9 @@ exports.addResult = function(req, res) {
 		userId : req.body.userId,
 		updated_at : new Date()
 	};
-
-	connection.query('INSERT INTO result SET ? ', result,
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
-
+	
+	console.log(JSON.stringify(result));
+	
 };
 
 exports.updateResult = function(req, res) {
@@ -139,70 +95,14 @@ exports.updateResult = function(req, res) {
 	};
 
 	var resultId = req.params.id;
-
-	connection.query('UPDATE result SET ? WHERE id = ?', result, resultId,
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
+	
+	console.log(JSON.stringify(result));
+	console.log("for result: "+resultId);
 };
 
 exports.deleteResult = function(req, res) {
 	var resultId = req.params.id;
 
-	connection.query('DELETE FROM result WHERE id = ?', [resultId],
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
+	console.log("delete result: "+resultId);
 };
 
-exports.addSettings = function(req, res) {
-	var setting = req.body;
-	console.log('Adding setting: ' + JSON.stringify(setting));
-	db.collection('settings', function(err, collection) {
-		collection.insert(setting, {
-			safe : true
-		}, function(err, result) {
-			if (err) {
-				res.send({
-					'error' : 'An error has occurred'
-				});
-			} else {
-				console.log('Success: ' + JSON.stringify(result[0]));
-				res.send(result[0]);
-			}
-		});
-	});
-};
-
-exports.updateSettings = function(req, res) {
-	var wine = req.body;
-	console.log('Adding wine: ' + JSON.stringify(wine));
-	db.collection('wines', function(err, collection) {
-		collection.insert(wine, {
-			safe : true
-		}, function(err, result) {
-			if (err) {
-				res.send({
-					'error' : 'An error has occurred'
-				});
-			} else {
-				console.log('Success: ' + JSON.stringify(result[0]));
-				res.send(result[0]);
-			}
-		});
-	});
-};

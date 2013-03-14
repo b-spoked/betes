@@ -1,24 +1,18 @@
 var express = require('express'),
-    users = require('./routes/users'),
-	logbook = require('./routes/logbook'),
-	settings = require('./routes/settings');
+    user = require('./routes/logbookuser');
  
 var app = express();
 /* User */ 
-app.get('/users/:id', users.findById);
-app.post('/users', users.addUser);
-app.put('/users/:id', users.updateUser);
-app.delete('/users/:id', users.deleteUser);
-/* User Logbook */
-app.get('/logbook/:id', logbook.findAll);
+app.get('/users/:id', user.findById);
+app.post('/users', user.addUser);
+app.put('/users/:id', user.updateUser);
+
+/* User Log Book */
+app.get('/logbook/:id', logbook.findAllResults);
 app.post('/logbook', logbook.addResult);
 app.put('/logbook/:id', logbook.updateResult);
-app.delete('/logbook/:id', logbook.deleteResult);
-/* User Settings */
-app.get('/settings/:id', settings.findAll);
-app.post('/settings', settings.addSetting);
-app.put('/settings/:id', settings.updateSetting);
-app.delete('/settings/:id', settings.deleteSetting);
+app.del('/logbook/:id', logbook.deleteResult);
+
  
 app.listen(3000);
 console.log('Listening on port 3000...');

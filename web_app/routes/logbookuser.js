@@ -7,6 +7,29 @@ var connection = mysql.createConnection({
 	database : 'heroku_fee62f08e9a254b',
 });
 
+handleDisconnect = function(connection) {
+	  connection.on('error', function(err) {
+	    if (!err.fatal) {
+	      return;
+	    }
+
+	    if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+	      throw err;
+	    }
+
+	    console.log('Re-connecting lost connection: ' + err.stack);
+
+	    connection = mysql.createConnection({
+	    	host : 'us-cdbr-east-03.cleardb.com',
+	    	user : 'b95d456714e818',
+	    	password : 'e9ec1df8',
+	    	database : 'heroku_fee62f08e9a254b',
+	    });
+	    handleDisconnect(connection);
+	    connection.connect();
+	  });
+};
+
 connection.connect(function(err) {
 	if (err) {
 		console.log('Error: An error has occurred');
@@ -14,6 +37,12 @@ connection.connect(function(err) {
 		console.log('Successfully connected to db');
 	}
 });
+
+
+handleDisconnect(connection);
+
+
+
 
 exports.findById = function(req, res) {
 	var userId = req.params.id;

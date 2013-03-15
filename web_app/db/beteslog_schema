@@ -1,0 +1,68 @@
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4004
+#
+# http://www.sequelpro.com/
+# http://code.google.com/p/sequel-pro/
+#
+# Host: us-cdbr-east-03.cleardb.com (MySQL 5.5.28-log)
+# Database: heroku_fee62f08e9a254b
+# Generation Time: 2013-03-15 22:16:24 +1300
+# ************************************************************
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+# Dump of table result
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `result`;
+
+CREATE TABLE `result` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL DEFAULT '',
+  `bsLevel` decimal(3,1) DEFAULT '0.0',
+  `insulinAmount` decimal(3,1) DEFAULT '0.0',
+  `resultDate` datetime NOT NULL,
+  `exerciseDuration` int(11) DEFAULT '0',
+  `exerciseIntensity` varchar(20) DEFAULT NULL,
+  `comments` text,
+  `labels` text,
+  `userId` varchar(64) NOT NULL DEFAULT '',
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table user
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `id` varchar(64) NOT NULL DEFAULT '',
+  `name` text NOT NULL,
+  `email` text NOT NULL,
+  `thumbnailPath` text NOT NULL,
+  `newsletter` tinyint(1) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

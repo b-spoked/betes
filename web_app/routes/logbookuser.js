@@ -1,17 +1,17 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-	host : 'example.org',
-	user : 'bob',
-	password : 'secret',
-	database : 'testdb',
+	host : 'us-cdbr-east-03.cleardb.com',
+	user : 'b95d456714e818',
+	password : 'e9ec1df8',
+	database : 'heroku_fee62f08e9a254b',
 });
 
 connection.connect(function(err) {
 	if (err) {
 		console.log('Error: An error has occurred');
 	} else {
-		console.log('Success: ');
+		console.log('Successfully connected to db');
 	}
 });
 

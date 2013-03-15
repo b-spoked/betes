@@ -5,7 +5,7 @@
  * Time: 3:45 PM
  * To change this template use File | Settings | File Templates.
  */
-windowHomeView = Backbone.View
+window.HomeView = Backbone.View
 		.extend({
 
 			events : {
@@ -17,7 +17,7 @@ windowHomeView = Backbone.View
 				this.template = _.template($('#home-template').html());
 			},
 			render : function() {
-				$(this.el).html(this.template(this.model.toJSON()));
+				$(this.el).html(this.template());
 				return this;
 			},
 			showLoginDialog : function(e) {

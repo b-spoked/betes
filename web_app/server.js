@@ -8,11 +8,13 @@ app.post('/users', user.addUser);
 app.put('/users/:id', user.updateUser);
 
 /* User Log Book */
-app.get('/logbook/:id', logbook.findAllResults);
-app.post('/logbook', logbook.addResult);
-app.put('/logbook/:id', logbook.updateResult);
-app.del('/logbook/:id', logbook.deleteResult);
+app.get('/logbook/:id', user.findAllResults);
+app.post('/logbook', user.addResult);
+app.put('/logbook/:id', user.updateResult);
+app.del('/logbook/:id', user.deleteResult);
 
  
-app.listen(3000);
-console.log('Listening on port 3000...');
+var port = process.env.PORT || 5000;
+app.listen(port, function() {
+  console.log("Listening on " + port);
+});

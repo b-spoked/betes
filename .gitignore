@@ -162,29 +162,10 @@ pip-log.txt
 # Mac crap
 .DS_Store
 
-api/config.php
+#app stuff
 
-beteslog_backend/.gitignore
+.idea/
 
-beteslog_backend/Gemfile
-
-beteslog_backend/Gemfile.lock
-
-beteslog_backend/README.rdoc
-
-beteslog_backend/Rakefile
-
-beteslog_backend/app/assets/images/rails.png
-
-web_app/www/test.html
-
-<<<<<<< HEAD
-##############
--mobile_app/android/assets/www/css
--mobile_app/android/assets/www/js
-
-
-
-=======
+mobile_app/android/assets/www/css
+mobile_app/android/assets/www/js
 rest_api/node_modules
->>>>>>> ignore node modules

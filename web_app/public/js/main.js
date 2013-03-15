@@ -15,42 +15,55 @@ var AppRouter = Backbone.Router.extend({
 		"graphs" : "showGraphs",
 		"settings" : "showSettings"
 	},
+
 	initialize : function() {
-		this.getCurrentUser();
+		this.getAuthenticatedUser();
 	},
 
 	showLogBook : function() {
-
-		//this.loadEntries(function() {
+		if (app.appUser) {
 			app.showView(new LogbookView({
 				model : app.appUser
 			}));
-		//});
+		} else {
+			this.showHomeView();
+		}
 
 	},
 
 	showInsights : function() {
-		//this.loadEntries(function() {
+		if (app.appUser) {
 			app.showView(new InsightsView({
 				model : app.appUser
 			}));
-		//});
+		} else {
+			this.showHomeView();
+		}
+
+	},
+
+	showHomeView : function() {
+		app.showView(new HomeView());
 	},
 
 	showGraphs : function() {
-		//this.loadEntries(function() {
+		if (app.appUser) {
 			app.showView(new GraphsView({
 				model : app.appUser
 			}));
-		//});
+		} else {
+			this.showHomeView();
+		}
 	},
 
 	showSettings : function() {
-		//this.loadSettings(function() {
+		if (app.appUser) {
 			app.showView(new SettingsView({
 				model : app.appUser
 			}));
-		//});
+		} else {
+			this.showHomeView();
+		}
 	},
 
 	showView : function(view) {
@@ -60,7 +73,7 @@ var AppRouter = Backbone.Router.extend({
 		this.currentView = view;
 		return view;
 	},
-	getCurrentUser : function() {
+	getAuthenticatedUser : function() {
 		var currentUser, users;
 
 		users = new UserDetails();
@@ -69,39 +82,12 @@ var AppRouter = Backbone.Router.extend({
 			local : true
 		});
 
-		var currentUser = users.first();
+		currentUser = users.first();
 
 		if (currentUser && currentUser.get('authenticated')
 				&& currentUser.get('id') > 0) {
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch();
-		} else {
-			this.appUser = new User({
-				name : "temp"
-			});
-			users.add(this.appUser);
-		}
-	},
-	loadEntries : function(callback) {
-		if (this.appUser.logEntries) {
-			if (callback) callback();
-		} else {
-			this.appUser.logEntries.fetch({
-				success : function() {
-					if (callback) callback();
-				}
-			});
-		}
-	},
-	loadSettings : function(callback) {
-		if (this.appUser.logEntries) {
-			if (callback) callback();
-		} else {
-			this.appUser.logEntries.fetch({
-				success : function() {
-					if (callback) callback();
-				}
-			});
 		}
 	}
 });

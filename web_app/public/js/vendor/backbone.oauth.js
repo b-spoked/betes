@@ -104,8 +104,8 @@
     },
     Google: {
       auth_url: 'https://accounts.google.com/o/oauth2/auth',
-      client_id :'860380290684-496q46pj26ifk97p6ftpd5qnvlkdhdar.apps.googleusercontent.com',
-      redirect_url: 'http://app.beteslog.com',
+      client_id :'860380290684-b17cikk70htpfc67r7nf46mopmg2iqqn.apps.googleusercontent.com',
+      redirect_url: 'http://betes-log.herokuapp.com',
       scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
     }
   };

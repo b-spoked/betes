@@ -6,8 +6,10 @@
  * To change this template use File | Settings | File Templates.
  */
 window.User = Backbone.Model.extend({
+	
 	defaults : {
 		name : '',
+		thirdPartyId:0,
 		email : 'na',
 		newsletter : false,
 		thumbnailPath : '',
@@ -19,7 +21,7 @@ window.User = Backbone.Model.extend({
 	//userSettings : []
 	},
 
-	urlRoot : "/api/index.php/user.json",
+	urlRoot : "/users",
 
 	initialize : function() {
 		_.bindAll(this);
@@ -28,7 +30,7 @@ window.User = Backbone.Model.extend({
 		//this.userSettings = new Settings(this.get('userSettings'));
 
 		this.logEntries.url = function() {
-			return self.urlRoot + '/logbook/' + self.get('id');
+			return '/logbook/' + self.get('thirdPartyId');
 		};
 
 		/*this.userSettings.url = function() {
@@ -93,5 +95,5 @@ window.UserDetails = Backbone.Collection.extend({
 			autoPush : true
 		});
 	},
-	url : '/api/index.php/user.json'
+	url : '/users'
 });

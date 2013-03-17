@@ -23,7 +23,17 @@ window.LoginModal = Backbone.View.extend({
     showDialog:function() {
         $("#login-dialog").modal('show');
     },
+    authoriseAndSyncUser:function(loggedInUser){
+    	var users = new UserDetails();
+    	users.reset();
+    	app.appUser = loggedInUser;
+    	app.appUser.save();
+    	users.create(app.appUser,{local:true});
+        app.navigate("#/settings");
+    },
     loginWithFB: function() {
+    	
+    	var self = this;
         _.extend(Backbone.OAuth.configs.Facebook, {
 
             onSuccess: function(params) {
@@ -32,29 +42,14 @@ window.LoginModal = Backbone.View.extend({
                 // Get the user's data from Facebook's graph api.
                 $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                     success: function(data) {
-                    	var users = new UserDetails();
-                    	users.fetch({local:true});
-
-                    	app.appUser = users.first();
-
-                        if (!app.appUser || (app.appUser.get("id") != data.id)) {
-                            console.log('3rd party id: ' + data.id);
-                            app.appUser = new User({
-                                id:data.id,
-                                name:data.name,
-                                email:data.email,
-                                thumbnailPath:data.picture,
-                                authenticated:true
-                            });
-	
-                            app.appUser.fetch();
-                            app.appUser.save();
-                            app.appUser.logEntries.fetch();
-							users.reset();
-                            
-                            users.unshift(app.appUser, {local:true});
-
-                        }
+                    	
+                    	self.authoriseAndSyncUser(new User({
+                    		thirdPartyId:data.id,
+                            name:data.name,
+                            email:data.email,
+                            thumbnailPath:data.picture,
+                            authenticated:true
+                        }));
                     }
                 });
 
@@ -66,6 +61,7 @@ window.LoginModal = Backbone.View.extend({
         $("#login-dialog").modal('hide');
     },
     loginWithGoogle: function() {
+    	var self = this;
         _.extend(Backbone.OAuth.configs.Google, {
 
             onSuccess: function(params) {
@@ -74,31 +70,13 @@ window.LoginModal = Backbone.View.extend({
                 // Get the user's data from the Google api.
                 $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                     success: function(data) {
-                        window.BetesApp.Users = new UserDetails();
-                        var users = new UserDetails();
-                    	users.fetch({local:true});
-
-                    	app.appUser = users.first();
-
-                        if (!app.appUser || (app.appUser.get("id") != data.id)) {
-                            console.log('3rd party id: ' + data.id);
-                            app.appUser = new User({
-                                id:data.id,
-                                name:data.name,
-                                email:data.email,
-                                thumbnailPath:data.picture,
-                                authenticated:true
-                            });
-
-                            app.appUser.fetch();
-                            app.appUser.save();
-                            app.appUser.logEntries.fetch();
-                            
-							users.reset();
-                            users.unshift(app.appUser, {local:true});
-
-                        }
-
+                    	self.authoriseAndSyncUser(new User({
+                    		thirdPartyId:data.id,
+                            name:data.name,
+                            email:data.email,
+                            thumbnailPath:data.picture,
+                            authenticated:true
+                        }));
                     }
                 });
             }

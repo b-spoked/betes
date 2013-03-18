@@ -23,6 +23,12 @@ app.post('/logbook', user.addResult);
 app.put('/logbook/:id', user.updateResult);
 app.delete('/logbook/:id', user.deleteResult);
 
+/* User Settings */
+app.get('/settings/:id', user.findAllSettings);
+app.post('/settings', user.addSetting);
+app.put('/settings/:id', user.updateSetting);
+app.delete('/settings/:id', user.deleteSetting);
+
 http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
 });

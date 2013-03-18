@@ -113,7 +113,7 @@ exports.addResult = function(req, res) {
 	};
 	connection.connect();
 
-	console.log('about to add result: ' + logResult);
+	console.log('about to add result: ' +  JSON.stringify(logResult));
 	connection.query('INSERT INTO result SET ? ', [logResult],
 			function(err, result) {
 				if (err) {
@@ -129,7 +129,7 @@ exports.addResult = function(req, res) {
 };
 
 exports.updateResult = function(req, res) {
-	var result = {
+	var logResult = {
 		name : req.body.name,
 		bsLevel : req.body.bsLevel,
 		insulinAmount : req.body.insulinAmount,
@@ -142,9 +142,9 @@ exports.updateResult = function(req, res) {
 		updated_at : new Date()
 	};
 	connection.connect();
-	console.log('about to update result: ' + result);
+	console.log('about to update result: ' + JSON.stringify(logResult));
 	var resultId = req.params.id;
-	/*connection.query('UPDATE result SET ? WHERE id = ?', [result], [resultId],
+	connection.query('UPDATE result SET ? WHERE id = ?', [logResult], [resultId],
 			function(err, results) {
 				if (err) {
 					res.send({
@@ -154,7 +154,7 @@ exports.updateResult = function(req, res) {
 					console.log('Success: ' + JSON.stringify(results));
 					res.send(results);
 				}
-			});*/
+			});
 	connection.end();
 };
 
@@ -173,5 +173,37 @@ exports.deleteResult = function(req, res) {
 			res.send(results);
 		}
 	});*/
+	connection.end();
+};
+exports.findAllSettings = function(req, res) {
+	var userId = req.params.id;
+	connection.connect();
+	console.log('settings for: ' + userId);
+	
+	connection.end();
+};
+
+exports.addSetting = function(req, res) {
+
+	connection.connect();
+
+	console.log('about to add setting: ');
+	
+	connection.end();
+};
+
+exports.updateSetting = function(req, res) {
+	var settingId = req.params.id;
+	connection.connect();
+	console.log('about to update setting: ' + settingId);
+	
+	connection.end();
+};
+
+exports.deleteSetting = function(req, res) {
+	var settingId = req.params.id;
+	connection.connect();
+	console.log('about to delete setting: ' + settingId);
+	
 	connection.end();
 };

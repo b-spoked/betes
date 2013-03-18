@@ -23,6 +23,5 @@ window.Settings = Backbone.Collection.extend({
 		this.storage = new Offline.Storage('user-settings', this, {
 			autoPush : true
 		});
-	},
-	url : '/api/index.php/user.json/settings'
+	}
 });

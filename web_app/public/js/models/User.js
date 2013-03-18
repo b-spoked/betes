@@ -17,8 +17,8 @@ window.User = Backbone.Model.extend({
 		testingUnits : 'mmol/l',
 		logUsed : false,
 		goalsUsed : false,
-		logEntries : []
-	//userSettings : []
+		logEntries : [],
+		settings : []
 	},
 
 	urlRoot : "/users",
@@ -27,15 +27,15 @@ window.User = Backbone.Model.extend({
 		_.bindAll(this);
 		var self = this;
 		this.logEntries = new Entries(this.get('logEntries'));
-		//this.userSettings = new Settings(this.get('userSettings'));
+		this.settings = new Settings(this.get('settings'));
 
 		this.logEntries.url = function() {
-			return '/logbook/' + self.get('id');
+			return '/logbook/' + self.get('sid');
 		};
 
-		/*this.userSettings.url = function() {
-			return self.urlRoot + '/settings/' + self.get('id');
-		};*/
+		this.settings.url = function() {
+			return '/settings/' + self.get('sid');
+		};
 	},
 	hasLogEntries : function() {
 		this.logUsed = (this.logEntries.length > 0);

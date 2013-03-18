@@ -26,9 +26,9 @@ window.LoginModal = Backbone.View.extend({
     authoriseAndSyncUser:function(loggedInUser){
     	var users = new UserDetails();
     	users.reset();
-    	app.appUser = loggedInUser;
+    	//app.appUser = loggedInUser;
     	//app.appUser.save();
-    	users.create(app.appUser);
+    	users.create(loggedInUser);
         app.navigate("#/settings");
     },
     loginWithFB: function() {
@@ -43,13 +43,13 @@ window.LoginModal = Backbone.View.extend({
                 $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
                     success: function(data) {
                     	
-                    	self.authoriseAndSyncUser(new User({
+                    	self.authoriseAndSyncUser({
                     		thirdPartyId:data.id,
                             name:data.name,
                             email:data.email,
                             thumbnailPath:data.picture,
                             authenticated:true
-                        }));
+                        });
                     }
                 });
 
@@ -70,13 +70,13 @@ window.LoginModal = Backbone.View.extend({
                 // Get the user's data from the Google api.
                 $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {
                     success: function(data) {
-                    	self.authoriseAndSyncUser(new User({
+                    	self.authoriseAndSyncUser({
                     		thirdPartyId:data.id,
                             name:data.name,
                             email:data.email,
                             thumbnailPath:data.picture,
                             authenticated:true
-                        }));
+                        });
                     }
                 });
             }

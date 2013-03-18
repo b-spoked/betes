@@ -9,7 +9,8 @@ window.SettingsView = Backbone.View
 		.extend({
 
 			events : {
-				'click .create-new-settings' : 'showNewSettingsDialog'
+				'click .save-settings' : 'saveSettings',
+				'click .save-account-settings' : 'saveAccountSettings'
 			},
 
 			initialize : function() {
@@ -20,7 +21,21 @@ window.SettingsView = Backbone.View
 				$(this.el).html(this.template(this.model.toJSON()));
 				return this;
 			},
-			showNewSettingsDialog : function(){
-				alert('new settings');
+			saveSettings : function(){
+				this.model.settings.create(this.getCurrentSettings());
+			},
+			saveAccountSettings : function(){
+				$("#userNewsletter").val();
+			},
+			getCurrentSettings : function(){
+				return {
+					lowReading : $("#lowReading").val().trim(),
+					highReading : $("#highReading").val().trim(),
+					readingFreq : $("#readingFreq").val().trim(),
+					excerciseTime: $("#excerciseTime").val().trim(),
+					excerciseFreq: $("#excerciseFreq").val().trim(),
+					current : true,
+					userId : this.model.get('sid')
+				};
 			}
 		});

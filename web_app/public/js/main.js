@@ -28,7 +28,6 @@ var AppRouter = Backbone.Router.extend({
 		} else {
 			this.showHomeView();
 		}
-
 	},
 
 	showInsights : function() {
@@ -39,7 +38,6 @@ var AppRouter = Backbone.Router.extend({
 		} else {
 			this.showHomeView();
 		}
-
 	},
 
 	showHomeView : function() {
@@ -83,6 +81,7 @@ var AppRouter = Backbone.Router.extend({
 		});
 
 		currentUser = users.first();
+        currentUser.fetch();
 
 		if (currentUser && currentUser.get('authenticated')
 				&& currentUser.get('sid') > 0) {

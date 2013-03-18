@@ -27,8 +27,8 @@ window.LoginModal = Backbone.View.extend({
     	var users = new UserDetails();
     	users.reset();
     	app.appUser = loggedInUser;
-    	app.appUser.save();
-    	users.create(app.appUser,{local:true});
+    	//app.appUser.save();
+    	users.create(app.appUser);
         app.navigate("#/settings");
     },
     loginWithFB: function() {

@@ -84,7 +84,7 @@ exports.findAllResults = function(req, res) {
 	connection.connect();
 	console.log('logbook for: ' + userId);
 	
-	/*connection.query('SELECT * FROM result WHERE userId = ?',[userId], function(err, results) {
+	connection.query('SELECT * FROM result WHERE userId = ?',[userId], function(err, results) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'
@@ -93,7 +93,7 @@ exports.findAllResults = function(req, res) {
 			console.log('Success: ' + JSON.stringify(results));
 			res.send(results);
 		}
-	});*/
+	});
 	connection.end();
 };
 
@@ -114,7 +114,7 @@ exports.addResult = function(req, res) {
 	connection.connect();
 
 	console.log('about to add result: ' + logResult);
-	/*connection.query('INSERT INTO result SET ? ', [logResult],
+	connection.query('INSERT INTO result SET ? ', [logResult],
 			function(err, result) {
 				if (err) {
 					res.send({
@@ -122,9 +122,9 @@ exports.addResult = function(req, res) {
 					});
 				} else {
 					//console.log('Success: ' + JSON.stringify(results));
-					res.send(result.insertId);
+					res.send({"id":result.insertId});
 				}
-			});*/
+			});
 	connection.end();
 };
 

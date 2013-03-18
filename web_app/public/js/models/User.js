@@ -30,7 +30,7 @@ window.User = Backbone.Model.extend({
 		//this.userSettings = new Settings(this.get('userSettings'));
 
 		this.logEntries.url = function() {
-			return '/logbook/' + self.get('thirdPartyId');
+			return '/logbook/' + self.get('id');
 		};
 
 		/*this.userSettings.url = function() {

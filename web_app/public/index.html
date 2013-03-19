@@ -34,7 +34,7 @@
     						<span class="caret"></span>
   						</button>
   						<ul class="dropdown-menu">
-    						<li><a href="#/settings"> Account</a></li>
+    						<li><a href="#/account"> Account</a></li>
     						<li><a href="#" id="logout"> Logout</a></li>
   						</ul>
 					</div>
@@ -97,7 +97,7 @@
     						<span class="caret"></span>
   						</button>
   						<ul class="dropdown-menu">
-    						<li><a href="#/settings"> Account</a></li>
+    						<li><a href="#/account"> Account</a></li>
     						<li><a href="#" id="logout"> Logout</a></li>
   						</ul>
 					</div>
@@ -133,142 +133,182 @@
 		</div>
 	</div>
 	</script>
-	<script type="text/template" id="settings-template">
-	<div class="navbar navbar-inverse ">
-		<div class="navbar-inner">
-			<ul class="nav">
-				<li><a href="#">Log</a></li>
-				<li><a href="#/insights">Insights</a></li>
-				<li><a href="#/graphs">Graphs</a></li>
-				<li class="active"><a href="#/settings">Settings</a></li>
-			</ul>
-			<div class="pull-right">
-				<%if(authenticated) {%>
-					<div class="btn-group">
-  						<button class="btn">Hey <%= name%></button>
-  						<button class="btn dropdown-toggle" data-toggle="dropdown">
-    						<span class="caret"></span>
-  						</button>
-  						<ul class="dropdown-menu">
-    						<li><a href="#/settings"> Account</a></li>
-    						<li><a href="#" id="logout"> Logout</a></li>
-  						</ul>
-					</div>
-				<%} else { %>
-					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
-				<%}%>    
+	<script type="text/template" id="account-template">
+<div class="navbar navbar-inverse ">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li><a href="#">Log</a></li>
+			<li><a href="#/insights">Insights</a></li>
+			<li><a href="#/graphs">Graphs</a></li>
+			<li><a href="#/settings">Settings</a></li>
+		</ul>
+		<div class="pull-right">
+			<%if(authenticated) {%>
+			<div class="btn-group">
+				<button class="btn">Hey <%= name%></button>
+				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#/account"> Account</a></li>
+					<li><a href="#" id="logout"> Logout</a></li>
+				</ul>
 			</div>
+			<%} else { %> <a href="#" id="login" class="btn btn-small"><i
+				class="icon-signin"></i> Login</a> <%}%>
 		</div>
 	</div>
-	<div id="settings">		
-		<div class="well">
-			<div class="media">
-  				<a class="pull-left" href="#">
-    				<img class="media-object" data-src="<%= thumbnailPath%>">
-  				</a>
-  				<div class="media-body">
-    				<h4 class="media-heading">Name:</h4>
-					<p><%= name%></p>    
-  				</div>
-			</div>
-			<form id="account-settings" class="form-horizontal">
-  					<div class="control-group">
-    					 <label class="checkbox">
-        					<input id="userNewsletter" type="checkbox"> Receive Newsletter
-      				     </label>
-  					</div>					
+</div>
+<div id="acount">
+	
+			<div class="well">
+				<div class="media">
+					<a class="pull-left" href="#"> <img class="media-object"
+						data-src="<%= thumbnailPath%>">
+					</a>
+					<div class="media-body">
+						<h4 class="media-heading">Name:</h4>
+						<p><%= name%></p>
+					</div>
+				</div>
+				<form id="account-settings" class="form-horizontal">
+					<div class="control-group">
+						<label class="checkbox"> <input id="userNewsletter"
+							type="checkbox"> Receive Newsletter
+						</label>
+					</div>
 					<div class="control-group">
 						<button class="btn">Cancel</button>
-						<button type="submit" class="save-account-settings btn btn-primary">Update Account</button>
-  					</div>
- 			</form>
-		</div>	
-		</div>			
-		<div class="accordion" id="accordion2">
-				
-			<div id="settings-getting-started" class="alert alert-info">
-  				<button type="button" class="close" data-dismiss="alert">&times;</button>		
-				<h3>Getting started?</h3>
-				<p class="lead">Settings are used to power your insights. Tell us your ideal sugar range, how much you are aiming to excercise ... </p>
-				<a class="btn btn-primary btn-large accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-        			Start Adding Settings
-      			</a>
+						<button type="submit"
+							class="save-account-settings btn btn-primary">Update
+							Account</button>
+					</div>
+				</form>
 			</div>
-  			<div class="accordion-group">
-    			<div class="accordion-heading">
-      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-        				Diabetes Settings
-      				</a>
-    			</div>
-    			<div id="collapseOne" class="accordion-body collapse">
-      				<div class="accordion-inner">
-        				<div class="well">
-				<form id="excercise-settings" class="form-horizontal">
-  					<div class="control-group">
-    					<label class="control-label" for="lowReading">Low</label>						
-    					<div class="controls">
-      						<input type="text" id="lowReading" placeholder="4">
-    					</div>
-						<span class="help-block">A reading below this level you consider a low</span>
-  					</div>
-					<div class="control-group">
-    					<label class="control-label" for="highReading">High</label>						
-    					<div class="controls">
-      						<input type="text" id="highReading" placeholder="12">
-    					</div>
-						<span class="help-block">A reading above this level you consider too high</span>
-  					</div>
-					<div class="control-group">
-    					<label class="control-label" for="highReading">High</label>						
-    					<div class="controls">
-      						<input type="text" id="highReading" placeholder="12">
-    					</div>
-						<span class="help-block">A reading above this level you consider too high</span>
-  					</div>
- 				</form>
+		</div>
+	
+</div>
+	</script>
+	<script type="text/template" id="settings-template">
+<div class="navbar navbar-inverse ">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li><a href="#">Log</a></li>
+			<li><a href="#/insights">Insights</a></li>
+			<li><a href="#/graphs">Graphs</a></li>
+			<li class="active"><a href="#/settings">Settings</a></li>
+		</ul>
+		<div class="pull-right">
+			<%if(authenticated) {%>
+			<div class="btn-group">
+				<button class="btn">Hey <%= name%></button>
+				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#/account"> Account</a></li>
+					<li><a href="#" id="logout"> Logout</a></li>
+				</ul>
 			</div>
-      				</div>
-    			</div>
-  			</div>
-			<div class="accordion-group">
-    			<div class="accordion-heading">
-      				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-        				Excercise Settings
-      				</a>
-    			</div>
-    			<div id="collapseTwo" class="accordion-body collapse">
-      				<div class="accordion-inner">
-        				<div class="well">
-				<form id="excercise-settings" class="form-horizontal">
-  					<div class="control-group">
-    					<label class="control-label" for="excerciseTime">Time</label>						
-    					<div class="controls">
-      						<input type="text" id="excerciseTime" placeholder="30">
-    					</div>
-						<span class="help-block">The minimum about of time you want to aim for when excercising</span>
-  					</div>
-					<div class="control-group">
-    					<label class="control-label" for="excerciseFreq">Frequency</label>						
-    					<div class="controls">
-      						<input type="text" id="excerciseFreq" placeholder="5">
-    					</div>
-						<span class="help-block">The minimum number of times per week you aim to excercise</span>
-  					</div>
- 				</form>
-			</div>
-      				</div>
-    			</div>
-  			</div>
-			<div class="control-group">
-				<button class="btn">Cancel</button>
-				<button type="submit" class="save-settings btn btn-primary">Save Settings</button>
-  			</div>
-			
-      				</div>
-    			</div>
-  			</div>	
+			<%} else { %> <a href="#" id="login" class="btn btn-small"><i
+				class="icon-signin"></i> Login</a> <%}%>
 		</div>
 	</div>
+</div>
+<div id="settings" >
+	
+			<div class="accordion" id="accordion2">
+
+				<div id="settings-getting-started" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<h3>Getting started?</h3>
+					<p class="lead">Settings are used to power your insights. Tell
+						us your ideal sugar range, how much you are aiming to excercise
+						...</p>
+					<a class="btn btn-primary btn-large accordion-toggle"
+						data-toggle="collapse" data-parent="#accordion2"
+						href="#collapseOne"> Start Adding Settings </a>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-parent="#accordion2" href="#collapseOne"> Diabetes
+							Settings </a>
+					</div>
+					<div id="collapseOne" class="accordion-body collapse">
+						<div class="accordion-inner">
+							<div class="well">
+								<form id="excercise-settings" class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="lowReading">Low</label>
+										<div class="controls">
+											<input type="text" id="lowReading" placeholder="4">
+										</div>
+										<span class="help-block">A reading below this level you
+											consider a low</span>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="highReading">High</label>
+										<div class="controls">
+											<input type="text" id="highReading" placeholder="12">
+										</div>
+										<span class="help-block">A reading above this level you
+											consider too high</span>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="highReading">High</label>
+										<div class="controls">
+											<input type="text" id="highReading" placeholder="12">
+										</div>
+										<span class="help-block">A reading above this level you
+											consider too high</span>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<a class="accordion-toggle" data-toggle="collapse"
+							data-parent="#accordion2" href="#collapseTwo"> Excercise
+							Settings </a>
+					</div>
+					<div id="collapseTwo" class="accordion-body collapse">
+						<div class="accordion-inner">
+							<div class="well">
+								<form id="excercise-settings" class="form-horizontal">
+									<div class="control-group">
+										<label class="control-label" for="excerciseTime">Time</label>
+										<div class="controls">
+											<input type="text" id="excerciseTime" placeholder="30">
+										</div>
+										<span class="help-block">The minimum about of time you
+											want to aim for when excercising</span>
+									</div>
+									<div class="control-group">
+										<label class="control-label" for="excerciseFreq">Frequency</label>
+										<div class="controls">
+											<input type="text" id="excerciseFreq" placeholder="5">
+										</div>
+										<span class="help-block">The minimum number of times
+											per week you aim to excercise</span>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<button class="btn">Cancel</button>
+					<button type="submit" class="save-settings btn btn-primary">Save
+						Settings</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
 	</script>
 	
 	<script type="text/template" id="logbook-template">
@@ -288,7 +328,7 @@
     						<span class="caret"></span>
   						</button>
   						<ul class="dropdown-menu">
-    						<li><a href="#/settings"> Account</a></li>
+    						<li><a href="#/account"> Account</a></li>
     						<li><a href="#" id="logout"> Logout</a></li>
   						</ul>
 					</div>
@@ -513,6 +553,7 @@
 	<script type="text/javascript" src="js/views/InsightsView.js"></script>
 	<script type="text/javascript" src="js/views/GraphsView.js"></script>
 	<script type="text/javascript" src="js/views/SettingsView.js"></script>
+	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">

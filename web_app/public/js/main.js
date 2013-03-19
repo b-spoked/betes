@@ -13,7 +13,8 @@ var AppRouter = Backbone.Router.extend({
 		"" : "showLogBook",
 		"insights" : "showInsights",
 		"graphs" : "showGraphs",
-		"settings" : "showSettings"
+		"settings" : "showSettings",
+		"account" : "showAccount"
 	},
 
 	initialize : function() {
@@ -57,6 +58,15 @@ var AppRouter = Backbone.Router.extend({
 	showSettings : function() {
 		if (app.appUser) {
 			app.showView(new SettingsView({
+				model : app.appUser
+			}));
+		} else {
+			this.showHomeView();
+		}
+	},
+	showAccount : function() {
+		if (app.appUser) {
+			app.showView(new AccountView({
 				model : app.appUser
 			}));
 		} else {

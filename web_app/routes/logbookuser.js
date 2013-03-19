@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
 });
 
 exports.findById = function(req, res) {
-	connection.connect();
+	
 	
 	var userId = req.params.id;
 	
@@ -22,7 +22,7 @@ exports.findById = function(req, res) {
 			res.send(results[0]);
 		}
 	});
-	connection.end();
+	
 };
 
 exports.addUser = function(req, res) {
@@ -35,7 +35,7 @@ exports.addUser = function(req, res) {
 		newsletter : req.body.newsletter,
 		updated_at : new Date()
 	};
-	connection.connect();
+	
 
 	console.log('about to add user: ' +  JSON.stringify(user));
 	connection.query('INSERT INTO user SET ? ', [user], function(err, result) {
@@ -48,7 +48,7 @@ exports.addUser = function(req, res) {
 			res.send({"id":result.insertId});
 		}
 	});
-	connection.end();
+	
 };
 
 exports.updateUser = function(req, res) {
@@ -61,7 +61,7 @@ exports.updateUser = function(req, res) {
 		newsletter : req.body.newsletter,
 		updated_at : new Date()
 	};
-	connection.connect();
+	
 	var userId = req.params.id;
 	console.log('update: ' + user);
 
@@ -76,12 +76,12 @@ exports.updateUser = function(req, res) {
 					res.send(results);
 				}
 			});
-	connection.end();
+	
 };
 
 exports.findAllResults = function(req, res) {
 	var userId = req.params.id;
-	connection.connect();
+	
 	console.log('logbook for: ' + userId);
 	
 	connection.query('SELECT * FROM result WHERE userId = ?',[userId], function(err, results) {
@@ -94,7 +94,7 @@ exports.findAllResults = function(req, res) {
 			res.send(results);
 		}
 	});
-	connection.end();
+	
 };
 
 exports.addResult = function(req, res) {
@@ -111,7 +111,7 @@ exports.addResult = function(req, res) {
 		userId : req.body.userId,
 		updated_at : new Date()
 	};
-	connection.connect();
+	
 
 	console.log('about to add result: ' +  JSON.stringify(logResult));
 	connection.query('INSERT INTO result SET ? ', [logResult],
@@ -125,7 +125,7 @@ exports.addResult = function(req, res) {
 					res.send({"id":result.insertId});
 				}
 			});
-	connection.end();
+	
 };
 
 exports.updateResult = function(req, res) {
@@ -141,7 +141,7 @@ exports.updateResult = function(req, res) {
 		userId : req.body.userId,
 		updated_at : new Date()
 	};
-	connection.connect();
+	
 	console.log('about to update result: ' + JSON.stringify(logResult));
 	var resultId = req.params.id;
 	connection.query('UPDATE result SET ? WHERE id = ?', [logResult], [resultId],
@@ -155,12 +155,12 @@ exports.updateResult = function(req, res) {
 					res.send(results);
 				}
 			});
-	connection.end();
+	
 };
 
 exports.deleteResult = function(req, res) {
 	var resultId = req.params.id;
-	connection.connect();
+	
 	console.log('about to delete result: ' + resultId);
 	/*connection.query('DELETE FROM result WHERE id = ?',  [resultId] , function(
 			err, results) {
@@ -173,37 +173,37 @@ exports.deleteResult = function(req, res) {
 			res.send(results);
 		}
 	});*/
-	connection.end();
+	
 };
 exports.findAllSettings = function(req, res) {
 	var userId = req.params.id;
-	connection.connect();
+	
 	console.log('settings for: ' + userId);
 	
-	connection.end();
+	
 };
 
 exports.addSetting = function(req, res) {
 
-	connection.connect();
+	
 
 	console.log('about to add setting: ');
 	
-	connection.end();
+	
 };
 
 exports.updateSetting = function(req, res) {
 	var settingId = req.params.id;
-	connection.connect();
+	
 	console.log('about to update setting: ' + settingId);
 	
-	connection.end();
+	
 };
 
 exports.deleteSetting = function(req, res) {
 	var settingId = req.params.id;
-	connection.connect();
+	
 	console.log('about to delete setting: ' + settingId);
 	
-	connection.end();
+	
 };

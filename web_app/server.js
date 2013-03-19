@@ -19,13 +19,13 @@ app.put('/users/:id', user.updateUser);
 
 /* User Log Book */
 app.get('/logbook/:id', user.findAllResults);
-app.post('/logbook', user.addResult);
+app.post('/logbook/:id', user.addResult);
 app.put('/logbook/:id', user.updateResult);
 app.delete('/logbook/:id', user.deleteResult);
 
 /* User Settings */
 app.get('/settings/:id', user.findAllSettings);
-app.post('/settings', user.addSetting);
+app.post('/settings/:id', user.addSetting);
 app.put('/settings/:id', user.updateSetting);
 app.delete('/settings/:id', user.deleteSetting);
 

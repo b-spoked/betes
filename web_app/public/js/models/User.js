@@ -30,11 +30,11 @@ window.User = Backbone.Model.extend({
 		this.settings = new Settings(this.get('settings'));
 
 		this.logEntries.url = function() {
-			return '/logbook';
+			return '/logbook/'+ self.get('sid');
 		};
 
 		this.settings.url = function() {
-			return '/settings';
+			return '/settings/'+self.get('sid');
 		};
 	},
 	hasLogEntries : function() {

@@ -41,7 +41,7 @@ window.AddLogbookEntryModal = Backbone.View.extend({
             exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
             labels: $("#entry-labels").val().trim(),
             comments: $("#entry-comments").val().trim(),
-            userId : this.model.get('id')
+            userId : this.model.get('sid')
         };
     }
 

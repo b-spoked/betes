@@ -18,10 +18,10 @@ app.post('/users', user.addUser);
 app.put('/users/:id', user.updateUser);
 
 /* User Log Book */
-app.get('/logbook/:id', user.findAllResults);
-app.post('/logbook/:id', user.addResult);
-app.put('/logbook/:id', user.updateResult);
-app.delete('/logbook/:id', user.deleteResult);
+app.get('/users/:userId/logbook', user.findAllResults);
+app.post('/users/:userId/logbook', user.addResult);
+app.put('/users/:userId/logbook/:id', user.updateResult);
+app.delete('/users/:userId/logbook/:id', user.deleteResult);
 
 /* User Settings */
 app.get('/settings/:id', user.findAllSettings);

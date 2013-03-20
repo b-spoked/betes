@@ -65,7 +65,7 @@ exports.updateUser = function(req, res) {
 	var userId = req.params.id;
 	console.log('update: ' + user);
 
-	connection.query('UPDATE user SET ? WHERE id = ?', [user], [userId],
+	connection.query('UPDATE user SET ? WHERE id = ?', [user,userId],
 			function(err, results) {
 				if (err) {
 					res.send({
@@ -80,7 +80,7 @@ exports.updateUser = function(req, res) {
 };
 
 exports.findAllResults = function(req, res) {
-	var userId = req.params.id;
+	var userId = req.params.userId;
 	
 	console.log('logbook for: ' + userId);
 	
@@ -112,7 +112,6 @@ exports.addResult = function(req, res) {
 		updated_at : new Date()
 	};
 	
-
 	console.log('about to add result: ' +  JSON.stringify(logResult));
 	connection.query('INSERT INTO result SET ? ', [logResult],
 			function(err, result) {
@@ -144,7 +143,8 @@ exports.updateResult = function(req, res) {
 	
 	console.log('about to update result: ' + JSON.stringify(logResult));
 	var resultId = req.params.id;
-	connection.query('UPDATE result SET ? WHERE id = ?', [logResult], [resultId],
+	console.log('result id: ' + resultId);
+	connection.query('UPDATE result SET ? WHERE id = ?', [logResult,resultId],
 			function(err, results) {
 				if (err) {
 					res.send({
@@ -162,7 +162,7 @@ exports.deleteResult = function(req, res) {
 	var resultId = req.params.id;
 	
 	console.log('about to delete result: ' + resultId);
-	/*connection.query('DELETE FROM result WHERE id = ?',  [resultId] , function(
+	connection.query('DELETE FROM result WHERE id = ?',  [resultId] , function(
 			err, results) {
 		if (err) {
 			res.send({
@@ -172,7 +172,7 @@ exports.deleteResult = function(req, res) {
 			console.log('Success: ' + JSON.stringify(results));
 			res.send(results);
 		}
-	});*/
+	});
 	
 };
 exports.findAllSettings = function(req, res) {

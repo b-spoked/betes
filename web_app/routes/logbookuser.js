@@ -36,9 +36,8 @@ exports.addUser = function(req, res) {
 		updated_at : new Date()
 	};
 	
-
-	console.log('about to add user: ' +  JSON.stringify(user));
-	connection.query('INSERT INTO user SET ? ', [user], function(err, result) {
+	console.log('about to add or update user: ' +  JSON.stringify(user));
+	connection.query('INSERT INTO user SET ? ON DUPLICATE KEY UPDATE ? ', [user,user], function(err, result) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'

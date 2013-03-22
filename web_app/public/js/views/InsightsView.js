@@ -9,9 +9,7 @@ window.InsightsView = Backbone.View
 		.extend({
 
 			events : {
-				'click .show-today' : 'filterToday',
-				'click .show-yesterday' : 'filterYesterday',
-				'click .show-seven' : 'filterSeven'
+				'keyup #filter-insight-days' : 'filterDaysShown'
 			},
 
 			initialize : function() {
@@ -22,22 +20,8 @@ window.InsightsView = Backbone.View
 				$(this.el).html(this.template({name:this.model.get('name'),authenticated:this.model.get('authenticated'),lows:this.model.lows(),highs:this.model.highs(),tests:this.model.tests(),exercise:this.model.exercise()}));
 				return this;
 			},
-			refresh : function() {
-				this.model.logEntries.fetch();
-				this.render();
-			},
-			filterToday : function() {
-				this.model.logEntries.filterToday();
-				this.render();
-			},
-			filterYesterday : function() {
-				this.showInsights(this.model.logEntries.filterYesterday());
-			},
-			filterSeven : function() {
-				this.showInsights(this.model.logEntries.filterDays('7'));
-			},
-			showInsights : function(entries) {
-
-
+			filterDaysShown : function() {
+				var days = $(".insight-days").val();
+				this.model.logEntries.filterDays(days);
 			}
 		});

@@ -10,10 +10,7 @@ window.LogbookView = Backbone.View.extend({
 	events : {
 		'click .create-new-entry' : 'showEventDialog',
 		'click #login' : 'showLoginDialog',
-		'click .show-today' : 'filterToday',
-		'click .show-two' : 'filterTwo',
-		'click .show-seven' : 'filterSeven',
-		'click .show-thirty' : 'filterThirty',
+		'keyup .logbook-days' : 'filterLogbookDays',
 		"keyup .filter-logbook" : "filterLogEntries"
 	},
 
@@ -81,17 +78,9 @@ window.LogbookView = Backbone.View.extend({
 		$modalEl.html(loginDialog.el);
 		loginDialog.showDialog();
 	},
-	filterToday : function() {
-		this.addAll(this.model.logEntries.filterToday());
-	},
-	filterTwo : function() {
-		this.addAll(this.model.logEntries.filterDays('2'));
-	},
-	filterSeven : function() {
-		this.addAll(this.model.logEntries.filterDays('7'));
-	},
-	filterThirty : function() {
-		this.addAll(this.model.logEntries.filterDays('30'));
+	filterLogbookDays : function() {
+		var days = $(".logbook-days").val();
+		this.addAll(this.model.logEntries.filterDays(days));
 	},
 	filterLogEntries : function(e) {
 		var searchString = $(".filter-logbook").val();

@@ -110,7 +110,6 @@ window.Entries = Backbone.Collection
 			},
 			filterDays : function(numberOfDays) {
 
-				var today = new Date();
 				var endDate = new Date();
 				endDate.setDate(endDate.getDate() - parseInt(numberOfDays));
 
@@ -118,18 +117,13 @@ window.Entries = Backbone.Collection
 						.filter(function(data) {
 							var entryDate = new Date(data.get('resultDate'));
 
-							var lessThan = (entryDate.getDate() >= endDate
+							var greaterThanEndDate = (entryDate.getDate() >= endDate
 									.getDate()
-									&& entryDate.getMonth() >= endDate
+									&& entryDate.getMonth() === endDate
 											.getMonth() && entryDate
-									.getFullYear() >= endDate.getFullYear());
+									.getFullYear() === endDate.getFullYear());
 
-							var greaterThan = (entryDate.getDate() <= today
-									.getDate()
-									&& entryDate.getMonth() <= today.getMonth() && entryDate
-									.getFullYear() <= today.getFullYear());
-
-							return (lessThan || greaterThan);
+							return greaterThanEndDate;
 						}));
 			},
 			filterString : function(letters) {

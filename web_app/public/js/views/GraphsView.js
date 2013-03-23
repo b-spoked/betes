@@ -9,8 +9,7 @@ window.GraphsView = Backbone.View
 		.extend({
 
 			events : {
-				"keyup .filter-graph" : "filterBloodSugarGraph",
-				"click .show-graph" : "showAllBloodSugarGraph"
+				"keyup .filter-graph" : "filterBloodSugarGraph"
 			},
 
 			initialize : function() {
@@ -21,6 +20,7 @@ window.GraphsView = Backbone.View
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
 				_.defer( function( view ){ view.closeHelp();}, this );
+				_.defer( function( view ){ view.showAllBloodSugarGraph();}, this );
 				return this;
 			},
 			closeHelp : function() {

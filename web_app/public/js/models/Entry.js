@@ -80,34 +80,6 @@ window.Entries = Backbone.Collection
 				}
 				return this;
 			},
-
-			filterToday : function() {
-				var today = new Date();
-
-				return _(this
-						.filter(function(data) {
-							var entryDate = new Date(data.get('resultDate'));
-
-							return (entryDate.getDate() === today.getDate()
-									&& entryDate.getMonth() === today
-											.getMonth() && entryDate
-									.getFullYear() === today.getFullYear());
-						}));
-			},
-			filterYesterday : function() {
-				var yesterday = new Date();
-				yesterday.setDate(yesterday.getDate() - 1);
-
-				return _(this
-						.filter(function(data) {
-							var entryDate = new Date(data.get('resultDate'));
-
-							return (entryDate.getDate() === yesterday.getDate()
-									&& entryDate.getMonth() === yesterday
-											.getMonth() && entryDate
-									.getFullYear() === yesterday.getFullYear());
-						}));
-			},
 			filterDays : function(numberOfDays) {
 				
 				var ONE_DAY = 1000 * 60 * 60 * 24;

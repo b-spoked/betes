@@ -109,21 +109,23 @@ window.Entries = Backbone.Collection
 						}));
 			},
 			filterDays : function(numberOfDays) {
-
-				var endDate = new Date();
-				endDate.setDate(endDate.getDate() - parseInt(numberOfDays));
-
+				
+				var ONE_DAY = 1000 * 60 * 60 * 24;
+				var now  = new Date().getTime(),
+				daysInPast = 0;
+				
+				if(parseInt(numberOfDays) < 1){
+					return;
+				}else{
+					if(parseInt(numberOfDays)>1){
+						daysInPast = (parseInt(numberOfDays-1)*ONE_DAY);
+					}
+				}
+				
 				return _(this
 						.filter(function(data) {
-							var entryDate = new Date(data.get('resultDate'));
-
-							var greaterThanEndDate = (entryDate.getDate() >= endDate
-									.getDate()
-									&& entryDate.getMonth() === endDate
-											.getMonth() && entryDate
-									.getFullYear() === endDate.getFullYear());
-
-							return greaterThanEndDate;
+							var then = new Date(data.get('resultDate')).getTime();
+							return (now-then) < daysInPast;
 						}));
 			},
 			filterString : function(letters) {

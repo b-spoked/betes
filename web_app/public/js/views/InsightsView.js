@@ -18,10 +18,16 @@ window.InsightsView = Backbone.View
 			},
 			render : function() {
 				$(this.el).html(this.template({name:this.model.get('name'),authenticated:this.model.get('authenticated'),lows:this.model.lows(),highs:this.model.highs(),tests:this.model.tests(),exercise:this.model.exercise()}));
+				_.defer( function( view ){ view.closeHelp();}, this );
 				return this;
 			},
 			filterDaysShown : function() {
 				var days = $(".insight-days").val();
 				this.model.logEntries.filterDays(days);
+			},
+			closeHelp : function() {
+				if(this.model.settings.length>0){
+					$("#settings-getting-started").hide();
+				}
 			}
 		});

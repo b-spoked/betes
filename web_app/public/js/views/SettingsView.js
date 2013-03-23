@@ -19,7 +19,13 @@ window.SettingsView = Backbone.View
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
+				_.defer( function( view ){ view.closeHelp();}, this );
 				return this;
+			},
+			closeHelp : function() {
+				if(this.model.settings.length>0){
+					$("#settings-getting-started").hide();
+				}
 			},
 			saveSettings : function(){
 				this.model.settings.create(this.getCurrentSettings());

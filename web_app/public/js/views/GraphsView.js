@@ -17,11 +17,16 @@ window.GraphsView = Backbone.View
 				_.bindAll(this);
 				this.template = _.template($('#graphs-template').html());
 				this.model.logEntries.bind('reset', this.render, this);
-				
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
+				_.defer( function( view ){ view.closeHelp();}, this );
 				return this;
+			},
+			closeHelp : function() {
+				if(this.model.logEntries.length >0){
+					$("#graphs-getting-started").hide();
+				}
 			},
 			filterBloodSugarGraph : function(e) {
 				var searchString = $(".filter-graph").val();

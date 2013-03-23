@@ -28,6 +28,8 @@ window.LogbookView = Backbone.View.extend({
 		$(this.el).html(this.template(this.model.toJSON()));
 
 		var logList = $('#events-list', $(this.el));
+		
+		_.defer( function( view ){ view.closeHelp();}, this );
 
 		if (this.model.logEntries != null && this.model.logEntries.length > 0) {
 
@@ -38,12 +40,13 @@ window.LogbookView = Backbone.View.extend({
 					model : result
 				}).render().el);
 			}, this);
-			this.closeHelp();
 		}
 		return this;
 	},
 	closeHelp : function() {
-		$("#logbook-getting-started").alert('close');
+		if (this.model.logEntries.length > 0) {
+			$("#logbook-getting-started").hide();
+		}
 	},
 	refresh : function() {
 		this.render();

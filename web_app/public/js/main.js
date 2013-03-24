@@ -11,6 +11,7 @@ var AppRouter = Backbone.Router.extend({
 
 	routes : {
 		"" : "showLogBook",
+		"share/:linkId" : "shareLogBook",
 		"insights" : "showInsights",
 		"graphs" : "showGraphs",
 		"settings" : "showSettings",
@@ -30,7 +31,15 @@ var AppRouter = Backbone.Router.extend({
 			this.showHomeView();
 		}
 	},
-
+	shareLogBook : function(linkId) {
+		
+		alert('id: '+linkId);
+		//this.getSharingUser(linkId);
+		app.showView(new ShareView({
+			model : app.appUser
+		}));
+		 
+	},
 	showInsights : function() {
 		if (app.appUser) {
 			app.showView(new InsightsView({
@@ -97,6 +106,13 @@ var AppRouter = Backbone.Router.extend({
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch();
 		}
+	},
+	getSharingUser : function(linkId) {
+		
+		//var sharingUser = new User({shareLinkId:linkId});
+		//sharingUser.fetch();
+		//this.appUser = sharingUser;
+		//this.appUser.logEntries.fetch();
 	}
 });
 

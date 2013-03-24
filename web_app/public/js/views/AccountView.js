@@ -9,7 +9,8 @@ window.AccountView = Backbone.View
 		.extend({
 
 			events : {
-				'click .save-account-settings' : 'saveAccountSettings'
+				'click .save-account-settings' : 'saveAccountSettings',
+				'click .share-results' : 'createSharingKey'
 			},
 
 			initialize : function() {
@@ -21,6 +22,25 @@ window.AccountView = Backbone.View
 				return this;
 			},
 			saveAccountSettings : function(){
-				$("#userNewsletter").val();
+				alert(JSON.stringify(this.getUserValues()));
+				var shareLinkId = this.createSharingKey();
+				alert(shareLinkId);
+				
+				//this.model(this.getUserValues());
+			},
+			
+			getUserValues : function (){
+				return{
+					newsletter : $("#userNewsletter").val(),
+					testingUnits : $("#userTestingUnits").val(),
+					allowSharing : $("#allowSharing").val()
+				};
+			},
+			createSharingKey : function(){
+				var key = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+				    var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+				    return v.toString(16);
+				});
+				return key;
 			}
 		});

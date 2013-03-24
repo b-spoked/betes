@@ -15,6 +15,8 @@ window.User = Backbone.Model.extend({
 		thumbnailPath : '',
 		authenticated : false,
 		testingUnits : 'mmol/l',
+		allowSharing : false,
+		shareLinkId : null,
 		logUsed : false,
 		goalsUsed : false,
 		logEntries : [],

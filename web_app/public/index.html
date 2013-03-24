@@ -158,11 +158,14 @@
 			<div class="well">
 				<div class="media">
 					<a class="pull-left" href="#"> <img class="media-object"
-						data-src="<%= thumbnailPath%>">
+						style="width: 90px; height: 90px;" src="<%= thumbnailPath%>">
 					</a>
 					<div class="media-body">
 						<h4 class="media-heading">Name:</h4>
 						<p><%= name%></p>
+						<%if(allowSharing) {%>
+							Share link: <span class="input-xlarge uneditable-input"><%=shareLinkId%></span>
+						 <%}%>
 					</div>
 				</div>
 				<form id="account-settings" class="form-horizontal">
@@ -170,6 +173,18 @@
 						<label class="checkbox"> <input id="userNewsletter"
 							type="checkbox"> Receive Newsletter
 						</label>
+					</div>
+					<div class="control-group">
+						<label class="checkbox"> <input id="allowSharing"
+							type="checkbox"> Allow sharing and generate link?
+						</label>
+					</div>
+					<div class="control-group">
+						<label for="userTestingUnits">Testing Units</label> 
+						<select id="userTestingUnits">
+							<option value="mmol/l">mmol/l</option>
+							<option value="mg/dL">mg/dL</option>
+						</select>
 					</div>
 					<div class="control-group">
 						<button class="btn">Cancel</button>
@@ -363,6 +378,40 @@
 				
 	</div>
 	</script>
+	<script type="text/template" id="share-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a href="#">Log</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="logbook">
+		<div  class="alert alert-warning">
+  			<button type="button" class="close" data-dismiss="alert">&times;</button>		
+			<p class="lead">This is <%= name%>'s logbook that has been shared with you.</p>
+		</div>
+		<form class="form-inline">
+			<label for="logbook-days">Show:</label>	
+  			<input id="logbook-days" class="logbook-days" type="text" placeholder="Number of days">
+			<label for="logbook-filter">Filter:</label>
+			<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
+		</form>
+			
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>What</th>
+					<th>When</th>
+					<th>Comments</th>
+					<th>Lables</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>
+	</div>
+	</script>
 	<script type="text/template" id="home-template">
 	<div class="navbar navbar-inverse ">
 		<div class="navbar-inner">
@@ -392,7 +441,8 @@
   			</p>
 		</div>
 	</div>
-	</script>	
+	</script>
+		
 	<script type="text/template" id="login-template">
 	<div id="login-dialog" class="modal hide fade">
 		<div class="modal-header">
@@ -534,6 +584,7 @@
 	<script type="text/javascript" src="js/views/SettingsView.js"></script>
 	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
+	<script type="text/javascript" src="js/views/ShareView.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
 		startApplication();

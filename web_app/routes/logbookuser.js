@@ -25,6 +25,24 @@ exports.findById = function(req, res) {
 	
 };
 
+exports.findByLinkId = function(req, res) {
+	
+	
+	var userShareId = req.params.linkId;
+	
+	connection.query('SELECT * FROM user WHERE shareLinkId = ?',[userShareId], function(err, results) {
+		if (err) {
+			res.send({
+				'error' : 'An error has occurred'
+			});
+		} else {
+			console.log('Success: ' + JSON.stringify(results[0]));
+			res.send(results[0]);
+		}
+	});
+	
+};
+
 exports.addUser = function(req, res) {
 
 	var user = {

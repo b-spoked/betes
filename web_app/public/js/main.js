@@ -107,12 +107,16 @@ var AppRouter = Backbone.Router.extend({
 			this.appUser.logEntries.fetch();
 		}
 	},
-	getSharingUser : function(linkId) {
+	getSharingUser : function(userLinkId) {
 		
-		//var sharingUser = new User({shareLinkId:linkId});
-		//sharingUser.fetch();
-		//this.appUser = sharingUser;
-		//this.appUser.logEntries.fetch();
+		var sharingUser = new User({shareLinkId:linkId});
+		sharingUser.fetch({ 
+		    data: { linkId: userLinkId },
+		    processData: true
+		});
+		
+		this.appUser = sharingUser;
+		this.appUser.logEntries.fetch();
 	}
 });
 

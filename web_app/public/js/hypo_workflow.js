@@ -1,5 +1,5 @@
 window.hypoWorkflow = {
-
+		var timer = null;
 		
 		startHypoProcess: function() {
 			alert('start process');
@@ -8,7 +8,7 @@ window.hypoWorkflow = {
 
 	    endHypoProcess: function () {
 	    	alert('all good so lets stop');
-	    	clearInterval();
+	    	clearInterval(timer);
 	    },
 	    
 	    trackLocation: function () {
@@ -32,7 +32,7 @@ window.hypoWorkflow = {
 	    },
 	    
 	    startRetestTimer: function () {
-	    	  setTimeout( remindRetest, 30000 ); 
+	    	timer = setInterval( this.remindRetest, 60000 ); 
 	    }
 	    
 	};

@@ -8,7 +8,8 @@
 window.LowMateLogbookView = Backbone.View.extend({
 
 	events : {
-		'click .create-new-entry' : 'startProcess'
+		'click .create-new-entry' : 'startProcess',
+		'click .done-entry' : 'finishProcess'
 	},
 
 	initialize : function() {
@@ -22,5 +23,8 @@ window.LowMateLogbookView = Backbone.View.extend({
 	},
 	startProcess : function(e) {
 		hypoWorkflow.startHypoProcess();
+	},
+	finishProcess : function(e) {
+		hypoWorkflow.endHypoProcess();
 	}
 });

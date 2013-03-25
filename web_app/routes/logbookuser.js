@@ -25,7 +25,7 @@ exports.findById = function(req, res) {
 	
 };
 
-exports.findByLinkId = function(req, res) {
+/*exports.findByLinkId = function(req, res) {
 	
 	
 	var userShareId = req.params.linkId;
@@ -41,7 +41,7 @@ exports.findByLinkId = function(req, res) {
 		}
 	});
 	
-};
+};*/
 
 exports.addUser = function(req, res) {
 

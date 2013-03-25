@@ -22,9 +22,12 @@ window.AccountView = Backbone.View
 				return this;
 			},
 			saveAccountSettings : function(){
-				alert(JSON.stringify(this.getUserValues()));
-				var shareLinkId = this.createSharingKey();
-				alert(shareLinkId);
+				//alert(JSON.stringify(this.getUserValues()));
+				this.model.set(this.getUserValues());
+				this.model.set("shareLinkId",this.createSharingKey());
+				this.model.save();
+				//var shareLinkId = this.createSharingKey();
+				//alert(shareLinkId);
 				
 				//this.model(this.getUserValues());
 			},

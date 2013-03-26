@@ -1,13 +1,20 @@
+var timer = null;
+
 window.hypoWorkflow = {
-		var timer = null;
 		
-		startHypoProcess: function() {
-			alert('start process');
-			this.startRetestTimer();
+		
+		startHypoProcess: function(model) {
+			model.logEntries.create({name:"Other", resultDate:new Date(),comments:'hypo recorded', userId : app.appUser.get('sid')});
+			this.startRetestTimer(model);
+			this.alertContacts(model);
+			this.remindProcess();
 	    },
 
-	    endHypoProcess: function () {
-	    	alert('all good so lets stop');
+	    endHypoProcess: function (model) {
+	    	model.logEntries.create({name:"Other", resultDate:new Date(),comments:'Hypo treated', userId : app.appUser.get('sid')});	    		    	
+	    	this.alertContactsOK(model);
+	    	jQuery("#retest-reminder").hide();
+	    	jQuery("#process-detail").hide();	
 	    	clearInterval(timer);
 	    },
 	    
@@ -15,24 +22,27 @@ window.hypoWorkflow = {
 	    	alert('start tracking location');
 	    },
 
-	    alertContacts: function () {
-	    	alert('tell contact you having a hypo');
+	    alertContacts: function (model) {
+	    	model.logEntries.create({name:"Other", resultDate:new Date(),comments:'Alerting contacts that your having a hypo', userId : app.appUser.get('sid')});	    	
 	    },
 
-	    alertContactsOK: function () {
-	    	alert('tell contacts your OK');
+	    alertContactsOK: function (model) {
+	    	model.logEntries.create({name:"Other", resultDate:new Date(),comments:'Alerting contacts that your OK', userId : app.appUser.get('sid')});	    		    		    	//
 	    },
 
-	    remindRetest: function() {
-	    	alert('Hey retest to see your sugar is OK');
+	    remindRetest: function(model) {
+	    	app.appUser.logEntries.create({name:"Other", resultDate:new Date(),comments:'Time has past now retest', userId : app.appUser.get('sid')});
+	    	jQuery("#retest-reminder").show();		    	
 	    },
 
-	    remindProcess: function() {
-	    	alert('sugar-retest after 15 - if low repeat - otherwise have x grams carbs');
+	    remindProcess: function() {	    	
+	    	jQuery("#process-detail").show();	
 	    },
 	    
-	    startRetestTimer: function () {
-	    	timer = setInterval( this.remindRetest, 60000 ); 
+	    startRetestTimer: function (model) {
+	    	
+	    	model.logEntries.create({name:"Other", resultDate:new Date(),comments:'start time for treatment', userId : app.appUser.get('sid')});
+	    	timer = setInterval( this.remindRetest, 10000 ); 
 	    }
 	    
 	};

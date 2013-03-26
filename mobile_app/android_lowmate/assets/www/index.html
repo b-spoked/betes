@@ -27,7 +27,7 @@
 <link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="css/vendor/font-awesome.css" />
 <link rel="stylesheet" href="css/main.css" />
-<title>Betes Log</title>
+<title>Low Mate</title>
 </head>
 <body>
 	<div class="container">
@@ -195,9 +195,26 @@
 	</div>
 	<div id="logbook">
 		<div class="well text-center">
-			<button class="btn btn-primary btn-large create-new-entry">Track <br />Hypo</button>
-			<button class="btn btn-primary btn-large done-entry">Treated <br />Hypo</button>
+			<button class="btn btn-danger btn-large treat-hypo"><i class="icon-play"></i><br /> I am <br />Hypo</button>
+			<button class="btn btn-success btn-large hypo-treated"><i class="icon-stop"></i><br /> Hypo <br />Treated</button>
 		</div>
+		<div id="process-detail" class="alert alert-block alert-success fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Steps to treat your hypo</h4>
+			<ul>
+				<li>15g of fast acting glucose  (eg. 8 jelly beans or 5 dextrose tabs)</li>
+				<li>Wait 15 minutes and then retest</li>
+				<li>If above your hypo level eat your meal or 1 slice of bread</li>				
+				<li>If still hypo repeat the process</li>
+			</ul>
+        </div>
+		<div id="retest-reminder" class="alert alert-block alert-warning fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Retest Reminder</h4>
+            <p>
+              <a class="btn btn-danger treat-hypo" href="#">Still Hypo</a> <a class="btn hypo-treated" href="#">All OK</a>
+            </p>
+        </div>
 		<table class="table table-bordered table-condensed">
 			<thead>
 				<tr>
@@ -209,6 +226,10 @@
 			</tbody>
 		</table>
 	</div>
+	</script>
+	<script type="text/template" id="logbookitem-template">	
+    <td><%=resultDate%></td>
+    <td><%=comments%></td>
 	</script>
 	<script type="text/template" id="login-template">
 	<div id="login-dialog" class="modal hide fade">
@@ -263,12 +284,12 @@
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
 	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
-
 	<script type="text/javascript" src="js/models/Entry.js"></script>
 	<script type="text/javascript" src="js/models/User.js"></script>
 	<script type="text/javascript" src="js/models/Setting.js"></script>
 	<script type="text/javascript" src="js/views/LoginModal.js"></script>
-	<script type="text/javascript" src="js/views/LowMateLogbookView.js"></script>
+	<script type="text/javascript" src="js/views/LowMateLogbookView.js"></script>	
+	<script type="text/javascript" src="js/views/LowMateLogBookEntryView.js"></script>	
 	<script type="text/javascript" src="js/views/LowMateSettingsView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/lowmate_main.js"></script>

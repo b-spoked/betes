@@ -73,6 +73,7 @@ var AppRouter = Backbone.Router.extend({
 			currentUser = users.first();
 		}
 		this.appUser = currentUser;
+		this.appUser.logEntries.fetch({local:true});
 		
 		/*if (currentUser && currentUser.get('authenticated')
 				&& currentUser.get('sid') > 0) {

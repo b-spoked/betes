@@ -18,11 +18,7 @@ window.LogbookView = Backbone.View.extend({
 		_.bindAll(this);
 		this.template = _.template($('#logbook-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
-		this.model.logEntries.bind("add", function(result) {
-			$(this.el).append(new LogBookEntryView({
-				model : result
-			}).render().el);
-		});
+		this.model.logEntries.bind('add', this.addOne, this);
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));
@@ -32,14 +28,8 @@ window.LogbookView = Backbone.View.extend({
 		_.defer( function( view ){ view.closeHelp();}, this );
 
 		if (this.model.logEntries != null && this.model.logEntries.length > 0) {
-
 			logList.html('');
-
-			this.model.logEntries.each(function(result) {
-				logList.append(new LogBookEntryView({
-					model : result
-				}).render().el);
-			}, this);
+			this.model.logEntries.each(this.addOne,this);
 		}
 		return this;
 	},
@@ -56,13 +46,6 @@ window.LogbookView = Backbone.View.extend({
 			model : entry
 		});
 		this.$('#events-list').append(view.render().el);
-	},
-	addAll : function(entries) {
-		if (entries != null) {
-			this.closeHelp();
-			this.$('#events-list').html('');
-			entries.each(this.addOne, this);
-		}
 	},
 	showEventDialog : function() {
 		var addEntryDialog = new AddLogbookEntryModal({

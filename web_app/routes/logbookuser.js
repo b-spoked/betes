@@ -1,18 +1,51 @@
-var mysql = require('mysql');
+/*var mysql = require('mysql');
 
 var connection = mysql.createConnection({
 	host : 'us-cdbr-east-03.cleardb.com',
 	user : 'b95d456714e818',
 	password : 'e9ec1df8',
 	database : 'heroku_fee62f08e9a254b',
+});*/
+
+var mysql   = require('mysql');
+var mysqldb = mysql.createConnection({
+	host : 'us-cdbr-east-03.cleardb.com',
+	user : 'b95d456714e818',
+	password : 'e9ec1df8',
+	database : 'heroku_fee62f08e9a254b',
 });
+
+function handleDisconnect(connection) {
+    connection.on('error', function(err) {
+        if (!err.fatal) {
+            return;
+        }
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.log("The mysql library fired a PROTOCOL_CONNECTION_LOST exception");
+            throw err;
+    }
+    console.log('Re-connecting lost connection: ' + err.stack);
+
+    mysqldb = mysql.createConnection({
+    	host : 'us-cdbr-east-03.cleardb.com',
+    	user : 'b95d456714e818',
+    	password : 'e9ec1df8',
+    	database : 'heroku_fee62f08e9a254b',
+      });
+    handleDisconnect(mysqldb);
+    mysqldb.connect();
+  });
+ }
+
+handleDisconnect(mysqldb);
+
 
 exports.findById = function(req, res) {
 	
 	
 	var userId = req.params.id;
 	
-	connection.query('SELECT * FROM user WHERE id = ?',[userId], function(err, results) {
+	mysqldb.query('SELECT * FROM user WHERE id = ?',[userId], function(err, results) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'
@@ -25,12 +58,12 @@ exports.findById = function(req, res) {
 	
 };
 
-/*exports.findByLinkId = function(req, res) {
+exports.findByLinkId = function(req, res) {
 	
+	var userShareId = req.query.linkId;
+	console.log('Get user to share: ' + userShareId);
 	
-	var userShareId = req.params.linkId;
-	
-	connection.query('SELECT * FROM user WHERE shareLinkId = ?',[userShareId], function(err, results) {
+	mysqldb.query('SELECT * FROM user WHERE shareLinkId = ?',[userShareId], function(err, results) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'
@@ -41,7 +74,7 @@ exports.findById = function(req, res) {
 		}
 	});
 	
-};*/
+};
 
 exports.addUser = function(req, res) {
 
@@ -51,11 +84,13 @@ exports.addUser = function(req, res) {
 		email : req.body.email,
 		thumbnailPath : req.body.thumbnailPath,
 		newsletter : req.body.newsletter,
+		shareLinkId : req.body.shareLinkId,
+		allowSharing :req.body.allowSharing,
 		updated_at : new Date()
 	};
 	
 	console.log('about to add or update user: ' +  JSON.stringify(user));
-	connection.query('INSERT INTO user SET ? ON DUPLICATE KEY UPDATE ? ', [user,user], function(err, result) {
+	mysqldb.query('INSERT INTO user SET ? ON DUPLICATE KEY UPDATE ? ', [user,user], function(err, result) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'
@@ -76,13 +111,15 @@ exports.updateUser = function(req, res) {
 		email : req.body.email,
 		thumbnailPath : req.body.thumbnailPath,
 		newsletter : req.body.newsletter,
+		shareLinkId : req.body.shareLinkId,
+		allowSharing :req.body.allowSharing,
 		updated_at : new Date()
 	};
 	
 	var userId = req.params.id;
 	console.log('update: ' + user);
 
-	connection.query('UPDATE user SET ? WHERE id = ?', [user,userId],
+	mysqldb.query('UPDATE user SET ? WHERE id = ?', [user,userId],
 			function(err, results) {
 				if (err) {
 					res.send({
@@ -101,7 +138,7 @@ exports.findAllResults = function(req, res) {
 	
 	console.log('logbook for: ' + userId);
 	
-	connection.query('SELECT * FROM result WHERE userId = ?',[userId], function(err, results) {
+	mysqldb.query('SELECT * FROM result WHERE userId = ?',[userId], function(err, results) {
 		if (err) {
 			res.send({
 				'error' : 'An error has occurred'
@@ -130,7 +167,7 @@ exports.addResult = function(req, res) {
 	};
 	
 	console.log('about to add result: ' +  JSON.stringify(logResult));
-	connection.query('INSERT INTO result SET ? ', [logResult],
+	mysqldb.query('INSERT INTO result SET ? ', [logResult],
 			function(err, result) {
 				if (err) {
 					res.send({
@@ -161,7 +198,7 @@ exports.updateResult = function(req, res) {
 	console.log('about to update result: ' + JSON.stringify(logResult));
 	var resultId = req.params.id;
 	console.log('result id: ' + resultId);
-	connection.query('UPDATE result SET ? WHERE id = ?', [logResult,resultId],
+	mysqldb.query('UPDATE result SET ? WHERE id = ?', [logResult,resultId],
 			function(err, results) {
 				if (err) {
 					res.send({
@@ -179,7 +216,7 @@ exports.deleteResult = function(req, res) {
 	var resultId = req.params.id;
 	
 	console.log('about to delete result: ' + resultId);
-	connection.query('DELETE FROM result WHERE id = ?',  [resultId] , function(
+	mysqldb.query('DELETE FROM result WHERE id = ?',  [resultId] , function(
 			err, results) {
 		if (err) {
 			res.send({

@@ -9,17 +9,15 @@ window.LowMateLogbookView = Backbone.View.extend({
 
 	events : {
 		'click .treat-hypo' : 'startProcess',
-		'click .hypo-treated' : 'finishProcess'
+		'click .hypo-treated' : 'finishProcess',
+		'click .still-hypo' : 'finishProcess'
 	},
 
 	initialize : function() {
 		_.bindAll(this);
-
-    	
 		this.template = _.template($('#logbook-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
 		this.model.logEntries.bind('add', this.addOne, this);
-			
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));

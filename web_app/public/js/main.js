@@ -20,6 +20,9 @@ var AppRouter = Backbone.Router.extend({
 
 	initialize : function() {
 		this.getAuthenticatedUser();
+		if (!this.appUser) {
+			this.appUser = new User();
+		}
 	},
 
 	showLogBook : function() {
@@ -31,14 +34,25 @@ var AppRouter = Backbone.Router.extend({
 			this.showHomeView();
 		}
 	},
-	shareLogBook : function(linkId) {
+	shareLogBook : function(usersLinkId) {
 		
-		alert('id: '+linkId);
-		this.getSharingUser(linkId);
-		app.showView(new ShareView({
-			model : app.appUser
-		}));
-		 
+		app.appUser = new User();
+
+		app.appUser.fetch({
+			data : {
+				linkId : usersLinkId
+			},
+			processData : true,
+			success : function(results) {
+				
+				app.appUser.logEntries.fetch({success: function(){
+					app.showView(new ShareView({
+						model : app.appUser
+					}));
+		        }});
+			}
+		});
+
 	},
 	showInsights : function() {
 		if (app.appUser) {
@@ -108,17 +122,19 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	getSharingUser : function(userLinkId) {
-		
+
 		var sharingUser = new User();
 		var self = this;
-		
-		sharingUser.fetch({ 
-		    data: { linkId: userLinkId },
-		    processData: true,
-		    success: function(results) {
-		    	self.appUser = new User(results);;
-		    	self.appUser.logEntries.fetch();
-		    }
+
+		sharingUser.fetch({
+			data : {
+				linkId : userLinkId
+			},
+			processData : true,
+			success : function(results) {
+				this.appUser = new User(results);
+				this.appUser.logEntries.fetch();
+			}
 		});
 	}
 });

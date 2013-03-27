@@ -16,31 +16,18 @@ window.ShareView = Backbone.View.extend({
 		_.bindAll(this);
 		this.template = _.template($('#share-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
-		this.model.logEntries.bind("add", function(result) {
-			$(this.el).append(new LogBookEntryView({
-				model : result
-			}).render().el);
-		});
+		this.model.logEntries.bind('add', this.addOne, this);
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));
 
 		var logList = $('#events-list', $(this.el));
 
-		if (this.model.logEntries != null && this.model.logEntries.length > 0) {
-
+		if (this.model.logEntries.length > 0) {
 			logList.html('');
-
-			this.model.logEntries.each(function(result) {
-				logList.append(new LogBookEntryView({
-					model : result
-				}).render().el);
-			}, this);
+			this.model.logEntries.each(this.addOne,this);
 		}
 		return this;
-	},
-	refresh : function() {
-		this.render();
 	},
 	addOne : function(entry) {
 		var view = new LogBookEntryView({
@@ -50,7 +37,6 @@ window.ShareView = Backbone.View.extend({
 	},
 	addAll : function(entries) {
 		if (entries != null) {
-			this.closeHelp();
 			this.$('#events-list').html('');
 			entries.each(this.addOne, this);
 		}

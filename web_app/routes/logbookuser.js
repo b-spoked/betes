@@ -137,7 +137,7 @@ exports.findAllResults = function(req, res) {
 
 	console.log('logbook for: ' + userId);
 
-	mysqldb.query('SELECT * FROM result WHERE userId = ?', [ userId ],
+	mysqldb.query('SELECT * FROM result WHERE userId = ? ORDER BY resultDate DESC ', [ userId ],
 			function(err, results) {
 				if (err) {
 					res.send({

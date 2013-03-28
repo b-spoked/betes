@@ -132,8 +132,8 @@ window.Entries = Backbone.Collection
 
 			},
 			comparator : function(entry) {
-				//latest entry first
-				var entryDate = new Date(entry.get('resultDate'));
-				return -entryDate.getTime();
+				var date = new Date(entry.get('resultDate'));
+				console.log("Entry Date: "+date);
+			    return -date.getTime();
 			}
 		});

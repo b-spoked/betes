@@ -132,10 +132,19 @@
 <div id="settings" >
 	<div id="settings-getting-started" class="alert alert-info">
 		<button type="button" class="close" data-dismiss="alert">&times;</button>
-		<p class="lead">Settings are used to power your insights. Tell
-			us your ideal sugar range, how much you are aiming to excercise
-			...</p>
+		<p class="lead">Who should be notified if you are having a hypo</p>
 	</div>
+	<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Phone</th>
+					<th>Email</th>
+				</tr>
+			</thead>
+			<tbody id="conacts-list">
+			</tbody>
+		</table>
 	<div class="well">
 	<form id="contact-settings" class="form-horizontal">
 		<div class="control-group">
@@ -163,13 +172,16 @@
 	</div>
 				<div class="control-group">
 					<button class="btn">Cancel</button>
-					<button type="submit" class="save-settings btn btn-primary">Save</button>
+					<button type="submit" class="save-settings btn btn-primary">Add</button>
 				</div>
 			</div>
 	</div>
 </div>
 	</script>
-
+	<script type="text/template" id="settingsitem-template">	
+    <td><%=resultDate%></td>
+    <td><%=comments%></td>
+	</script>
 	<script type="text/template" id="logbook-template">
 	<div class="navbar navbar-inverse ">
 		<div class="navbar-inner">

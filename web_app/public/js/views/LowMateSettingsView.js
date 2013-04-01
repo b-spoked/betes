@@ -9,8 +9,7 @@ window.LowMateSettingsView = Backbone.View
 		.extend({
 
 			events : {
-				'click .save-settings' : 'saveSettings',
-				'click .save-account-settings' : 'saveAccountSettings'
+				'click .save-settings' : 'saveSettings'
 			},
 
 			initialize : function() {
@@ -28,19 +27,13 @@ window.LowMateSettingsView = Backbone.View
 				}
 			},
 			saveSettings : function(){
-				this.model.settings.create(this.getCurrentSettings());
+				this.model.settings.create(this.getAddedSettings());
 			},
-			saveAccountSettings : function(){
-				$("#userNewsletter").val();
-			},
-			getCurrentSettings : function(){
+			getAddedSettings : function(){
 				return {
-					lowReading : $("#lowReading").val().trim(),
-					highReading : $("#highReading").val().trim(),
-					readingFreq : $("#readingFreq").val().trim(),
-					excerciseTime: $("#excerciseTime").val().trim(),
-					excerciseFreq: $("#excerciseFreq").val().trim(),
-					current : true,
+					name : $("#contactName").val().trim(),
+					email : $("#contactEmail").val().trim(),
+					mobile : $("#contactMobile").val().trim(),
 					userId : this.model.get('sid')
 				};
 			}

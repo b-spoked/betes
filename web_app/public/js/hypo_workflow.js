@@ -23,6 +23,9 @@ window.hypoWorkflow = {
 	    },
 
 	    alertContacts: function (model) {
+	    	
+	    	
+	    	
 	    	model.logEntries.create({name:"Other", resultDate:new Date(),comments:'Alerting contacts that your having a hypo', userId : app.appUser.get('sid')});	    	
 	    },
 

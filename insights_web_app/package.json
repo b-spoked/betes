@@ -1,0 +1,14 @@
+{
+    "name": "betes-log-insights",
+    "description": "Diabetes Insights Application",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "express": "3.x",
+        "mysql" : "2.0.0-alpha7"
+    },
+    "engines": {
+        "node": "0.8.4",
+        "npm": "1.1.49"
+    }
+}

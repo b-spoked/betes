@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="viewport"
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+<link rel="stylesheet" href="css/vendor/bootstrap.min.css" />
+<link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/vendor/font-awesome.css" />
+<link rel="stylesheet" href="css/main.css" />
+<title>Insights Betes Log</title>
+</head>
+<body>
+	<div class="container">
+		<div id="modal-dialog"></div>
+		<div id="app">
+		</div>
+	</div>
+	<script type="text/template" id="graphs-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li><a href="#">Log</a></li>
+				<li class="active"><a href="#/graphs">Graphs</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					<div class="btn-group">
+  						<button class="btn">Hey <%= name%></button>
+  						<button class="btn dropdown-toggle" data-toggle="dropdown">
+    						<span class="caret"></span>
+  						</button>
+  						<ul class="dropdown-menu">
+    						<li><a href="#/account"> Account</a></li>
+    						<li><a href="#" id="logout"> Logout</a></li>
+  						</ul>
+					</div>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="graphs">		
+		<div id="graphs-getting-started" class="alert alert-info">
+  				<button type="button" class="close" data-dismiss="alert">&times;</button>	
+				<h3>Getting started?</h3>					
+				<p class="lead">These graphs are to help give you a long term view of your diabetes and are driven from your logged results.</p>
+		</div>
+		<div class="btn-toolbar">
+				<div class="btn-group">
+					<button type="button" class="btn btn-small" data-toggle="collapse" data-target="#filter-details">
+  					Filter
+					</button>
+				</div>
+			</div>
+			<div id="filter-details" class="collapse input-prepend input-append">
+				<span class="add-on">Filter Shown Events</span> <input type="text"
+					placeholder="e.g. 'dinner' or 'sick'" class="filter-graph">
+			</div>
+		<div id="bs-results">					
+		</div>
+		<div id="goals">					
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="account-template">
+<div class="navbar navbar-inverse ">
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li><a href="#">Log</a></li>
+			<li><a href="#/graphs">Graphs</a></li>
+		</ul>
+		<div class="pull-right">
+			<%if(authenticated) {%>
+			<div class="btn-group">
+				<button class="btn">Hey <%= name%></button>
+				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#/account"> Account</a></li>
+					<li><a href="#" id="logout"> Logout</a></li>
+				</ul>
+			</div>
+			<%} else { %> <a href="#" id="login" class="btn btn-small"><i
+				class="icon-signin"></i> Login</a> <%}%>
+		</div>
+	</div>
+</div>
+<div id="acount">
+	
+			<div class="well">
+				<div class="media">
+					<a class="pull-left" href="#"> <img class="media-object"
+						style="width: 90px; height: 90px;" src="<%= thumbnailPath%>">
+					</a>
+					<div class="media-body">
+						<h4 class="media-heading">Name:</h4>
+						<p><%= name%></p>
+						<%if(allowSharing) {%>
+							Share link: <span class="input-xlarge uneditable-input"><%=shareLinkId%></span>
+						 <%}%>
+					</div>
+				</div>
+				<h3>Options:</h3>
+				<form id="account-settings" class="form-horizontal">
+					<div class="control-group">
+						<label class="checkbox"> <input id="userNewsletter"
+							type="checkbox" value="true"> Receive Newsletter
+						</label>
+					</div>
+					<div class="control-group">
+						<label class="checkbox"> <input id="allowSharing"
+							type="checkbox" value="true"> Allow sharing and generate link?
+						</label>
+					</div>
+					<div class="control-group">
+						<label for="userTestingUnits">Testing Units</label> 
+						<select id="userTestingUnits">
+							<option value="mmol/l">mmol/l</option>
+							<option value="mg/dL">mg/dL</option>
+						</select>
+					</div>
+					<div class="control-group">
+						<button class="btn">Cancel</button>
+						<button type="submit"
+							class="save-account-settings btn btn-primary">Update
+							Account</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	
+</div>
+	</script>
+	
+	
+	<script type="text/template" id="logbook-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a href="#">Log</a></li>
+				<li><a href="#/graphs">Graphs</a></li>
+			</ul>
+			<div class="pull-right">
+				<%if(authenticated) {%>
+					<div class="btn-group">
+  						<button class="btn">Hey <%= name%></button>
+  						<button class="btn dropdown-toggle" data-toggle="dropdown">
+    						<span class="caret"></span>
+  						</button>
+  						<ul class="dropdown-menu">
+    						<li><a href="#/account"> Account</a></li>
+    						<li><a href="#" id="logout"> Logout</a></li>
+  						</ul>
+					</div>
+				<%} else { %>
+					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
+				<%}%>    
+			</div>
+		</div>
+	</div>
+	<div id="logbook">
+			<form class="form-inline">
+				<button class="btn btn-primary create-new-entry">Add Event</button>
+				<label for="logbook-days">Show:</label>	
+  				<input id="logbook-days" class="logbook-days" type="text" placeholder="Number of days">
+				<label for="logbook-filter">Filter:</label>
+				<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
+			</form>
+			
+			<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>What</th>
+					<th>When</th>
+					<th>Comments</th>
+					<th>Lables</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>
+				
+	</div>
+	</script>
+	<script type="text/template" id="share-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a href="#">Log</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="logbook">
+		<div  class="alert alert-warning">
+  			<button type="button" class="close" data-dismiss="alert">&times;</button>		
+			<p class="lead">This is <%= name%>'s logbook that has been shared with you.</p>
+		</div>
+		<form class="form-inline">
+			<label for="logbook-days">Show:</label>	
+  			<input id="logbook-days" class="logbook-days" type="text" placeholder="Number of days">
+			<label for="logbook-filter">Filter:</label>
+			<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
+		</form>
+			
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>What</th>
+					<th>When</th>
+					<th>Comments</th>
+					<th>Lables</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>
+	</div>
+	</script>
+	<script type="text/template" id="home-template">
+	<div class="navbar navbar-inverse ">
+		<div class="navbar-inner">
+			<ul class="nav">
+				<li class="active"><a class="disabled" href="#">Log</a></li>
+				<li><a class="disabled" href="#/graphs">Graphs</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="logbook">
+		<div class="hero-unit text-center">
+  			<h1 >Welcome to Betes Log Insights</h1>
+  			<p>Insights into your diabetes</p>
+  			<p>
+    			<a href="#" id="login" class="btn btn-primary btn-large">
+					<i class="icon-signin"></i>
+      				Sign Up or Sign In
+    			</a>
+  			</p>
+			<p>
+    			<a href="http://beteslog.com" target="_blank" class="btn btn-large">
+					<i class="icon-bullhorn"></i>
+      				What we are about
+    			</a>
+  			</p>
+		</div>
+	</div>
+	</script>
+		
+	<script type="text/template" id="login-template">
+	<div id="login-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Sign Up or Sign In</h3>
+		</div>
+		<div class="modal-body">
+	
+			<button id="login-fb" class="btn btn-block btn-primary btn-large">
+				<i class="icon-facebook icon-large"></i> Facebook Account
+			</button>
+			<button id="login-google" class="btn btn-block btn-primary btn-large">
+				<i class="icon-google-plus icon-large"></i> Google Account
+			</button>
+	
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+		</div>
+	</div>
+	</script>
+	<script type="text/template" id="logbookitem-template">
+	<% if(bsLevel>0) { %>
+    <td  class="alert alert-success"><h4><%= bsLevel %></h4><small> and <%= insulinAmount %> u</small></td>
+	<% } else if(exerciseDuration>0) { %>
+	<td class="alert alert-info"><h4><%= exerciseDuration %></h4><small> mins @ <%= exerciseIntensity %></small></td>
+	<% } %>
+    <td><small><%= resultDate.substring(0, 10) %></small></td>
+    <td><small><%=comments%></small></td>	
+    <td><small><%=labels%></small></td>
+	</script>
+	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
+	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
+	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
+
+	<script type="text/javascript" src="js/models/CareLinkEntry.js"></script>
+	<script type="text/javascript" src="js/models/InsightsUser.js"></script>
+	
+	<script type="text/javascript" src="js/views/AccountView.js"></script>
+	<script type="text/javascript" src="js/views/HomeView.js"></script>
+	<script type="text/javascript" src="js/views/InsightsLogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/LoginModal.js"></script>
+	<script type="text/javascript" src="js/views/InsightsLogbookView.js"></script>
+	<script type="text/javascript" src="js/views/InsightsGraphsView.js"></script>
+	<script type="text/javascript" src="js/views/ShareView.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript">
+		startApplication();
+		
+		var hash=window.location.hash;
+        window.close();
+		if(opener != null){
+            opener.OAuthRedirect(hash);
+        }
+	</script>
+</body>
+</html>

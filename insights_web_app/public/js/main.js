@@ -1,3 +1,19 @@
+Backbone.OAuth.configs = {
+    Facebook: {
+      auth_url: 'https://www.facebook.com/dialog/oauth',
+      client_id :'226520900725004',
+      redirect_url: 'http://insights-betes-log.herokuapp.com',
+      scope: 'email' 
+      
+    },
+    Google: {
+      auth_url: 'https://accounts.google.com/o/oauth2/auth',
+      client_id :'860380290684-cpmb7giqsq8dm0o08u30gg3pmit2u277.apps.googleusercontent.com',
+      redirect_url: 'http://insights-betes-log.herokuapp.com',
+      scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
+    }
+  };
+
 Backbone.View.prototype.close = function() {
 	console.log('Closing view ' + this);
 	if (this.beforeClose) {
@@ -25,7 +41,7 @@ var AppRouter = Backbone.Router.extend({
 
 	showLogBook : function() {
 		if (app.appUser) {
-			app.showView(new LogbookView({
+			app.showView(new InsightsLogbookView({
 				model : app.appUser
 			}));
 		} else {
@@ -87,12 +103,8 @@ var AppRouter = Backbone.Router.extend({
 		var currentUser, users;
 
 		users = new InsightsUserDetails();
-
-		users.fetch({
-			local : true
-		});
-
-		currentUser = users.first();
+//TODO ?? why this way
+		currentUser = new InsightsUser(users.storage.findAll()[0]);
 
 		if (currentUser && currentUser.get('authenticated')
 				&& currentUser.get('sid') > 0) {

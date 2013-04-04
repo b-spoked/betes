@@ -13,9 +13,7 @@ window.CareLinkEntries = Backbone.Collection
 		.extend({
 			model : CareLinkEntry,
 			initialize : function() {
-				this.storage = new Offline.Storage('carelink-entries', this, {
-					autoPush : true
-				});
+				this.storage = new Offline.Storage('carelink-entries', this);
 			},
 			filterEntries : function(letters) {
 

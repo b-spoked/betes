@@ -19,7 +19,7 @@ window.InsightsGraphsView = Backbone.View
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
-				_.defer( function( view ){ view.closeHelp();}, this );
+				//_.defer( function( view ){ view.closeHelp();}, this );
 				_.defer( function( view ){ view.showAllBloodSugarGraph();}, this );
 				return this;
 			},

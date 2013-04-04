@@ -1,9 +1,10 @@
 var mysql = require('mysql');
+
 var mysqldb = mysql.createConnection({
 	host : 'us-cdbr-east-03.cleardb.com',
-	user : 'b95d456714e818',
-	password : 'e9ec1df8',
-	database : 'heroku_fee62f08e9a254b',
+	user : 'b603ad3f253e78',
+	password : 'f194bb0e',
+	database : 'heroku_dd76de52e0812e0',
 });
 
 function handleDisconnect(connection) {
@@ -24,9 +25,9 @@ function handleDisconnect(connection) {
 
 						mysqldb = mysql.createConnection({
 							host : 'us-cdbr-east-03.cleardb.com',
-							user : 'b95d456714e818',
-							password : 'e9ec1df8',
-							database : 'heroku_fee62f08e9a254b',
+							user : 'b603ad3f253e78',
+							password : 'f194bb0e',
+							database : 'heroku_dd76de52e0812e0',
 						});
 						handleDisconnect(mysqldb);
 						mysqldb.connect();
@@ -137,9 +138,13 @@ exports.findCareLinkResults = function(req, res) {
 	fromDate = req.query.fromDate,
 	toDate = req.query.toDate;
 	
+//	console.log('carelink logbook for: ' + userId+" from ["+fromDate+"] to ["+toDate+"] of type");
+
 	console.log('carelink logbook for: ' + userId+" from ["+fromDate+"] to ["+toDate+"] of type");
 
-	mysqldb.query('SELECT * FROM insight_entries_carelink WHERE userId = ? AND resultDate >= ? AND resultDate <= ? ORDER BY resultDate DESC ', [fromDate, toDate, userId ],
+	//mysqldb.query('SELECT * FROM insight_entries_carelink WHERE userId = ? AND resultDate >= ? AND resultDate <= ? ORDER BY resultDate DESC ', [fromDate, toDate, userId ],
+	
+	mysqldb.query('SELECT * FROM insight_entries_carelink WHERE userId = ? ORDER BY resultDate DESC ', [ userId ],
 			function(err, results) {
 				if (err) {
 					res.send({

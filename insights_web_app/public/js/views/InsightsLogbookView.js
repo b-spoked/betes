@@ -9,6 +9,7 @@ window.InsightsLogbookView = Backbone.View.extend({
 
 	events : {
 		'click #login' : 'showLoginDialog',
+		'click .force-load' : 'loadLogBook',
 		"keyup .filter-logbook" : "filterLogEntries"
 	},
 
@@ -21,7 +22,7 @@ window.InsightsLogbookView = Backbone.View.extend({
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));
 
-		_.defer( function( view ){ view.closeHelp();}, this );
+		//_.defer( function( view ){ view.closeHelp();}, this );
 
 		var logList = $('#events-list', $(this.el));
 
@@ -31,9 +32,11 @@ window.InsightsLogbookView = Backbone.View.extend({
 		}
 		return this;
 	},
-	
+	loadLogBook: function(e){
+		this.model.logEntries.fetch({success : this.render()});
+	},
 	addOne : function(entry) {
-		var view = new LogBookEntryView({
+		var view = new InsightsLogBookEntryView({
 			model : entry
 		});
 		this.$('#events-list').append(view.render().el);

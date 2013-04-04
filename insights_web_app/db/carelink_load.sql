@@ -1,4 +1,4 @@
-LOAD DATA INFILE '/Users/jamie/source/betes2/d3js_app/db/carelink_data.csv'
+LOAD DATA INFILE '/Users/jamie/source/betes2/insights_web_app/db/carelink_data.csv'
 INTO TABLE insight_entries_carelink
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'

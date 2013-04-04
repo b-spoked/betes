@@ -31,17 +31,13 @@ window.InsightsUser = Backbone.Model.extend({
 			var logUrl;
 			
 			if(self.get('sid')){
-				logUrl = self.urlRoot+'/'+self.get('sid')+'/logbook';
+				logUrl = self.urlRoot+'/'+self.get('sid')+'/logbook/carelink';
 			}else{
-				logUrl = self.urlRoot+'/'+self.get('id')+'/logbook';
+				logUrl = self.urlRoot+'/'+self.get('id')+'/logbook/carelink';
 			}
 			return logUrl;
 		};
 
-	},
-	hasLogEntries : function() {
-		this.logUsed = (this.logEntries.length > 0);
-		return this.logUsed;
 	},
 	highs : function() {
 		var highs = this.logEntries.filter(function(entry) {
@@ -66,7 +62,6 @@ window.InsightsUser = Backbone.Model.extend({
 		}).length;
 
 		return tests;
-
 	}
 
 });
@@ -74,9 +69,7 @@ window.InsightsUser = Backbone.Model.extend({
 window.InsightsUserDetails = Backbone.Collection.extend({
 	model : InsightsUser,
 	initialize : function() {
-		this.storage = new Offline.Storage('insights-user', this, {
-			autoPush : true
-		});
+		this.storage = new Offline.Storage('insights-user', this);
 	},
 	url : '/insights-users'
 });

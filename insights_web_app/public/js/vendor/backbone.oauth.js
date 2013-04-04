@@ -92,24 +92,4 @@
 
   });
 
-  //============================================================================
-
-  Backbone.OAuth.configs = {
-    Facebook: {
-      auth_url: 'https://www.facebook.com/dialog/oauth',
-      client_id :'226520900725004',
-      redirect_url: 'http://app.beteslog.com',
-      scope: 'email' 
-      
-    },
-    Google: {
-      auth_url: 'https://accounts.google.com/o/oauth2/auth',
-      client_id :'860380290684-b17cikk70htpfc67r7nf46mopmg2iqqn.apps.googleusercontent.com',
-      redirect_url: 'http://betes-log.herokuapp.com',
-      scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
-    }
-  };
-
-  //============================================================================
-
 })(this);

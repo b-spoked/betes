@@ -24,12 +24,9 @@ window.LoginModal = Backbone.View.extend({
         $("#login-dialog").modal('show');
     },
     authoriseAndSyncUser:function(loggedInUser){
-    	var users = new UserDetails();
+    	var users = new InsightsUserDetails();
     	users.reset();
-    	//app.appUser = loggedInUser;
-    	//app.appUser.save();
     	users.create(loggedInUser);
-        app.navigate("#/settings");
     },
     loginWithFB: function() {
     	

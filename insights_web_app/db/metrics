@@ -1,0 +1,5 @@
+alarm = AlarmSensor|| AlarmPump
+bolus = BolusNormal
+sensor BG calibation = CalBGForPH
+sensor BG = GlucoseSensorData
+daily insulin = ResultDailyTotal

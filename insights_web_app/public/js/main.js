@@ -60,7 +60,7 @@ var AppRouter = Backbone.Router.extend({
 			success : function(results) {
 				
 				app.appUser.logEntries.fetch({success: function(){
-					app.showView(new ShareView({
+					app.showView(new InsightsLogbookView({
 						model : app.appUser
 					}));
 		        }});

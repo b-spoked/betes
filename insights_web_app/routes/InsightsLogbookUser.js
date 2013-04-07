@@ -134,17 +134,31 @@ exports.updateUser = function(req, res) {
 };
 
 exports.findCareLinkResults = function(req, res) {
-	var userId = req.params.userId,
-	fromDate = req.query.fromDate,
-	toDate = req.query.toDate;
+	var userId = req.params.userId;
+	//fromDate = req.query.fromDate,
+	//toDate = req.query.toDate;
 	
-//	console.log('carelink logbook for: ' + userId+" from ["+fromDate+"] to ["+toDate+"] of type");
-
-	console.log('carelink logbook for: ' + userId+" from ["+fromDate+"] to ["+toDate+"] of type");
-
+	//console.log('carelink logbook for: ' + userId+" from ["+fromDate+"] to ["+toDate+"] of type");
 	//mysqldb.query('SELECT * FROM insight_entries_carelink WHERE userId = ? AND resultDate >= ? AND resultDate <= ? ORDER BY resultDate DESC ', [fromDate, toDate, userId ],
 	
-	mysqldb.query('SELECT * FROM insight_entries_carelink WHERE userId = ? ORDER BY resultDate DESC ', [ userId ],
+	var queryString = "SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel"
+	+" ,`DailyInsulinTotal` AS dailyInsulinAmount"
+	+" ,`BolusVolumeDelivered` AS insulinAmount"
+	+" , `resultDate`"
+	+" , `userId`"
+	+" ,`Id`"
+	+" ,`RawValues` AS comments"
+	+" ,`RawType` AS labels" 
+	+" FROM `insight_entries_carelink`" 
+	+" WHERE userId = ?" 
+	+" AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0" 
+	+" OR `DailyInsulinTotal` > 0"
+	+" OR `BolusVolumeDelivered` > 0"
+	+" ORDER BY resultDate DESC";
+	
+	//var queryString = "SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel, `resultDate`, `userId`,`Id`,`RawValues` AS comments,`RawType` AS labels FROM `insight_entries_carelink` WHERE userId = ? AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0 ORDER BY resultDate DESC"
+	
+	mysqldb.query(queryString, [ userId ],
 			function(err, results) {
 				if (err) {
 					res.send({

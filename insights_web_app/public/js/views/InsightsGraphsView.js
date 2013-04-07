@@ -1,15 +1,13 @@
 /**
- * Created by JetBrains PhpStorm.
- * User: Jamie
- * Date: 27/02/13
- * Time: 3:45 PM
- * To change this template use File | Settings | File Templates.
+ * Created by JetBrains PhpStorm. User: Jamie Date: 27/02/13 Time: 3:45 PM To
+ * change this template use File | Settings | File Templates.
  */
 window.InsightsGraphsView = Backbone.View
 		.extend({
 
 			events : {
-				"keyup .filter-graph" : "filterBloodSugarGraph"
+				"click .show-line": "showMultiLineGraph",
+				"click .show-horizon": "showHorizonsGraph"
 			},
 
 			initialize : function() {
@@ -19,125 +17,364 @@ window.InsightsGraphsView = Backbone.View
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
-				//_.defer( function( view ){ view.closeHelp();}, this );
-				_.defer( function( view ){ view.showAllBloodSugarGraph();}, this );
+				_.defer(function(view) {
+					view.closeHelp();
+				}, this);
+				_.defer(function(view) {
+					view.showMultiLineGraph();
+				}, this);
 				return this;
 			},
 			closeHelp : function() {
-				if(this.model.logEntries.length >0){
+				if (this.model.logEntries.length > 0) {
 					$("#graphs-getting-started").hide();
 				}
 			},
-			filterBloodSugarGraph : function(e) {
-				var searchString = $(".filter-graph").val();
-				this.showBloodSugarGraph(this.model.logEntries
-						.filterEntries(searchString));
-			},
-			showAllBloodSugarGraph : function(e) {
-				this.showBloodSugarGraph(this.model.logEntries);
-			},
-			showBloodSugarGraph : function(entries) {
+			showHorizonsGraph : function() {
+
+				var data;
+				
+				if (this.model.logEntries.length >0) {
+					data = new Array();
+					this.model.logEntries.forEach(function(entry) {
+						data.push(entry.toJSON());
+					});
+				}else{
+					return false;
+				}
 				
 				$("#bs-results").html('');
-				
-				var data = null;
-				var color = d3.scale.category10();
 
-				if (entries) {
+				var width = 960, height = 500;
+
+				var chart = d3.horizon().width(width).height(height / 3).bands(
+						3).mode("mirror").interpolate("basis");
+
+				var chart2 = d3.horizon().width(width).height(height / 3)
+						.bands(3).mode("mirror").interpolate("basis");
+
+				var chart3 = d3.horizon().width(width).height(height / 3)
+						.bands(3).mode("mirror").interpolate("basis");
+
+				var svg = d3.select("#bs-results").append("svg").attr("width",
+						width).attr("height", height / 3);
+
+				var bsData = this.getGlucoseResults(data), dailyInsulinData = this
+						.getDailyInsulinAmounts(data), insulinData = this
+						.getInsulinAmounts(data);
+
+				bsData = bsData.map(function(entry) {
+					return [ entry.resultDate, entry.bsLevel ];
+				});
+
+				dailyInsulinData = dailyInsulinData.map(function(entry) {
+					return [ entry.resultDate, entry.dailyInsulinAmount ];
+				});
+
+				insulinData = insulinData.map(function(entry) {
+					return [ entry.resultDate, entry.insulinAmount ];
+				});
+
+				// Render the glucose chart.
+				svg.data([ bsData ]).call(chart);
+				svg.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y", 12)
+			      .attr("text-anchor", "end")
+			      .text("Glucose Reading");
+				// Render daily insulin chart.
+				var svg2 = d3.select("#bs-results").append("svg").attr("width",
+						width).attr("height", height / 3);
+				svg2.data([ dailyInsulinData ]).call(chart2);
+				svg2.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y",12)
+			      .attr("text-anchor", "end")
+			      .text("Daily Insulin Total");
+				// Render the insulin chart.
+				var svg3 = d3.select("#bs-results").append("svg").attr("width",
+						width).attr("height", height / 3);
+				svg3.data([ insulinData ]).call(chart3);
+				svg3.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y",12)
+			      .attr("text-anchor", "end")
+			      .text("Bolus Volume Delivered");
+
+			},
+			showMultiLineGraph : function() {
+				
+				$("#bs-results").html('');
+				var data;
+				
+				if (this.model.logEntries.length>0) {
 					data = new Array();
-					entries.forEach(function(entry) {
-						if ((entry.get("bsLevel") != "")
-								&& (entry.get("bsLevel") > 0)) {
-							data.push(entry.toJSON());
-						}
+					this.model.logEntries.forEach(function(entry) {
+						data.push(entry.toJSON());
 					});
 				}
-
+				
+				this.createGlucoseChart(this.getGlucoseResults(data));
+				this.createInsulinChart(this.getInsulinAmounts(data));
+				this.createDailyInsulinChart(this.getDailyInsulinAmounts(data));
+				
+			},
+			createInsulinChart : function(insulinData){
+				
 				var margin = {
-					top : 10,
-					right : 20,
-					bottom : 20,
-					left : 30
-				}, width = 430;// - margin.left - margin.right,
-				height = 290;// - margin.top - margin.bottom;
-
+						top : 5,
+						right : 20,
+						bottom : 0,
+						left : 30
+				}, width = 960 - margin.left - margin.right, height = 200
+						- margin.top - margin.bottom;
+				
 				var x = d3.time.scale().range([ 0, width ]);
-
 				var y = d3.scale.linear().range([ height, 0 ]);
-
 				var xAxis = d3.svg.axis().scale(x).orient("bottom");
-
 				var yAxis = d3.svg.axis().scale(y).orient("left");
 
-				//average
-				var averagedData = this.getAverageResults(data);
-				var averagedLine = d3.svg.line().x(function(entry) {
-					return x(entry.resultDate);
-				}).y(function(entry) {
-					return y(entry.average);
+				var line = d3.svg.line().x(function(d) {
+					return x(d.resultDate);
+				}).y(function(d) {
+					return y(d.insulinAmount);
 				});
 
-				var svg = d3.select("#bs-results").append("svg").attr(
-						"viewBox",
-						"0 0 " + (width + margin.left + margin.right) + " "
-								+ (height + margin.top + margin.bottom))
-						.append("g").attr(
-								"transform",
-								"translate(" + margin.left + "," + margin.top
-										+ ")");
+				var svg = d3.select("#bs-results").append("svg").attr("width",
+						width + margin.left + margin.right).attr("height",
+						height + margin.top + margin.bottom).append("g").attr(
+						"transform",
+						"translate(" + margin.left + "," + margin.top + ")");
 
-				data.forEach(function(entry) {
-					entry.resultDate = new Date(entry.resultDate);
-					console.log(entry.resultDate);
-					console.log(entry.bsLevel);
-					entry.bsLevel = +entry.bsLevel;
-				});
-
-				x.domain(d3.extent(data, function(entry) {
-					return entry.resultDate;
-				}));
-				y.domain(d3.extent(data, function(entry) {
-					return entry.bsLevel;
-				}));
+				x.domain([ insulinData[0].resultDate, insulinData[insulinData.length - 1].resultDate ]);
+				y.domain([ 0, 20]);
 
 				svg.append("g").attr("class", "x axis").attr("transform",
-						"translate(10," + height + ")").call(xAxis).append(
-						"text").attr("y", -10).attr("dy", ".75em").style(
-						"text-anchor", "middle").text("Reading Date")
+						"translate(0," + height + ")").call(xAxis);
 
 				svg.append("g").attr("class", "y axis").call(yAxis).append(
 						"text").attr("transform", "rotate(-90)").attr("y", 6)
-						.attr("dy", ".75em").style("text-anchor", "end").text(
-								"Reading (mmol)");
+						.attr("dy", ".71em").style("text-anchor", "end").text(
+								"Units");
 
-				svg.selectAll(".dot").data(data).enter().append("circle").attr(
-						"class", "dot").attr("r", 2).attr("cx", function(d) {
+				svg.append("path").datum(insulinData).attr("class", "line").attr("d",
+						line);
+				
+				svg.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y", 6)
+			      .attr("text-anchor", "end")
+			      .text("Bolus Volume Delivered");
+			},
+			createDailyInsulinChart : function(dailyInsulinData){
+				
+				var margin = {
+						top : 5,
+						right : 20,
+						bottom : 0,
+						left : 30
+				}, width = 960 - margin.left - margin.right, height = 200
+						- margin.top - margin.bottom;
+				
+				var x = d3.time.scale().range([ 0, width ]);
+				var y = d3.scale.linear().range([ height, 0 ]);
+				var xAxis = d3.svg.axis().scale(x).orient("bottom");
+				var yAxis = d3.svg.axis().scale(y).orient("left");
+
+				var line = d3.svg.line().x(function(d) {
 					return x(d.resultDate);
-				}).attr("cy", function(d) {
-					return y(d.bsLevel);
-				}).style("fill", function(d) {
-					return color(d.name);
+				}).y(function(d) {
+					return y(d.dailyInsulinAmount);
 				});
 
-				/*Average blood sugar */
-				svg.append("path").datum(averagedData).attr("class", "line")
-						.attr("d", averagedLine);
+				var svg = d3.select("#bs-results").append("svg").attr("width",
+						width + margin.left + margin.right).attr("height",
+						height + margin.top + margin.bottom).append("g").attr(
+						"transform",
+						"translate(" + margin.left + "," + margin.top + ")");
 
-				/*Legend */
-				var legend = svg.selectAll(".legend").data(color.domain())
-						.enter().append("g").attr("class", "legend").attr(
-								"transform", function(d, i) {
-									return "translate(0," + i * 20 + ")";
-								});
+				x.domain([ dailyInsulinData[0].resultDate, dailyInsulinData[dailyInsulinData.length - 1].resultDate ]);
+				y.domain([ 0, 60]);
 
-				legend.append("rect").attr("x", width - 5).attr("width", 5)
-						.attr("height", 5).style("fill", color);
+				svg.append("g").attr("class", "x axis").attr("transform",
+						"translate(0," + height + ")").call(xAxis);
 
-				legend.append("text").attr("x", width - 13).attr("y", 3).attr(
-						"dy", ".25em").style("text-anchor", "end").text(
-						function(d) {
-							return d;
-						});
+				svg.append("g").attr("class", "y axis").call(yAxis).append(
+						"text").attr("transform", "rotate(-90)").attr("y", 6)
+						.attr("dy", ".71em").style("text-anchor", "end").text(
+								"Units");
+
+				svg.append("path").datum(dailyInsulinData).attr("class", "line").attr("d",
+						line);
+				svg.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y", 6)
+			      .attr("text-anchor", "end")
+			      .text("Daily Insulin Total");
+			},
+			createGlucoseChart : function(bsData){
+				
+				var margin = {
+						top : 5,
+						right : 20,
+						bottom : 0,
+						left : 30
+				}, width = 960 - margin.left - margin.right, height = 200
+						- margin.top - margin.bottom;
+				
+				var x = d3.time.scale().range([ 0, width ]);
+				var y = d3.scale.linear().range([ height, 0 ]);
+				var xAxis = d3.svg.axis().scale(x).orient("bottom");
+				var yAxis = d3.svg.axis().scale(y).orient("left");
+
+				var line = d3.svg.line().x(function(d) {
+					return x(d.resultDate);
+				}).y(function(d) {
+					return y(d.bsLevel);
+				});
+
+				var svg = d3.select("#bs-results").append("svg").attr("width",
+						width + margin.left + margin.right).attr("height",
+						height + margin.top + margin.bottom).append("g").attr(
+						"transform",
+						"translate(" + margin.left + "," + margin.top + ")");
+
+				x.domain([ bsData[0].resultDate, bsData[bsData.length - 1].resultDate ]);
+				y.domain([ 0, 250]);
+
+				svg.append("g").attr("class", "x axis").attr("transform",
+						"translate(0," + height + ")").call(xAxis);
+
+				svg.append("g").attr("class", "y axis").call(yAxis).append(
+						"text").attr("transform", "rotate(-90)").attr("y", 6)
+						.attr("dy", ".71em").style("text-anchor", "end").text(
+								"Reading");
+
+				svg.append("path").datum(bsData).attr("class", "line").attr("d",
+						line);
+				svg.append("svg:text")
+			      .attr("x", width - 6)
+			      .attr("y", 6)
+			      .attr("text-anchor", "end")
+			      .text("Glucose Reading");
+			},
+			showGlucoseWithHelp : function(entries) {
+
+				if (entries && entries.length>0) {
+						data = new Array();
+					entries.forEach(function(entry) {
+
+						data.push(entry.toJSON());
+
+					});
+				} else {
+					return false;
+				}
+
+				var margin = {
+						top : 10,
+						right : 20,
+						bottom : 20,
+						left : 30
+				}, width = 960 - margin.left - margin.right, height = 500
+						- margin.top - margin.bottom;
+				
+				var x = d3.time.scale().range([ 0, width ]);
+				var y = d3.scale.linear().range([ height, 0 ]);
+				var xAxis = d3.svg.axis().scale(x).orient("bottom");
+				var yAxis = d3.svg.axis().scale(y).orient("left");
+
+				var line = d3.svg.line().x(function(d) {
+					return x(d.resultDate);
+				}).y(function(d) {
+					return y(d.bsLevel);
+				});
+
+				var svg = d3.select("#bs-results").append("svg").attr("width",
+						width + margin.left + margin.right).attr("height",
+						height + margin.top + margin.bottom).append("g").attr(
+						"transform",
+						"translate(" + margin.left + "," + margin.top + ")");
+
+				var bsData = this.getGlucoseResults(data);
+
+				x.domain([ bsData[0].resultDate, bsData[bsData.length - 1].resultDate ]);
+				y.domain([ 0, 250]);
+
+				svg.append("g").attr("class", "x axis").attr("transform",
+						"translate(0," + height + ")").call(xAxis);
+
+				svg.append("g").attr("class", "y axis").call(yAxis).append(
+						"text").attr("transform", "rotate(-90)").attr("y", 6)
+						.attr("dy", ".71em").style("text-anchor", "end").text(
+								"Reading");
+
+				svg.append("path").datum(bsData).attr("class", "line").attr("d",
+						line);
+			},
+			getGlucoseResults : function(data) {
+
+				var glucoseReadings = new Array();
+				if (data) {
+					data.forEach(function(entry) {
+						if (entry.bsLevel) {
+							var point = {
+								resultDate : new Date(entry.resultDate),
+								bsLevel : entry.bsLevel
+							};
+							glucoseReadings.push(point);
+						}
+					});
+				}
+				
+				glucoseReadings.sort(function(a, b) {
+				    return a.resultDate - b.resultDate;
+				});
+				
+				return glucoseReadings;
+			},
+			getInsulinAmounts : function(data) {
+
+				var insulin = new Array();
+
+				if (data) {
+
+					data.forEach(function(entry) {
+						if (entry.insulinAmount) {
+							var point = {
+								resultDate : new Date(entry.resultDate),
+								insulinAmount : entry.insulinAmount
+							};
+							insulin.push(point);
+						}
+					});
+				}
+				insulin.sort(function(a, b) {
+				    return a.resultDate - b.resultDate;
+				});
+				
+				return insulin;
+			},
+			getDailyInsulinAmounts : function(data) {
+
+				var insulin = new Array();
+
+				if (data) {
+
+					data.forEach(function(entry) {
+						if (entry.dailyInsulinAmount != "") {
+							var point = {
+								resultDate : new Date(entry.resultDate),
+								dailyInsulinAmount : entry.dailyInsulinAmount
+							};
+							insulin.push(point);
+						}
+					});
+				}
+				insulin.sort(function(a, b) {
+				    return a.resultDate - b.resultDate;
+				});
+				return insulin;
 			},
 			getAverageResults : function(data) {
 
@@ -233,9 +470,9 @@ window.InsightsGraphsView = Backbone.View
 						}).enter().append("path").attr("class", "month").attr(
 						"d", monthPath);
 
-				//data
+				// data
 
-				//roll up goals for the day
+				// roll up goals for the day
 				var goalsData = d3.nest().key(function(d) {
 					return format(new Date(d.resultDate));
 				}).rollup(function(d) {

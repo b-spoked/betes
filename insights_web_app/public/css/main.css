@@ -3,20 +3,6 @@
    Author's custom styles
    ========================================================================== */
 
-
-/* modal fix
-.modal { 
-    position: fixed; 
-    top: 3%; 
-    right: 3%; 
-    left: 3%; 
-    width: auto; 
-    margin: 0; 
-}
-.modal-body { 
-    height: 50%; 
-}*/
-
 /* home page */
 .home-hero {
     font-size: 36;
@@ -68,9 +54,35 @@ svg, #container{
 }
 
 text{
-    font-size: 6px;
+    font-size: 13px;
 }
 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line1 {
+	fill:none;	
+  stroke: steelblue;
+}
+
+.line2 {
+	fill:none;
+  stroke: green;
+}
+
+.line3 {
+	fill:none;
+	stroke: orange;
+}
+/* tool tips*/
 .axis path,
 .axis line {
   fill: none;
@@ -88,10 +100,14 @@ text{
   stroke-width: 1.5px;
 }
 
-.line2 {
+.overlay {
   fill: none;
-  stroke: green;
-  stroke-width: 1.5px;
+  pointer-events: all;
+}
+
+.focus circle {
+  fill: none;
+  stroke: steelblue;
 }
 
 /* Goals */

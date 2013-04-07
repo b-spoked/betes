@@ -12,9 +12,7 @@ window.CareLinkEntry = Backbone.Model.extend({
 window.CareLinkEntries = Backbone.Collection
 		.extend({
 			model : CareLinkEntry,
-			initialize : function() {
-				this.storage = new Offline.Storage('carelink-entries', this);
-			},
+		
 			filterEntries : function(letters) {
 
 				if (letters == "") {
@@ -66,8 +64,8 @@ window.CareLinkEntries = Backbone.Collection
 			filterString : function(letters) {
 				var pattern = new RegExp(letters, "gi");
 				return _(this.filter(function(data) {
-					return pattern.test(data.get("RawType"))
-							|| pattern.test(data.get("RawValues"));
+					return pattern.test(data.get("labels"))
+							|| pattern.test(data.get("comments"));
 				}));
 			},
 
@@ -78,8 +76,8 @@ window.CareLinkEntries = Backbone.Collection
 				var pattern2 = new RegExp(included[1].trim(), "gi");
 				//console.log("pattern2 "+pattern2);
 				return _(this.filter(function(data) {
-					return pattern1.test(data.get("RawType"))
-							|| pattern2.test(data.get("RawValues"));
+					return pattern1.test(data.get("labels"))
+							|| pattern2.test(data.get("comments"));
 				}));
 			},
 

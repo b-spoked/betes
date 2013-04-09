@@ -105,93 +105,18 @@ window.InsightsGraphsView = Backbone.View
 						data.push(entry.toJSON());
 					});
 				}
-
-				this.createGlucoseChart(this.getGlucoseResults(data));
-				this.createInsulinChart(this.getInsulinAmounts(data));
-				this.createDailyInsulinChart(this.getDailyInsulinAmounts(data));
+				
+				if(data && data.length>0)
+				{	
+					this.createGlucoseChart(this.getGlucoseResults(data));
+					this.createInsulinChart(this.getInsulinAmounts(data));
+					this.createDailyInsulinChart(this.getDailyInsulinAmounts(data));
+				}
 
 			},
-			createLineChart : function(data,label) {
-
-				if(data.length <= 0){
-					return;
-				}
+			showAllLinesChart : function() {
 				
-				var margin = {
-					top : 5,
-					right : 20,
-					bottom : 0,
-					left : 30
-				}, width = 960 - margin.left - margin.right, height = 200
-						- margin.top - margin.bottom;
-
-				var parseDate = d3.time.format("%c").parse, bisectDate = d3
-						.bisector(function(d) {
-							return d.resultDate;
-						}).left, formatValue = d3.format(",.1f"), formatUnits = function(
-						d) {
-					return formatValue(d) + "u";
-				};
-
-				var x = d3.time.scale().range([ 0, width ]);
-				var y = d3.scale.linear().range([ height, 0 ]);
-				var xAxis = d3.svg.axis().scale(x).orient("bottom");
-				var yAxis = d3.svg.axis().scale(y).orient("left");
-
-				var line = d3.svg.line().x(function(d) {
-					return x(d.resultDate);
-				}).y(function(d) {
-					return y(d.value);
-				});
-
-				var svg = d3.select("#bs-results").append("svg").attr("width",
-						width + margin.left + margin.right).attr("height",
-						height + margin.top + margin.bottom).append("g").attr(
-						"transform",
-						"translate(" + margin.left + "," + margin.top + ")");
-
-				x.domain([data[0].resultDate,
-				           data[insulinData.length - 1].resultDate ]);
 				
-				y.domain([ 0, 20 ]);
-
-				svg.append("g").attr("class", "x axis").attr("transform",
-						"translate(0," + height + ")").call(xAxis);
-
-				svg.append("g").attr("class", "y axis").call(yAxis).append(
-						"text").attr("transform", "rotate(-90)").attr("y", 6)
-						.attr("dy", ".71em").style("text-anchor", "end").text(
-								"Units");
-
-				svg.append("path").datum(data).attr("class", "line")
-						.attr("d", line);
-
-				var focus = svg.append("g").attr("class", "focus").style(
-						"display", "none");
-
-				focus.append("circle").attr("r", 4.5);
-
-				focus.append("text").attr("x", 9).attr("dy", ".35em");
-
-				svg.append("rect").attr("class", "overlay")
-						.attr("width", width).attr("height", height).on(
-								"mouseover", function() {
-									focus.style("display", null);
-								}).on("mouseout", function() {
-							focus.style("display", "none");
-						}).on("mousemove", mousemove);
-
-				function mousemove() {
-					var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(
-							data, x0, 1), d0 = data[i - 1], d1 = data[i], d = x0
-							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
-					focus.attr("transform", "translate(" + x(d.resultDate)
-							+ "," + y(d.value) + ")");
-					focus.select("text").text(formatUnits(d.value));
-				}
-
-				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
-						"text-anchor", "end").text(label);
 			},
 			createInsulinChart : function(insulinData) {
 
@@ -207,7 +132,7 @@ window.InsightsGraphsView = Backbone.View
 				}, width = 960 - margin.left - margin.right, height = 200
 						- margin.top - margin.bottom;
 
-				var parseDate = d3.time.format("%c").parse, bisectDate = d3
+				var formatDate = d3.time.format("%a %e @ %H:%M %p"), bisectDate = d3
 						.bisector(function(d) {
 							return d.resultDate;
 						}).left, formatValue = d3.format(",.1f"), formatUnits = function(
@@ -232,9 +157,7 @@ window.InsightsGraphsView = Backbone.View
 						"transform",
 						"translate(" + margin.left + "," + margin.top + ")");
 
-				x.domain([ insulinData[0].resultDate,
-						insulinData[insulinData.length - 1].resultDate ]);
-				
+				x.domain([ insulinData[0].resultDate,insulinData[insulinData.length - 1].resultDate ]);
 				y.domain([ 0, 20 ]);
 
 				svg.append("g").attr("class", "x axis").attr("transform",
@@ -245,16 +168,17 @@ window.InsightsGraphsView = Backbone.View
 						.attr("dy", ".71em").style("text-anchor", "end").text(
 								"Units");
 
-				svg.append("path").datum(insulinData).attr("class", "line")
+				svg.append("path").datum(insulinData).attr("class", "line1")
 						.attr("d", line);
 
-				var focus = svg.append("g").attr("class", "focus").style(
+				var focus = svg.append("g").attr("class", "hover-line").style(
 						"display", "none");
-
+				
 				focus.append("circle").attr("r", 4.5);
-
-				focus.append("text").attr("x", 9).attr("dy", ".35em");
-
+				
+				focus.append("text").attr("class", "hover-value-text").attr("x", 9).attr("dy", ".35em");
+				focus.append("text").attr("class", "hover-date-text").attr("x", 9).attr("y", -20).attr("dy", ".35em");
+				
 				svg.append("rect").attr("class", "overlay")
 						.attr("width", width).attr("height", height).on(
 								"mouseover", function() {
@@ -269,7 +193,8 @@ window.InsightsGraphsView = Backbone.View
 							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
 					focus.attr("transform", "translate(" + x(d.resultDate)
 							+ "," + y(d.insulinAmount) + ")");
-					focus.select("text").text(formatUnits(d.insulinAmount));
+					focus.select("text.hover-value-text").text(formatUnits(d.insulinAmount));
+					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
 				}
 
 				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
@@ -294,7 +219,7 @@ window.InsightsGraphsView = Backbone.View
 				var xAxis = d3.svg.axis().scale(x).orient("bottom");
 				var yAxis = d3.svg.axis().scale(y).orient("left");
 				
-				var parseDate = d3.time.format("%c").parse, bisectDate = d3
+				var formatDate = d3.time.format("%a %e @ %H:%M %p"), bisectDate = d3
 				.bisector(function(d) {
 					return d.resultDate;
 				}).left, formatValue = d3.format(",.1f"), formatUnits = function(
@@ -314,10 +239,7 @@ window.InsightsGraphsView = Backbone.View
 						"transform",
 						"translate(" + margin.left + "," + margin.top + ")");
 
-				x
-						.domain([
-								dailyInsulinData[0].resultDate,
-								dailyInsulinData[dailyInsulinData.length - 1].resultDate ]);
+				x.domain([ dailyInsulinData[0].resultDate,dailyInsulinData[dailyInsulinData.length - 1].resultDate ]);
 				y.domain([ 0, 60 ]);
 
 				svg.append("g").attr("class", "x axis").attr("transform",
@@ -329,14 +251,15 @@ window.InsightsGraphsView = Backbone.View
 								"Units");
 
 				svg.append("path").datum(dailyInsulinData)
-						.attr("class", "line").attr("d", line);
+						.attr("class", "line2").attr("d", line);
 				
-				var focus = svg.append("g").attr("class", "focus").style(
+				var focus = svg.append("g").attr("class", "hover-line").style(
 						"display", "none");
 
 				focus.append("circle").attr("r", 4.5);
 
-				focus.append("text").attr("x", 9).attr("dy", ".35em");
+				focus.append("text").attr("class", "hover-value-text").attr("x", 9).attr("dy", ".35em");
+				focus.append("text").attr("class", "hover-date-text").attr("x", 9).attr("y", -20).attr("dy", ".35em");
 
 				svg.append("rect").attr("class", "overlay")
 						.attr("width", width).attr("height", height).on(
@@ -352,7 +275,8 @@ window.InsightsGraphsView = Backbone.View
 							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
 					focus.attr("transform", "translate(" + x(d.resultDate)
 							+ "," + y(d.dailyInsulinAmount) + ")");
-					focus.select("text").text(formatUnits(d.dailyInsulinAmount));
+					focus.select("text.hover-value-text").text(formatUnits(d.dailyInsulinAmount));
+					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
 				}
 				
 				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
@@ -377,7 +301,7 @@ window.InsightsGraphsView = Backbone.View
 				var xAxis = d3.svg.axis().scale(x).orient("bottom");
 				var yAxis = d3.svg.axis().scale(y).orient("left");
 				
-				var parseDate = d3.time.format("%c").parse, bisectDate = d3
+				var formatDate = d3.time.format("%a %e @ %H:%M %p"), bisectDate = d3
 				.bisector(function(d) {
 					return d.resultDate;
 				}).left;
@@ -394,9 +318,8 @@ window.InsightsGraphsView = Backbone.View
 						"transform",
 						"translate(" + margin.left + "," + margin.top + ")");
 
-				x.domain([ bsData[0].resultDate,
-						bsData[bsData.length - 1].resultDate ]);
-				y.domain([ 0, 250 ]);
+				x.domain([ bsData[0].resultDate,bsData[bsData.length - 1].resultDate ]);
+				y.domain([ 0, 300 ]);
 
 				svg.append("g").attr("class", "x axis").attr("transform",
 						"translate(0," + height + ")").call(xAxis);
@@ -406,15 +329,16 @@ window.InsightsGraphsView = Backbone.View
 						.attr("dy", ".71em").style("text-anchor", "end").text(
 								"Reading");
 
-				svg.append("path").datum(bsData).attr("class", "line").attr(
+				svg.append("path").datum(bsData).attr("class", "line3").attr(
 						"d", line);
 				
-				var focus = svg.append("g").attr("class", "focus").style(
+				var focus = svg.append("g").attr("class", "hover-line").style(
 						"display", "none");
 
 				focus.append("circle").attr("r", 4.5);
 
-				focus.append("text").attr("x", 9).attr("dy", ".35em");
+				focus.append("text").attr("class", "hover-value-text").attr("x", 9).attr("dy", ".35em");
+				focus.append("text").attr("class", "hover-date-text").attr("x", 9).attr("y", -20).attr("dy", ".35em");
 
 				svg.append("rect").attr("class", "overlay")
 						.attr("width", width).attr("height", height).on(
@@ -430,9 +354,10 @@ window.InsightsGraphsView = Backbone.View
 							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
 					focus.attr("transform", "translate(" + x(d.resultDate)
 							+ "," + y(d.bsLevel) + ")");
-					focus.select("text").text(d.bsLevel);
+					focus.select("text.hover-value-text").text(d.bsLevel);
+					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
 				}
-				
+		
 				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
 						"text-anchor", "end").text("Glucose Reading");
 			},

@@ -68,19 +68,33 @@ text{
   display: none;
 }
 
+.hover-line{
+	stroke: #6E7B8B;
+	stroke-width:0.5px;
+}
+
+.hover-value-text{
+	font-size: 16px;
+	font-style:bold;
+}
+
+.hover-date-text{
+	font-size: 11px;
+}
+
 .line1 {
 	fill:none;	
-  stroke: steelblue;
+  	stroke: lightblue;
 }
 
 .line2 {
 	fill:none;
-  stroke: green;
+  	stroke: lightgray;
 }
 
 .line3 {
 	fill:none;
-	stroke: orange;
+	stroke: lightgreen;
 }
 /* tool tips*/
 .axis path,

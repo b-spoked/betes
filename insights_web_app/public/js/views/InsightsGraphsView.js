@@ -120,195 +120,18 @@ window.InsightsGraphsView = Backbone.View
 					axisStartDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate());
 					axisEndDate = new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate());
 					
-					console.log("start: "+axisStartDate);
-					console.log("end: "+axisEndDate);
+					//console.log("start: "+axisStartDate);
+					//console.log("end: "+axisEndDate);
 					
-					this.createGlucoseChart(this.getGlucoseResults(data),axisStartDate,axisEndDate);
-					this.createInsulinChart(this.getInsulinAmounts(data),axisStartDate,axisEndDate);
-					this.createDailyInsulinChart(this.getDailyInsulinAmounts(data),axisStartDate,axisEndDate);
+					this.createLineChart(this.getGlucoseResults(data),axisStartDate,axisEndDate,"Reading","Glucose Reading");
+					this.createLineChart(this.getInsulinAmounts(data),axisStartDate,axisEndDate,"Units","Bolus Volume Delivered");
+					this.createLineChart(this.getDailyInsulinAmounts(data),axisStartDate,axisEndDate,"Units","Total Daily Insulin");
 				}
 
 			},
-			showAllLinesChart : function() {
-				
-				
-			},
-			createInsulinChart : function(insulinData,startDate,endDate) {
+			createLineChart : function(data,startDate,endDate,yAxisLabel,chartName) {
 
-				if(insulinData.length <= 0){
-					return;
-				}
-				
-				var margin = {
-					top : 5,
-					right : 20,
-					bottom : 0,
-					left : 30
-				}, width = 960 - margin.left - margin.right, height = 200
-						- margin.top - margin.bottom;
-
-				var formatDate = d3.time.format("%a %e @ %H:%M %p"),
-					bisectDate = d3.bisector(function(d) {
-							return d.resultDate;
-						}).left,
-					formatValue = d3.format(",.1f"), formatUnits = function(
-						d) {
-					return formatValue(d) + "u";
-				};
-
-				var x = d3.time.scale()
-					.domain([ startDate, endDate ])
-					.range([ 0, width ]);
-				var y = d3.scale.linear()
-					.domain([ 0, 20 ])
-					.range([ height, 0 ]);
-				var xAxis = d3.svg.axis().scale(x).orient("bottom");
-				var yAxis = d3.svg.axis().scale(y).orient("left");
-
-				var line = d3.svg.line().x(function(d) {
-					return x(d.resultDate);
-				}).y(function(d) {
-					return y(d.insulinAmount);
-				});
-
-				var svg = d3.select("#bs-results").append("svg").attr("width",
-						width + margin.left + margin.right).attr("height",
-						height + margin.top + margin.bottom).append("g").attr(
-						"transform",
-						"translate(" + margin.left + "," + margin.top + ")");
-
-				//x.domain([ insulinData[0].resultDate,insulinData[insulinData.length - 1].resultDate ]);
-				//y.domain([ 0, 20 ]);
-
-				svg.append("g").attr("class", "x axis").attr("transform",
-						"translate(0," + height + ")").call(xAxis);
-
-				svg.append("g").attr("class", "y axis").call(yAxis).append(
-						"text").attr("transform", "rotate(-90)").attr("y", 6)
-						.attr("dy", ".71em").style("text-anchor", "end").text(
-								"Units");
-
-				svg.append("path").datum(insulinData).attr("class", "line1")
-						.attr("d", line);
-
-				var focus = svg.append("g").attr("class", "hover-line").style(
-						"display", "none");
-				
-				focus.append("circle").attr("r", 4.5);
-				
-				focus.append("text").attr("class", "hover-value-text").attr("x", 9).attr("dy", ".35em");
-				focus.append("text").attr("class", "hover-date-text").attr("x", 9).attr("y", -20).attr("dy", ".35em");
-				
-				svg.append("rect").attr("class", "overlay")
-						.attr("width", width).attr("height", height).on(
-								"mouseover", function() {
-									focus.style("display", null);
-								}).on("mouseout", function() {
-							focus.style("display", "none");
-						}).on("mousemove", mousemove);
-
-				function mousemove() {
-					var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(
-							insulinData, x0, 1), d0 = insulinData[i - 1], d1 = insulinData[i], d = x0
-							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
-					focus.attr("transform", "translate(" + x(d.resultDate)
-							+ "," + y(d.insulinAmount) + ")");
-					focus.select("text.hover-value-text").text(formatUnits(d.insulinAmount));
-					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
-				}
-
-				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
-						"text-anchor", "end").text("Bolus Volume Delivered");
-			},
-			createDailyInsulinChart : function(dailyInsulinData,startDate,endDate) {
-
-				if(dailyInsulinData.length <= 0){
-					return;
-				}
-				
-				var margin = {
-					top : 5,
-					right : 20,
-					bottom : 0,
-					left : 30
-				}, width = 960 - margin.left - margin.right, height = 200
-						- margin.top - margin.bottom;
-				
-				var x = d3.time.scale()
-				.domain([ startDate, endDate ])
-				.range([ 0, width ]);
-				
-				var y = d3.scale.linear()
-				.domain([ 0, 60 ])
-				.range([ height, 0 ]);
-				
-				var xAxis = d3.svg.axis().scale(x).orient("bottom");
-				
-				var yAxis = d3.svg.axis().scale(y).orient("left");
-				
-				var formatDate = d3.time.format("%a %e @ %H:%M %p"), bisectDate = d3
-				.bisector(function(d) {
-					return d.resultDate;
-				}).left, formatValue = d3.format(",.1f"), formatUnits = function(
-				d) {
-					return formatValue(d) + "u";
-				};
-
-				var line = d3.svg.line().x(function(d) {
-					return x(d.resultDate);
-				}).y(function(d) {
-					return y(d.dailyInsulinAmount);
-				});
-
-				var svg = d3.select("#bs-results").append("svg").attr("width",
-						width + margin.left + margin.right).attr("height",
-						height + margin.top + margin.bottom).append("g").attr(
-						"transform",
-						"translate(" + margin.left + "," + margin.top + ")");
-
-				svg.append("g").attr("class", "x axis").attr("transform",
-						"translate(0," + height + ")").call(xAxis);
-
-				svg.append("g").attr("class", "y axis").call(yAxis).append(
-						"text").attr("transform", "rotate(-90)").attr("y", 6)
-						.attr("dy", ".71em").style("text-anchor", "end").text(
-								"Units");
-
-				svg.append("path").datum(dailyInsulinData)
-						.attr("class", "line2").attr("d", line);
-				
-				var focus = svg.append("g").attr("class", "hover-line").style(
-						"display", "none");
-
-				focus.append("circle").attr("r", 4.5);
-
-				focus.append("text").attr("class", "hover-value-text").attr("x", 9).attr("dy", ".35em");
-				focus.append("text").attr("class", "hover-date-text").attr("x", 9).attr("y", -20).attr("dy", ".35em");
-
-				svg.append("rect").attr("class", "overlay")
-						.attr("width", width).attr("height", height).on(
-								"mouseover", function() {
-									focus.style("display", null);
-								}).on("mouseout", function() {
-							focus.style("display", "none");
-						}).on("mousemove", mousemove);
-
-				function mousemove() {
-					var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(
-							dailyInsulinData, x0, 1), d0 = dailyInsulinData[i - 1], d1 = dailyInsulinData[i], d = x0
-							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
-					focus.attr("transform", "translate(" + x(d.resultDate)
-							+ "," + y(d.dailyInsulinAmount) + ")");
-					focus.select("text.hover-value-text").text(formatUnits(d.dailyInsulinAmount));
-					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
-				}
-				
-				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
-						"text-anchor", "end").text("Daily Insulin Total");
-			},
-			createGlucoseChart : function(bsData,startDate,endDate) {
-
-				if(bsData.length <= 0){
+				if(data.length <= 0){
 					return;
 				}
 				
@@ -324,8 +147,10 @@ window.InsightsGraphsView = Backbone.View
 				.domain([ startDate, endDate ])
 				.range([ 0, width ]);
 				
+				var maxY = parseInt(d3.max(data, function(d){return d.value;}));
+				
 				var y = d3.scale.linear()
-				.domain([ 0, 300 ])
+				.domain([ 0, maxY+(maxY/10) ])
 				.range([ height, 0 ]);
 				
 				var xAxis = d3.svg.axis().scale(x).orient("bottom");
@@ -339,7 +164,7 @@ window.InsightsGraphsView = Backbone.View
 				var line = d3.svg.line().x(function(d) {
 					return x(d.resultDate);
 				}).y(function(d) {
-					return y(d.bsLevel);
+					return y(d.value);
 				});
 
 				var svg = d3.select("#bs-results").append("svg").attr("width",
@@ -354,9 +179,9 @@ window.InsightsGraphsView = Backbone.View
 				svg.append("g").attr("class", "y axis").call(yAxis).append(
 						"text").attr("transform", "rotate(-90)").attr("y", 6)
 						.attr("dy", ".71em").style("text-anchor", "end").text(
-								"Reading");
+								yAxisLabel);
 
-				svg.append("path").datum(bsData).attr("class", "line3").attr(
+				svg.append("path").datum(data).attr("class", "line3").attr(
 						"d", line);
 				
 				var focus = svg.append("g").attr("class", "hover-line").style(
@@ -377,16 +202,16 @@ window.InsightsGraphsView = Backbone.View
 
 				function mousemove() {
 					var x0 = x.invert(d3.mouse(this)[0]), i = bisectDate(
-							bsData, x0, 1), d0 = bsData[i - 1], d1 = bsData[i], d = x0
+							data, x0, 1), d0 = data[i - 1], d1 = data[i], d = x0
 							- d0.resultDate > d1.resultDate - x0 ? d1 : d0;
 					focus.attr("transform", "translate(" + x(d.resultDate)
-							+ "," + y(d.bsLevel) + ")");
-					focus.select("text.hover-value-text").text(d.bsLevel);
+							+ "," + y(d.value) + ")");
+					focus.select("text.hover-value-text").text(d.value);
 					focus.select("text.hover-date-text").text(formatDate(new Date(d.resultDate)));
 				}
 		
 				svg.append("svg:text").attr("x", width - 6).attr("y", 6).attr(
-						"text-anchor", "end").text("Glucose Reading");
+						"text-anchor", "end").text(chartName);
 			},
 			getGlucoseResults : function(data) {
 
@@ -396,7 +221,7 @@ window.InsightsGraphsView = Backbone.View
 						if (entry.bsLevel) {
 							var point = {
 								resultDate : new Date(entry.resultDate),
-								bsLevel : entry.bsLevel
+								value : parseFloat(entry.bsLevel)
 							};
 							glucoseReadings.push(point);
 						}
@@ -420,7 +245,7 @@ window.InsightsGraphsView = Backbone.View
 							var point = {
 								resultDate : new Date(
 										entry.resultDate),
-								insulinAmount : entry.insulinAmount
+								value : parseFloat(entry.insulinAmount)
 							};
 							insulin.push(point);
 						}
@@ -442,7 +267,7 @@ window.InsightsGraphsView = Backbone.View
 						if (entry.dailyInsulinAmount != "") {
 							var point = {
 								resultDate : new Date(entry.resultDate),
-								dailyInsulinAmount : entry.dailyInsulinAmount
+								value : parseFloat(entry.dailyInsulinAmount)
 							};
 							insulin.push(point);
 						}

@@ -84,12 +84,12 @@ text{
 
 .line1 {
 	fill:none;	
-  	stroke: lightblue;
+  	stroke: steelblue;
 }
 
 .line2 {
 	fill:none;
-  	stroke: lightgray;
+  	stroke: gray;
 }
 
 .line3 {

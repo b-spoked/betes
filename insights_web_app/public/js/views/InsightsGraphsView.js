@@ -22,7 +22,7 @@ window.InsightsGraphsView = Backbone.View
 					view.closeHelp();
 				}, this);
 				_.defer(function(view) {
-					view.showMultiLineGraph();
+					view.showFilterableDashboard();
 				}, this);
 				return this;
 			},
@@ -227,7 +227,7 @@ window.InsightsGraphsView = Backbone.View
 				var dayOfWeekChart = dc.pieChart("#day-of-week-chart");
 				var hourOfDayChart = dc.barChart("#hour-of-day-chart");
 				var logBloodSugarChart = dc.barChart("#log-bs-chart");
-				var logInsulinChart = dc.pieChart("#log-insulin-chart");
+				var logInsulinChart = dc.barChart("#log-insulin-chart");
 				var datesChart = dc.barChart("#log-period-chart");
 				
 				//Data
@@ -247,7 +247,7 @@ window.InsightsGraphsView = Backbone.View
 				      hour = logBook.dimension(function(d) {return d3.time.hour(new Date(d.resultDate)); }),
 				      hours = hour.group(Math.floor),
 				      insulin = logBook.dimension(function(d) { if(d.insulinAmount > 0) { return d.insulinAmount; }}),
-				      insulinGroup = insulin.group(),
+				      insulinGroup = insulin.group.reduceGroup(function(d) {  return d.bsLevel; }),
 				      bloodSugar = logBook.dimension(function(d) { if(d.bsLevel > 0) { return d.bsLevel; }}),
 				      bloodSugarGroup = bloodSugar.group();
 	          	            
@@ -315,16 +315,15 @@ window.InsightsGraphsView = Backbone.View
 	            monthOfYearChart.width(180)
 	                    .height(180)
 	                    .radius(80)
-	                    .innerRadius(20)
+	                    .innerRadius(30)
 	                    .dimension(monthOfYear)
 	                    .group(monthOfYearGroup);
 
 	            dayOfWeekChart.width(180)
                 		.height(180)
                 		.radius(80)
-                		.innerRadius(20)
+                		.innerRadius(30)
 	                    .colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
-	                    .innerRadius(30)
 	                    .dimension(dayOfWeek)
 	                    .group(dayOfWeekGroup);
 	            
@@ -345,7 +344,7 @@ window.InsightsGraphsView = Backbone.View
 	            
 	            logBloodSugarChart.width(420)
 	                .height(240)
-	                .margins({top: 10, right: 50, bottom: 10, left: 40})
+	                .margins({top: 10, right: 50, bottom: 30, left: 40})
 	                .dimension(bloodSugar)
 	                .group(bloodSugarGroup)
 	                .elasticY(true)
@@ -356,27 +355,23 @@ window.InsightsGraphsView = Backbone.View
                         chart.select("g.y").style("display", "none");
                     });
 	            
-	            /*logInsulinChart.width(420)
+	            logInsulinChart.width(420)
 	                .height(240)
-	                .margins({top: 10, right: 50, bottom: 10, left: 40})
+	                .margins({top: 10, right: 50, bottom: 30, left: 40})
 	                .dimension(insulin)
 	                .group(insulinGroup)
+	                .valueAccessor(function(d) {
+	                	return d.value;
+	                })
 	                .centerBar(true)
 	                .elasticY(true)
-	                .gap(0)
+	                .gap(1)
 	                .x(d3.scale.linear().domain([0,15]))
 	                .renderlet(function (chart) {
                         chart.select("g.y").style("display", "none");
-                    });*/
-	            
-	            logInsulinChart.width(180)
-        		.height(180)
-        		.radius(80)
-        		.innerRadius(20)
-                .colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
-                .innerRadius(30)
-                .dimension(insulin)
-                .group(insulinGroup);
+                    })
+                    .y(d3.scale.linear().domain([0,10]));
+	           
 	            
 	            datesChart.width(990)
 	                .height(80)

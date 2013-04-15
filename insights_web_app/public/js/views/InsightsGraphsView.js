@@ -222,68 +222,36 @@ window.InsightsGraphsView = Backbone.View
 				
 				$("#bs-results").html('');
 				
-				var hourOfDayChart = dc.pieChart("#hour-of-day-chart");
+				//chart areas
 				var monthOfYearChart = dc.pieChart("#month-of-year-chart");
 				var dayOfWeekChart = dc.pieChart("#day-of-week-chart");
-				//var logDataChart = dc.compositeChart("#log-data-chart");
-				//var periodChart = dc.barChart("#log-period-chart");
+				var hourOfDayChart = dc.barChart("#hour-of-day-chart");
+				var logBloodSugarChart = dc.barChart("#log-bs-chart");
+				var logInsulinChart = dc.pieChart("#log-insulin-chart");
+				var datesChart = dc.barChart("#log-period-chart");
 				
-				// since its a csv file we need to format the data a bit
-	            var dateFormat = d3.time.format("%m/%d/%Y");
-	            var numberFormat = d3.format(".2f");
-	            var logBookData = this.getCleanedData(this.model.logEntries);	
+				//Data
+				var logBookData = this.getCleanedData(this.model.logEntries);
 	            
-	            //dimension date range
+	            //Date dimension range
 	            var startDate = new Date(logBookData[0].resultDate),
-				endDate = new Date(logBookData[logBookData.length-1].resultDate);
-				
-				axisStartDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate());
+				endDate = new Date(logBookData[logBookData.length-1].resultDate),
+				axisStartDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()),
 				axisEndDate = new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate());
-
-	            // feed it through crossfilter
-	            var ndx = crossfilter(logBookData);
-	            var all = ndx.groupAll();
-
-	            var yearlyDimension = ndx.dimension(function (d) {
-	                return d3.time.year(d.resultDate);
-	            });
-
-	            var dateDimension = ndx.dimension(function (d) {
-	                return d.resultDate;
-	            });
-
-	            // monthly index avg fluctuation in percentage
-	            /*var moveMonths = ndx.dimension(function (d) {
-	                return d.month;
-	            });
-	            
-	            var monthlyMoveGroup = moveMonths.group().reduceSum(function (d) {
-	                return Math.abs(+d.close - +d.open);
-	            });
-	            
-	            var volumeByMonthGroup = moveMonths.group().reduceSum(function (d) {
-	                return d.volume / 500000;
-	            });
-	            
-	            var indexAvgByMonthGroup = moveMonths.group().reduce(
-	                    function (p, v) {
-	                        ++p.days;
-	                        p.total += (+v.open + +v.close) / 2;
-	                        p.avg = Math.round(p.total / p.days);
-	                        return p;
-	                    },
-	                    function (p, v) {
-	                        --p.days;
-	                        p.total -= (+v.open + +v.close) / 2;
-	                        p.avg = p.days == 0 ? 0 : Math.round(p.total / p.days);
-	                        return p;
-	                    },
-	                    function () {
-	                        return {days: 0, total: 0, avg: 0};
-	                    }
-	            );*/
-	            
-	            var dayOfWeek = ndx.dimension(function (d) {
+				
+				//dimensions
+				// Create the crossfilter for the relevant dimensions and groups.
+				  var logBook = crossfilter(logBookData),
+				      date = logBook.dimension(function(d) { return d3.time.day(new Date(d.resultDate)); }),
+				      dates = date.group(),
+				      hour = logBook.dimension(function(d) {return d3.time.hour(new Date(d.resultDate)); }),
+				      hours = hour.group(Math.floor),
+				      insulin = logBook.dimension(function(d) { if(d.insulinAmount > 0) { return d.insulinAmount; }}),
+				      insulinGroup = insulin.group(),
+				      bloodSugar = logBook.dimension(function(d) { if(d.bsLevel > 0) { return d.bsLevel; }}),
+				      bloodSugarGroup = bloodSugar.group();
+	          	            
+	            var dayOfWeek = logBook.dimension(function (d) {
 	                var day = d.resultDate.getDay();
 	                switch (day) {
 	                    case 0:
@@ -305,7 +273,7 @@ window.InsightsGraphsView = Backbone.View
 	            
 	            var dayOfWeekGroup = dayOfWeek.group();
 
-	            var monthOfYear = ndx.dimension(function (d) {
+	            var monthOfYear = logBook.dimension(function (d) {
 	                var month = d.resultDate.getMonth();
 	                switch (month) {
 	                    case 0:
@@ -335,93 +303,94 @@ window.InsightsGraphsView = Backbone.View
 	                }
 	            });
 	            
-	            var monthOfYearGroup = monthOfYear.group();
+	           var monthOfYearGroup = monthOfYear.group();
 	            
-	            var hourOfDay = ndx.dimension(function (d) {
-	               
-	                var hours = d.resultDate.getHours();
-	                var timeOfDay = hours >= 12 ? 'pm':'am';
-	                hours = hours % 12;
-	                hours = hours ? hours : 12;
-	                var strTime = hours+' '+timeOfDay;
-	                return strTime;
+	           var hourOfDay = logBook.dimension(function (d) {
+	                var hour = d.resultDate.getHours();
+	                return hour+1;
 	            });
-	            
-	            var hourOfDayGroup = hourOfDay.group();
-	            
-	            monthOfYearChart.width(240)
-	                    .height(240)
+	           
+	           var hourOfDayGroup = hourOfDay.group();
+		          
+	            monthOfYearChart.width(180)
+	                    .height(180)
 	                    .radius(80)
-	                    .innerRadius(30)
+	                    .innerRadius(20)
 	                    .dimension(monthOfYear)
 	                    .group(monthOfYearGroup);
 
-	            dayOfWeekChart.width(240)
-	                    .height(240)
-	                    .radius(80)
+	            dayOfWeekChart.width(180)
+                		.height(180)
+                		.radius(80)
+                		.innerRadius(20)
 	                    .colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 	                    .innerRadius(30)
 	                    .dimension(dayOfWeek)
 	                    .group(dayOfWeekGroup);
 	            
-	            hourOfDayChart.width(240)
-                	.height(240)
-                	.radius(80)
-                	.innerRadius(30)
-                	.dimension(hourOfDay)
-                	.group(hourOfDayGroup);
-
-	            /*logDataChart.width(990)
-	                    .height(180)
-	                    .transitionDuration(1000)
-	                    .margins({top: 10, right: 50, bottom: 25, left: 40})
-	                    .dimension(moveMonths)
-	                    .group(indexAvgByMonthGroup)
-	                    .valueAccessor(function (d) {
-	                        return d.value.avg;
-	                    })
-	                    .x(d3.time.scale().domain([axisStartDate, axisEndDate))
-	                    .round(d3.time.month.round)
-	                    .xUnits(d3.time.months)
-	                    .elasticY(true)
-	                    .renderHorizontalGridLines(true)
-	                    .brushOn(false)
-	                    .compose([
-	                        dc.lineChart(logDataChart).group(indexAvgByMonthGroup)
-	                                .valueAccessor(function (d) {
-	                                    return d.value.avg;
-	                                })
-	                                .renderArea(true)
-	                                .stack(monthlyMoveGroup, function (d) {
-	                                    return d.value;
-	                                })
-	                                .title(function (d) {
-	                                    var value = d.value.avg ? d.value.avg : d.value;
-	                                    if (isNaN(value)) value = 0;
-	                                    return dateFormat(d.key) + "\n" + numberFormat(value);
-	                                })
-	                    ])
-	                    .xAxis();
-
-	            periodChart.width(990)
-	                    .height(40)
-	                    .margins({top: 0, right: 50, bottom: 20, left: 40})
-	                    .dimension(moveMonths)
-	                    .group(volumeByMonthGroup)
-	                    .centerBar(true)
-	                    .gap(0)
-	                    .x(d3.time.scale().domain([axisStartDate, axisEndDate]))
-	                    .round(d3.time.month.round)
-	                    .xUnits(d3.time.months)
-	                    .renderlet(function (chart) {
-	                        chart.select("g.y").style("display", "none");
-	                        logDataChart.filter(chart.filter());
-	                    })
-	                    .on("filtered", function (chart) {
-	                        dc.events.trigger(function () {
-	                            logDataChart.focus(chart.filter());
-	                        });
-	                    });*/
+	            hourOfDayChart.width(360)
+	                .height(180)
+	                .margins({top: 10, right: 50, bottom: 30, left: 40})
+	                .dimension(hourOfDay)
+	                .group(hourOfDayGroup)
+	                .elasticY(true)
+	                .centerBar(true)
+	                .gap(1)
+	                .round(dc.round.floor)
+	                .x(d3.scale.linear().domain([0, 24]))
+	                .renderlet(function (chart) {
+                        chart.select("g.y").style("display", "none");
+                    })
+	                .renderHorizontalGridLines(true);
+	            
+	            logBloodSugarChart.width(420)
+	                .height(240)
+	                .margins({top: 10, right: 50, bottom: 10, left: 40})
+	                .dimension(bloodSugar)
+	                .group(bloodSugarGroup)
+	                .elasticY(true)
+	                .centerBar(true)
+	                .gap(1)
+	                .x(d3.scale.linear().domain([30,300]))
+	                .renderlet(function (chart) {
+                        chart.select("g.y").style("display", "none");
+                    });
+	            
+	            /*logInsulinChart.width(420)
+	                .height(240)
+	                .margins({top: 10, right: 50, bottom: 10, left: 40})
+	                .dimension(insulin)
+	                .group(insulinGroup)
+	                .centerBar(true)
+	                .elasticY(true)
+	                .gap(0)
+	                .x(d3.scale.linear().domain([0,15]))
+	                .renderlet(function (chart) {
+                        chart.select("g.y").style("display", "none");
+                    });*/
+	            
+	            logInsulinChart.width(180)
+        		.height(180)
+        		.radius(80)
+        		.innerRadius(20)
+                .colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
+                .innerRadius(30)
+                .dimension(insulin)
+                .group(insulinGroup);
+	            
+	            datesChart.width(990)
+	                .height(80)
+	                .margins({top: 0, right: 50, bottom: 20, left: 40})
+	                .dimension(date)
+	                .group(dates)
+	                .centerBar(true)
+	                .gap(1)
+	                .x(d3.time.scale().domain([axisStartDate, axisEndDate]))
+	                .round(d3.time.day.round)
+	                .xUnits(d3.time.days)
+	                .renderlet(function (chart) {
+                        chart.select("g.y").style("display", "none");
+                    });
 
 	            dc.renderAll();		
 			},
@@ -434,8 +403,8 @@ window.InsightsGraphsView = Backbone.View
 					// A little coercion, since the CSV is untyped.
 					logResults.forEach(function(d, i) {
 					    d.resultDate = new Date(d.resultDate);
-					    d.insulinAmount = +d.insulinAmount;
-					    d.bsLevel = +d.bsLevel;
+					    d.insulinAmount = d.insulinAmount ? parseFloat(d.insulinAmount) : 0;
+					    d.bsLevel = d.bsLevel ? parseFloat(d.bsLevel) : 0;
 					  });
 					
 					logResults.sort(function(a, b) {

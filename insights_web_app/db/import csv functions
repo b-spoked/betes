@@ -1,0 +1,3 @@
+STR_TO_DATE(@ConvertedResultDate, '%m/%d/%Y %H:%i')
+
+SELECT NOW()

@@ -8,7 +8,12 @@ window.InsightsGraphsView = Backbone.View
 			events : {
 				"click .show-line" : "showMultiLineGraph",
 				"click .show-horizon" : "showHorizonsGraph",
-				"click .show-filtered" : "showFilterableDashboard"
+				"click .show-filtered" : "showFilterableDashboard",
+				"click #reset-month-of-year-chart" : "resetMonthOfYearChart",
+				"click #reset-day-of-week-chart" : "resetDayOfWeekChart",
+				"click #reset-hour-of-day-chart" : "resetHourOfDayChart",
+				"click #reset-log-bs-chart" : "resetLogBloodSugarChart",
+				"click #reset-log-period-chart" : "resetDatesChart"
 			},
 
 			initialize : function() {
@@ -31,6 +36,26 @@ window.InsightsGraphsView = Backbone.View
 					$("#graphs-getting-started").hide();
 				}
 			},
+			resetMonthOfYearChart: function(e){
+				window.monthOfYearChart.filterAll();
+				dc.redrawAll();
+			},
+			resetDayOfWeekChart: function(e){
+				window.dayOfWeekChart.filterAll();
+				dc.redrawAll();
+			},
+			resetHourOfDayChart: function(e){
+				window.hourOfDayChart.filterAll();
+				dc.redrawAll();
+			},
+			resetLogBloodSugarChart: function(e){
+				window.logBloodSugarChart.filterAll();
+				dc.redrawAll();
+			},
+			resetDatesChart: function(e){
+				window.datesChart.filterAll();
+				dc.redrawAll();
+			},
 			showHorizonsGraph : function() {
 
 				var data;
@@ -46,16 +71,16 @@ window.InsightsGraphsView = Backbone.View
 
 				$("#bs-results").html('');
 
-				var width = 960, height = 500;
+				var width = 960, height = 960;
 
 				var chart = d3.horizon().width(width).height(height / 3).bands(
-						5).mode("mirror").interpolate("basis");
+						3).mode("mirror").interpolate("basis");
 
 				var chart2 = d3.horizon().width(width).height(height / 3)
-						.bands(5).mode("mirror").interpolate("basis");
+						.bands(3).mode("mirror").interpolate("basis");
 
 				var chart3 = d3.horizon().width(width).height(height / 3)
-						.bands(5).mode("mirror").interpolate("basis");
+						.bands(3).mode("mirror").interpolate("basis");
 
 				var svg = d3.select("#bs-results").append("svg").attr("width",
 						width).attr("height", height / 3);
@@ -151,7 +176,7 @@ window.InsightsGraphsView = Backbone.View
 				var maxY = parseInt(d3.max(data, function(d){return d.value;}));
 				
 				var y = d3.scale.linear()
-				.domain([ 0, maxY+(maxY/10) ])
+				.domain([ 0, maxY+(maxY/20) ])
 				.range([ height, 0 ]);
 				
 				var xAxis = d3.svg.axis().scale(x).orient("bottom");
@@ -223,12 +248,12 @@ window.InsightsGraphsView = Backbone.View
 				$("#bs-results").html('');
 				
 				//chart areas
-				var monthOfYearChart = dc.pieChart("#month-of-year-chart");
-				var dayOfWeekChart = dc.pieChart("#day-of-week-chart");
-				var hourOfDayChart = dc.barChart("#hour-of-day-chart");
-				var logBloodSugarChart = dc.barChart("#log-bs-chart");
-				var logInsulinChart = dc.barChart("#log-insulin-chart");
-				var datesChart = dc.barChart("#log-period-chart");
+				window.monthOfYearChart = dc.pieChart("#month-of-year-chart");
+				window.dayOfWeekChart = dc.pieChart("#day-of-week-chart");
+				window.hourOfDayChart = dc.barChart("#hour-of-day-chart");
+				window.logBloodSugarChart = dc.barChart("#log-bs-chart");
+				//var logInsulinChart = dc.barChart("#log-insulin-chart");
+				window.datesChart = dc.barChart("#log-period-chart");
 				
 				//Data
 				var logBookData = this.getCleanedData(this.model.logEntries);
@@ -237,20 +262,19 @@ window.InsightsGraphsView = Backbone.View
 	            var startDate = new Date(logBookData[0].resultDate),
 				endDate = new Date(logBookData[logBookData.length-1].resultDate),
 				axisStartDate = new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()),
-				axisEndDate = new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate());
+				axisEndDate = new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate()),
+				maxBloodSugarX = parseInt(d3.max(logBookData, function(d){return d.bsLevel;})) + 20;
+				
 				
 				//dimensions
 				// Create the crossfilter for the relevant dimensions and groups.
 				  var logBook = crossfilter(logBookData),
 				      date = logBook.dimension(function(d) { return d3.time.day(new Date(d.resultDate)); }),
 				      dates = date.group(),
-				      hour = logBook.dimension(function(d) {return d3.time.hour(new Date(d.resultDate)); }),
-				      hours = hour.group(Math.floor),
-				      insulin = logBook.dimension(function(d) { if(d.insulinAmount > 0) { return d.insulinAmount; }}),
-				      insulinGroup = insulin.group.reduceGroup(function(d) {  return d.bsLevel; }),
 				      bloodSugar = logBook.dimension(function(d) { if(d.bsLevel > 0) { return d.bsLevel; }}),
-				      bloodSugarGroup = bloodSugar.group();
-	          	            
+				      bloodSugarGroup = bloodSugar.group(),
+				      insulin  = logBook.dimension(function(d) { if(d.insulinAmount > 0) { return d.insulinAmount; }});
+	          
 	            var dayOfWeek = logBook.dimension(function (d) {
 	                var day = d.resultDate.getDay();
 	                switch (day) {
@@ -312,18 +336,34 @@ window.InsightsGraphsView = Backbone.View
 	           
 	           var hourOfDayGroup = hourOfDay.group();
 		          
-	            monthOfYearChart.width(180)
+	           monthOfYearChart.width(180)
 	                    .height(180)
 	                    .radius(80)
 	                    .innerRadius(30)
 	                    .dimension(monthOfYear)
 	                    .group(monthOfYearGroup);
+	            
+	            /*monthOfYearChart.width(360)
+	                .height(180)
+	                .margins({top: 10, right: 50, bottom: 30, left: 40})
+	                .dimension(monthOfYear)
+	                .group(monthOfYearGroup)
+	                .elasticY(true)
+	                .centerBar(true)
+	                .gap(1)
+	                .x(d3.time.scale().domain([axisStartDate, axisEndDate]))
+	                .round(d3.time.month.round)
+	                .xUnits(d3.time.months)
+	                .renderlet(function (chart) {
+	                    chart.select("g.y").style("display", "none");
+	                })
+	                .renderHorizontalGridLines(true);*/
 
 	            dayOfWeekChart.width(180)
                 		.height(180)
                 		.radius(80)
                 		.innerRadius(30)
-	                    .colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
+	                    //.colors(['#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#dadaeb'])
 	                    .dimension(dayOfWeek)
 	                    .group(dayOfWeekGroup);
 	            
@@ -342,7 +382,7 @@ window.InsightsGraphsView = Backbone.View
                     })
 	                .renderHorizontalGridLines(true);
 	            
-	            logBloodSugarChart.width(420)
+	            logBloodSugarChart.width(990)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 40})
 	                .dimension(bloodSugar)
@@ -350,19 +390,16 @@ window.InsightsGraphsView = Backbone.View
 	                .elasticY(true)
 	                .centerBar(true)
 	                .gap(1)
-	                .x(d3.scale.linear().domain([30,300]))
+	                .x(d3.scale.linear().domain([30,maxBloodSugarX]))
 	                .renderlet(function (chart) {
                         chart.select("g.y").style("display", "none");
                     });
 	            
-	            logInsulinChart.width(420)
+	           /* logInsulinChart.width(420)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 40})
 	                .dimension(insulin)
-	                .group(insulinGroup)
-	                .valueAccessor(function(d) {
-	                	return d.value;
-	                })
+	                .group(insulin.group())
 	                .centerBar(true)
 	                .elasticY(true)
 	                .gap(1)
@@ -370,7 +407,7 @@ window.InsightsGraphsView = Backbone.View
 	                .renderlet(function (chart) {
                         chart.select("g.y").style("display", "none");
                     })
-                    .y(d3.scale.linear().domain([0,10]));
+                    .y(d3.scale.linear().domain([0,10]));*/
 	           
 	            
 	            datesChart.width(990)
@@ -378,6 +415,7 @@ window.InsightsGraphsView = Backbone.View
 	                .margins({top: 0, right: 50, bottom: 20, left: 40})
 	                .dimension(date)
 	                .group(dates)
+	                .elasticY(true)
 	                .centerBar(true)
 	                .gap(1)
 	                .x(d3.time.scale().domain([axisStartDate, axisEndDate]))

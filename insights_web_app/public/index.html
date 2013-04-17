@@ -64,16 +64,19 @@
 		
     		<div class="span4" id="month-of-year-chart">
         		<strong>Month</strong>
+				<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
 				<button type="button" id="reset-month-of-year-chart" class="btn btn-link reset" style="display: none;">reset</button>
         		<div class="clearfix"></div>
     		</div>
 			<div class="span4" id="day-of-week-chart">
         		<strong>Day</strong>
+				<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
 				<button type="button" id="reset-day-of-week-chart" class="btn btn-link reset" style="display: none;">reset</button>
         		<div class="clearfix"></div>
     		</div>
 			<div class="span4" id="hour-of-day-chart">
         		<strong>Hour (24hr)</strong>
+				<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
 				<button type="button" id="reset-hour-of-day-chart" class="btn btn-link reset" style="display: none;">reset</button>
         		<div class="clearfix"></div>
     		</div>
@@ -81,9 +84,9 @@
 		<div class="row-fluid">
     		<div class="span12" id="log-bs-chart">
         		<strong>Blood Sugars (mg/dl)</strong>
+				<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
 				<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        		
-				<div class="clearfix"></div>
+        		<div class="clearfix"></div>
     		</div>
 			<!--<div class="span6" id="log-insulin-chart">
         		<strong>Insulin (units)</strong>
@@ -94,12 +97,12 @@
 			
 		</div>
 		<div class="row-fluid">
-			<strong>Dates</strong>
-			<button type="button" id="reset-log-period-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        	<div class="clearfix"></div>	
-    		<div id="log-period-chart">
+			<div id="log-period-chart">
+				<strong>Dates</strong>
+				<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
+				<button type="button" id="reset-log-period-chart" class="btn btn-link reset" style="display: none;">reset</button>
+        		<div class="clearfix"></div>	
     		</div>
-    		<p class="muted">select a time range to zoom in</p>
 		</div>
 
 	</div>

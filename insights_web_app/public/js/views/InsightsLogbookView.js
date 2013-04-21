@@ -18,6 +18,7 @@ window.InsightsLogbookView = Backbone.View.extend({
 		this.template = _.template($('#logbook-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
 		this.model.logEntries.bind('add', this.addOne, this);
+		this.model.logEntries.on('fetch',this.showProgress,this);
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));
@@ -31,6 +32,9 @@ window.InsightsLogbookView = Backbone.View.extend({
 			this.model.logEntries.each(this.addOne,this);
 		}
 		return this;
+	},
+	showProgress: function(){
+		this.html("<img src='/img/spinner.gif'>");
 	},
 	loadLogBook: function(e){
 		this.model.logEntries.fetch({success : this.render()});

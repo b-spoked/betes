@@ -103,6 +103,28 @@ exports.addUser = function(req, res) {
 
 };
 
+exports.addUserData = function(req, res) {
+
+	var form = new formidable.IncomingForm({uploadDir:__dirname+'/uploaded-data'});
+	var userId = req.params.id;
+	
+	console.log('load data for: ' + userId);
+
+	form.on('end',function(){
+		console.log('upload complete');
+		res.end('uploaded: '+util.inspect(files))
+	});
+	
+	form.parse(req, function(err, fields, files) {
+		 res.writeHead(200, {'content-type': 'text/plain'});
+		 res.write('received upload:\n\n');
+		 res.end(util.inspect({fields: fields, files: files}));
+	});
+	
+	return;
+
+};
+
 exports.updateUser = function(req, res) {
 
 	var user = {

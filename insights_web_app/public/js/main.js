@@ -28,7 +28,7 @@ var AppRouter = Backbone.Router.extend({
 	routes : {
 		"" : "showLogBook",
 		"share/:linkId" : "shareLogBook",
-		"graphs" : "showGraphs",
+		"graphs" : "showDashboard",
 		"account" : "showAccount"
 	},
 
@@ -73,9 +73,9 @@ var AppRouter = Backbone.Router.extend({
 		app.showView(new HomeView());
 	},
 
-	showGraphs : function() {
+	showDashboard : function() {
 		if (app.appUser) {
-			app.showView(new InsightsGraphsView({
+			app.showView(new InsightsDashboardView({
 				model : app.appUser
 			}));
 		} else {

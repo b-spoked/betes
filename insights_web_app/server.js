@@ -1,6 +1,8 @@
 var express = require('express'),
 	path = require('path'),
 	http = require('http'),
+	formidable = require('formidable'),
+	util = require('util'),
     user = require('./routes/InsightsLogbookUser');
 
 var app = express();
@@ -17,6 +19,9 @@ app.get('/insights-users/:id', user.findById);
 app.get('/insights-users', user.findByLinkId);
 app.post('/insights-users', user.addUser);
 app.put('/insights-users/:id', user.updateUser);
+
+/* User Data*/
+app.post('/insights-users/:id/upload-data', user.addUserData);
 
 /* User Log Book */
 app.get('/insights-users/:userId/logbook/carelink', user.findCareLinkResults);

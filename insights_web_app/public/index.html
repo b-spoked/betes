@@ -65,12 +65,20 @@
 					<button type="button" id="reset-hour-of-day-chart" class="btn btn-link reset" style="display: none;">reset</button>
         			<div class="clearfix"></div>
     			</div>
+				<div id="label-chart">
+        			<strong>Label</strong>
+					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-hour-of-day-chart" class="btn btn-link reset" style="display: none;">reset</button>
+        			<div class="clearfix"></div>
+    			</div>
     		</div>
     		<div class="span9">
-				<div id="graphs-getting-started" class="alert alert-info">
+				<div class="alert alert-success">
   					<button type="button" class="close" data-dismiss="alert">&times;</button>	
-					<h3>Getting started?</h3>					
-					<p class="lead">These graphs are to help give you a long term view of your diabetes and are driven from your logged results.</p>
+					<h3>Getting started?</h3>
+					<p>Some questions we could look at are: what are my blood sugars like in the <a href="#" id="filter-morning">morning?</a>
+        			How about in the <a href="#" id="filter-evening">evenings?</a> I wonder how things looked at <a href="#" id="filter-xmas">christmas time?</a> 
+					And what about <a href="#" id="filter-weekday">weekday</a> verses <a href="#" id="filter-weekendday">weekend day?</a></p>
 				</div>
 				<div id="log-period-chart">
 					<strong>Dates</strong>
@@ -78,12 +86,12 @@
 					<button type="button" id="reset-log-period-chart" class="btn btn-link reset" style="display: none;">reset</button>
         			<div class="clearfix"></div>
 				</div>
-				<div id="log-bs-chart">
+				<!--<div id="log-bs-chart">
         			<strong>Blood Sugar Range (mg/dl)</strong>
 					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
 					<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
         			<div class="clearfix"></div>
-    			</div>
+    			</div>-->
 				<div id="bs-avg-chart">
         			<strong>Avg Blood Sugar By Day</strong>
 					<div class="clearfix"></div>
@@ -92,6 +100,7 @@
         			<strong>Daily Insulin</strong>
 					<div class="clearfix"></div>
     			</div>
+				
     		</div>
 		</div>		
 		</div>	

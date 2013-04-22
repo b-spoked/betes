@@ -38,7 +38,13 @@ var AppRouter = Backbone.Router.extend({
 			this.appUser = new InsightsUser();
 		}
 	},
-
+	showLoadingDialog : function() {
+		var loadingDialog = new LoadingModal();
+		loadingDialog.render();
+		var $modalEl = $("#modal-dialog");
+		$modalEl.html(loadingDialog.el);
+		loadingDialog.showDialog();
+	},
 	showLogBook : function() {
 		if (app.appUser) {
 			app.showView(new InsightsLogbookView({
@@ -58,7 +64,7 @@ var AppRouter = Backbone.Router.extend({
 			},
 			processData : true,
 			success : function(results) {
-				
+				this.showLoadingDialog();
 				app.appUser.logEntries.fetch({success: function(){
 					app.showView(new InsightsLogbookView({
 						model : app.appUser
@@ -68,11 +74,9 @@ var AppRouter = Backbone.Router.extend({
 		});
 
 	},
-
 	showHomeView : function() {
 		app.showView(new HomeView());
 	},
-
 	showDashboard : function() {
 		if (app.appUser) {
 			app.showView(new InsightsDashboardView({
@@ -91,7 +95,6 @@ var AppRouter = Backbone.Router.extend({
 			this.showHomeView();
 		}
 	},
-
 	showView : function(view) {
 		if (this.currentView)
 			this.currentView.close();
@@ -108,25 +111,10 @@ var AppRouter = Backbone.Router.extend({
 
 		if (currentUser && currentUser.get('authenticated')
 				&& currentUser.get('sid') > 0) {
+			this.showLoadingDialog();
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch();
 		}
-	},
-	getSharingUser : function(userLinkId) {
-
-		var sharingUser = new InsightsUser();
-		var self = this;
-
-		sharingUser.fetch({
-			data : {
-				linkId : userLinkId
-			},
-			processData : true,
-			success : function(results) {
-				this.appUser = new User(results);
-				this.appUser.logEntries.fetch();
-			}
-		});
 	}
 });
 

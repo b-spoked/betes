@@ -1,5 +1,5 @@
 // Patch Model and Collection.
-_.each(["Model", "Collection"], function(name) {
+/*_.each(["Model", "Collection"], function(name) {
   // Cache Backbone constructor.
   var ctor = Backbone[name];
   // Cache original fetch.
@@ -13,4 +13,12 @@ _.each(["Model", "Collection"], function(name) {
     // Pass through to original fetch.
     return fetch.apply(this, arguments);
   };
-});
+});*/
+
+
+/*_.extend(Backbone.Collection.prototype, {
+	fetch: function(options) {
+        this.trigger('fetch', this, options);
+        return Backbone.Collection.prototype.fetch.call(this, options);
+    }
+});*/

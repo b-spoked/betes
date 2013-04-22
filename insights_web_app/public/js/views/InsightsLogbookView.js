@@ -18,23 +18,25 @@ window.InsightsLogbookView = Backbone.View.extend({
 		this.template = _.template($('#logbook-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
 		this.model.logEntries.bind('add', this.addOne, this);
-		this.model.logEntries.on('fetch',this.showProgress,this);
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));
-
-		//_.defer( function( view ){ view.closeHelp();}, this );
-
 		var logList = $('#events-list', $(this.el));
-
-		if (this.model.logEntries != null && this.model.logEntries.length > 0) {
+		var self = this;
+		
+		if (self.model.logEntries != null && this.model.logEntries.length > 0) {
 			logList.html('');
-			this.model.logEntries.each(this.addOne,this);
+			self.hideLoadingDialog();
+			if(self.model.logEntries.length > 100){
+				var firstHundered = self.model.logEntries.slice(0, 99); 
+				firstHundered.forEach(function(entry) {
+					self.addOne(entry);
+				});
+			}else{
+				self.model.logEntries.each(self.addOne,self);
+			}
 		}
-		return this;
-	},
-	showProgress: function(){
-		this.html("<img src='/img/spinner.gif'>");
+		return self;
 	},
 	loadLogBook: function(e){
 		this.model.logEntries.fetch({success : this.render()});
@@ -48,8 +50,21 @@ window.InsightsLogbookView = Backbone.View.extend({
 	addAll : function(entries) {
 		if (entries != null) {
 			this.$('#events-list').html('');
-			entries.each(this.addOne, this);
+			var self = this;
+			
+			if(entries.length > 100){
+				var firstHundered = entries.slice(0, 99); 
+				firstHundered.forEach(function(entry) {
+					self.addOne(entry);
+				});
+			}else{
+				entries.each(self.addOne,self);
+			}
 		}
+	},
+	hideLoadingDialog : function() {
+		var loadingDialog = new LoadingModal();
+		loadingDialog.hideDialog();
 	},
 	showLoginDialog : function(e) {
 		var loginDialog = new LoginModal();

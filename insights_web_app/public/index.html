@@ -364,6 +364,16 @@
 		</div>
 	</div>
 	</script>
+	<script type="text/template" id="loading-template">
+	<div id="loading-dialog" class="modal hide fade">
+		<div class="modal-header">
+			<h3>Loading ... </h3>
+		</div>
+		<div class="modal-body text-center">
+			<img src='/img/loader.gif'>
+		</div>
+	</div>
+	</script>
 	<script type="text/template" id="logbookitem-template">
 	<% if(bsLevel>0) { %>
     <td  class="alert alert-success"><h4><%= bsLevel %></h4></td>
@@ -379,9 +389,9 @@
 	<script type="text/javascript" src="js/vendor/jquery-1.9.1.min.js"></script>
 	<script type="text/javascript" src="js/vendor/underscore-min.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.js"></script>
-	<script type="text/javascript" src="js/vendor/backbone-patch.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
+	<!--<script type="text/javascript" src="js/vendor/backbone-patch.js"></script>-->
 	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
 	<script type="text/javascript" src="js/vendor/d3.horizon.js"></script>
@@ -394,6 +404,7 @@
 	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/views/InsightsLogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/LoginModal.js"></script>
 	<script type="text/javascript" src="js/views/InsightsLogbookView.js"></script>
 	<script type="text/javascript" src="js/views/InsightsDashboardView.js"></script>

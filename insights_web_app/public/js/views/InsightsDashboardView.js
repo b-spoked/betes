@@ -38,6 +38,10 @@ window.InsightsDashboardView = Backbone.View
 					$("#graphs-getting-started").hide();
 				}
 			},
+			hideLoadingDialog : function() {
+				var loadingDialog = new LoadingModal();
+				loadingDialog.hideDialog();
+			},
 			resetMonthOfYearChart: function(e){
 				window.monthOfYearChart.filterAll();
 				dc.redrawAll();
@@ -95,7 +99,7 @@ window.InsightsDashboardView = Backbone.View
 				dc.renderAll();
 			},
 			showFilterableDashboard:function(){
-				
+				this.hideLoadingDialog();
 				if(this.model.logEntries.length <= 0){
 					return false;
 				}

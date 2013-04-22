@@ -12,6 +12,11 @@ window.CareLinkEntry = Backbone.Model.extend({
 window.CareLinkEntries = Backbone.Collection
 		.extend({
 			model : CareLinkEntry,
+		    
+		    fetch: function(options) {
+		        this.trigger('fetch', this, options);
+		        return Backbone.Collection.prototype.fetch.call(this, options);
+		    },
 		
 			filterEntries : function(letters) {
 

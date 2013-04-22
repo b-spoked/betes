@@ -57,6 +57,7 @@ var AppRouter = Backbone.Router.extend({
 	shareLogBook : function(usersLinkId) {
 		
 		app.appUser = new InsightsUser();
+		var self = this;
 
 		app.appUser.fetch({
 			data : {
@@ -64,7 +65,7 @@ var AppRouter = Backbone.Router.extend({
 			},
 			processData : true,
 			success : function(results) {
-				this.showLoadingDialog();
+				self.showLoadingDialog();
 				app.appUser.logEntries.fetch({success: function(){
 					app.showView(new InsightsLogbookView({
 						model : app.appUser

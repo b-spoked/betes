@@ -254,10 +254,11 @@ window.InsightsDashboardView = Backbone.View
 	            
 	            logBloodSugarChart.width(800)
 	                .height(240)
-	                .margins({top: 10, right: 5, bottom: 20, left: 30})
+	                 .margins({top: 20, right: 5, bottom: 20, left: 30})
 	                .dimension(bloodSugar)
 	                .group(bloodSugarGroup)
 	                .elasticY(true)
+	                .elasticX(true)
 	                .centerBar(true)
 	                .gap(1)
 	                .x(d3.scale.linear().domain([minBloodSugarX,maxBloodSugarX]))

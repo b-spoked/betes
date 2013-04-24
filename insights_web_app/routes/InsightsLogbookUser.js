@@ -181,7 +181,7 @@ exports.findCareLinkResults = function(req, res) {
 	+" ,`BolusVolumeDelivered` AS insulinAmount"
 	+" ,`RawValues` AS comments"
 	+" ,`RawType` AS labels" 
-	+" FROM `insight_entries_carelink_2`" 
+	+" FROM `insight_log_carelink`" 
 	+" WHERE userId = ?" 
 	+" AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0" 
 	+" OR `DailyInsulinTotal` > 0"

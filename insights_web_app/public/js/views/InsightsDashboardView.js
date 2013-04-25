@@ -15,7 +15,8 @@ window.InsightsDashboardView = Backbone.View
 				"click #filter-evening" : "filterEvening",
 				"click #filter-xmas" : "filterXmas",
 				"click #filter-weekday" : "filterWeekday",
-				"click #filter-weekendday" : "filterWeekendDay"
+				"click #filter-weekendday" : "filterWeekendDay",
+				"click #filter-bs-range" : "filterBloodSugarRange"
 			},
 
 			initialize : function() {
@@ -67,6 +68,12 @@ window.InsightsDashboardView = Backbone.View
 				window.dayOfWeekChart.filterAll();
 				window.hourOfDayChart.filterAll();
 				//window.datesChart.filterAll();
+			},
+			filterBloodSugarRange:function(e){
+				e.preventDefault();
+				this.resetAllCharts();
+				window.logBloodSugarChart.filter([80, 180]);
+				dc.renderAll();
 			},
 			filterMorning: function(e){
 				 e.preventDefault();
@@ -134,7 +141,7 @@ window.InsightsDashboardView = Backbone.View
 				      hourOfDay = logBook.dimension(function (d) {var hour = d.resultDate.getHours(); return hour+1; }),
 				      hourOfDayGroup = hourOfDay.group(),
 				      bloodSugar = logBook.dimension(function(d) { if(d.bsLevel > 0) { return d.bsLevel; }}),
-				      bloodSugarGroup = bloodSugar.group(),
+				      bloodSugarGroup = bloodSugar.group().reduceSum(function(d){ return Math.floor(d.bsLevel);}),
 				      insulinByDayGroup = date.group().reduceSum(function(d){ return d.dailyInsulinAmount;}),
 				      label = logBook.dimension(function(d) { return d.labels; }),
 				      labelGroup = label.group();
@@ -258,7 +265,6 @@ window.InsightsDashboardView = Backbone.View
 	                .dimension(bloodSugar)
 	                .group(bloodSugarGroup)
 	                .elasticY(true)
-	                .elasticX(true)
 	                .centerBar(true)
 	                .gap(1)
 	                .x(d3.scale.linear().domain([minBloodSugarX,maxBloodSugarX]))

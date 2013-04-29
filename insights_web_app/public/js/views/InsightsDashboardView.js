@@ -72,7 +72,7 @@ window.InsightsDashboardView = Backbone.View
 				window.monthOfYearChart.filterAll();
 				window.dayOfWeekChart.filterAll();
 				window.hourOfDayChart.filterAll();
-				window.resetAllCharts.filterAll();
+				window.dailyFactsChart.filterAll();
 			},
 			filterBloodSugarRange : function(e) {
 				e.preventDefault();
@@ -136,11 +136,10 @@ window.InsightsDashboardView = Backbone.View
 							return d3.time.day.ceil(d.resultDate);
 						});
 
-				this
-						.createLogBookChart(logBook, minBloodSugarX,
-								maxBloodSugarX)
+				this.createLogBookChart(logBook, minBloodSugarX,maxBloodSugarX)
 				this.createMonthChart(logBook);
 				this.createDayOfWeekChart(logBook);
+				this.createHourOfDayChart(logBook);
 				this.createAllDatesChart(date, axisStartDate, axisEndDate);
 				this.createDiabetesFactsChart(date);
 
@@ -343,19 +342,18 @@ window.InsightsDashboardView = Backbone.View
 
 				window.dailyFactsChart
 						.width(800)
-						.height(250)
+						.height(380)
 						.margins({
-							top : 10,
-							right : 50,
-							bottom : 30,
-							left : 40
+							top : 20,
+							right : 5,
+							bottom : 20,
+							left : 30
 						})
 						.dimension(date)
 						.group(dayFacts)
 						.transitionDuration(1500)
 						.colors(
-								[ "#a60000", "#ff0000", "#ff4040", "#ff7373",
-										"#67e667", "#39e639", "#00cc00" ])
+								["red", "#ccc","steelblue","green" ])
 						.colorDomain([ 0, 100 ])
 						.colorAccessor(function(d) {
 							return d.value.inRangePercent;
@@ -367,7 +365,7 @@ window.InsightsDashboardView = Backbone.View
 							return p.value.inRangePercent;
 						})
 						.radiusValueAccessor(function(p) {
-							return p.value.aboveRange + p.value.belowRange;
+							return p.value.count;
 						})
 						.maxBubbleRelativeSize(0.05)
 						.x(d3.scale.linear().domain([ 0, 350 ]))
@@ -389,13 +387,13 @@ window.InsightsDashboardView = Backbone.View
 											+ "Av Result: "
 											+ numberFormat(p.value.avBloodSugar)
 											+ "mg/dl\n"
-											+ "% Below Target: "
+											+ "Below Target: "
 											+ numberFormat(p.value.belowRangePercent)
 											+ "%\n"
-											+ "% In Target: "
+											+ "In Target: "
 											+ numberFormat(p.value.inRangePercent)
 											+ "%\n"
-											+ "% Above Target: "
+											+ "Above Target: "
 											+ numberFormat(p.value.aboveRangePercent)
 											+ "%\n";
 								}).yAxis().tickFormat(function(v) {

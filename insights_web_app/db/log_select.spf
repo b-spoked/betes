@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ContentFilters</key>
+	<dict/>
+	<key>auto_connect</key>
+	<true/>
+	<key>data</key>
+	<dict>
+		<key>connection</key>
+		<dict>
+			<key>database</key>
+			<string>heroku_dd76de52e0812e0</string>
+			<key>host</key>
+			<string>us-cdbr-east-03.cleardb.com</string>
+			<key>kcid</key>
+			<string>-1995538393835251835</string>
+			<key>name</key>
+			<string>insights-betes-log-heroku</string>
+			<key>rdbms_type</key>
+			<string>mysql</string>
+			<key>sslCACertFileLocation</key>
+			<string></string>
+			<key>sslCACertFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslCertificateFileLocation</key>
+			<string></string>
+			<key>sslCertificateFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslKeyFileLocation</key>
+			<string></string>
+			<key>sslKeyFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>type</key>
+			<string>SPTCPIPConnection</string>
+			<key>useSSL</key>
+			<integer>0</integer>
+			<key>user</key>
+			<string>b603ad3f253e78</string>
+		</dict>
+		<key>session</key>
+		<dict>
+			<key>connectionEncoding</key>
+			<string>utf8</string>
+			<key>contentPageNumber</key>
+			<integer>1</integer>
+			<key>contentSelection</key>
+			<data>
+			YnBsaXN0MDDUAQIDBAUGNjdYJHZlcnNpb25YJG9iamVjdHNZJGFy
+			Y2hpdmVyVCR0b3ASAAGGoK0HCBUWFxgZHSQoLDA0VSRudWxs0wkK
+			CwwNEVYkY2xhc3NXTlMua2V5c1pOUy5vYmplY3RzgAyjDg8QgAKA
+			A4AEoxITFIAFgAaACFR0eXBlVHJvd3NUa2V5c18QJlNlbGVjdGlv
+			bkRldGFpbFR5cGVQcmltYXJ5S2V5ZWREZXRhaWxz0wkKCxobHIAH
+			oKDSHh8gIVokY2xhc3NuYW1lWCRjbGFzc2VzXxATTlNNdXRhYmxl
+			RGljdGlvbmFyeaMgIiNcTlNEaWN0aW9uYXJ5WE5TT2JqZWN00gkL
+			JSaAC6EngAnSCSkqK1lOUy5zdHJpbmeAClJpZNIeHy0uXxAPTlNN
+			dXRhYmxlU3RyaW5noy0vI1hOU1N0cmluZ9IeHzEyXk5TTXV0YWJs
+			ZUFycmF5ozEzI1dOU0FycmF50h4fIjWiIiNfEA9OU0tleWVkQXJj
+			aGl2ZXLRODlUZGF0YYABAAgAEQAaACMALQAyADcARQBLAFIAWQBh
+			AGwAbgByAHQAdgB4AHwAfgCAAIIAhwCMAJEAugDBAMMAxADFAMoA
+			1QDeAPQA+AEFAQ4BEwEVARcBGQEeASgBKgEtATIBRAFIAVEBVgFl
+			AWkBcQF2AXkBiwGOAZMAAAAAAAACAQAAAAAAAAA6AAAAAAAAAAAA
+			AAAAAAABlQ==
+			</data>
+			<key>contentSortColIsAsc</key>
+			<true/>
+			<key>contentViewport</key>
+			<string>{{0, 0}, {1040, 575}}</string>
+			<key>isToolbarVisible</key>
+			<true/>
+			<key>queries</key>
+			<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+UNION
+SELECT `BWZInsulinSensitivity` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'insulin-sensitivity' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZInsulinSensitivity` &gt; 0
+UNION
+SELECT `BWZCarbRatio` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'carb-ration' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZCarbRatio` &gt; 0
+UNION
+SELECT `BolusVolumeDelivered` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'bolus-ratio' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZCarbRatio` &gt; 0</string>
+			<key>table</key>
+			<string>user</string>
+			<key>view</key>
+			<string>SP_VIEW_CUSTOMQUERY</string>
+			<key>windowVerticalDividerPosition</key>
+			<real>220</real>
+		</dict>
+	</dict>
+	<key>encrypted</key>
+	<false/>
+	<key>format</key>
+	<string>connection</string>
+	<key>queryFavorites</key>
+	<array/>
+	<key>queryHistory</key>
+	<array>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+UNION
+SELECT `BWZInsulinSensitivity` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'insulin-sensitivity' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZInsulinSensitivity` &gt; 0</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+UNION
+SELECT `BWZInsulinSensitivity` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'insulin-sensitivity' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZInsulinSensitivity` &gt; 0)</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+
+SELECT `BWZInsulinSensitivity` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'insulin-sensitivity' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZInsulinSensitivity` &gt; 0)</string>
+		<string>SELECT(
+
+SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+)
+(
+SELECT `BWZInsulinSensitivity` AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'insulin-sensitivity' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+`BWZInsulinSensitivity` &gt; 0)</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS VALUE
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels,
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS VALUE
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+'glucose' AS entryType
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS value
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+ORDER BY bsLevel DESC</string>
+		<string>UPDATE `insight_log_carelink` SET `updated_at` = NOW()</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_log_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0
+ORDER BY bsLevel DESC` (
+  `Id` INT(11) NOT NULL AUTO_INCREMENT,
+  `DeviceIndex` INT(11) DEFAULT NULL,
+  `resultDate` DATETIME DEFAULT NULL,
+  `NewDeviceTime` VARCHAR(255) DEFAULT NULL,
+  `bsLevel` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `LinkedBGMeterID` VARCHAR(255) DEFAULT NULL,
+  `TempBasalAmount` VARCHAR(255) DEFAULT NULL,
+  `TempBasalType` VARCHAR(255) DEFAULT NULL,
+  `TempBasalDuration` VARCHAR(255) DEFAULT NULL,
+  `BolusType` VARCHAR(255) DEFAULT NULL,
+  `BolusVolumeSelected` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `BolusVolumeDelivered` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `ProgrammedBolusDuration` VARCHAR(255) DEFAULT NULL,
+  `PrimeType` VARCHAR(255) DEFAULT NULL,
+  `PrimeVolumeDelivered` VARCHAR(255) DEFAULT NULL,
+  `SUSPEND` VARCHAR(255) DEFAULT NULL,
+  `Rewind` VARCHAR(255) DEFAULT NULL,
+  `BWZEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZTargetHighBG` VARCHAR(255) DEFAULT NULL,
+  `BWZTargetLowBG` VARCHAR(255) DEFAULT NULL,
+  `BWZCarbRatio` VARCHAR(255) DEFAULT NULL,
+  `BWZInsulinSensitivity` VARCHAR(255) DEFAULT NULL,
+  `BWZCarbInput` VARCHAR(255) DEFAULT NULL,
+  `BWZBGInput` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `BWZCorrectionEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZFoodEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZActiveInsulin` VARCHAR(255) DEFAULT NULL,
+  `Alarm` VARCHAR(255) DEFAULT NULL,
+  `SensorCalibrationBG` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `SensorGlucose` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `ISIGValue` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `DailyInsulinTotal` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `RawType` VARCHAR(255) DEFAULT NULL,
+  `RawValues` VARCHAR(255) DEFAULT NULL,
+  `RawID` VARCHAR(255) DEFAULT NULL,
+  `RawUploadID` VARCHAR(255) DEFAULT NULL,
+  `RawSeqNum` VARCHAR(255) DEFAULT NULL,
+  `RawDeviceType` VARCHAR(255) DEFAULT NULL,
+  `userId` BIGINT(11) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=INNODB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8;</string>
+		<string>CREATE TABLE `insight_log_carelink` (
+  `Id` INT(11) NOT NULL AUTO_INCREMENT,
+  `DeviceIndex` INT(11) DEFAULT NULL,
+  `resultDate` DATETIME DEFAULT NULL,
+  `NewDeviceTime` VARCHAR(255) DEFAULT NULL,
+  `bsLevel` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `LinkedBGMeterID` VARCHAR(255) DEFAULT NULL,
+  `TempBasalAmount` VARCHAR(255) DEFAULT NULL,
+  `TempBasalType` VARCHAR(255) DEFAULT NULL,
+  `TempBasalDuration` VARCHAR(255) DEFAULT NULL,
+  `BolusType` VARCHAR(255) DEFAULT NULL,
+  `BolusVolumeSelected` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `BolusVolumeDelivered` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `ProgrammedBolusDuration` VARCHAR(255) DEFAULT NULL,
+  `PrimeType` VARCHAR(255) DEFAULT NULL,
+  `PrimeVolumeDelivered` VARCHAR(255) DEFAULT NULL,
+  `Suspend` VARCHAR(255) DEFAULT NULL,
+  `Rewind` VARCHAR(255) DEFAULT NULL,
+  `BWZEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZTargetHighBG` VARCHAR(255) DEFAULT NULL,
+  `BWZTargetLowBG` VARCHAR(255) DEFAULT NULL,
+  `BWZCarbRatio` VARCHAR(255) DEFAULT NULL,
+  `BWZInsulinSensitivity` VARCHAR(255) DEFAULT NULL,
+  `BWZCarbInput` VARCHAR(255) DEFAULT NULL,
+  `BWZBGInput` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `BWZCorrectionEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZFoodEstimate` VARCHAR(255) DEFAULT NULL,
+  `BWZActiveInsulin` VARCHAR(255) DEFAULT NULL,
+  `Alarm` VARCHAR(255) DEFAULT NULL,
+  `SensorCalibrationBG` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `SensorGlucose` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `ISIGValue` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `DailyInsulinTotal` DECIMAL(5,2) NOT NULL DEFAULT '0.00',
+  `RawType` VARCHAR(255) DEFAULT NULL,
+  `RawValues` VARCHAR(255) DEFAULT NULL,
+  `RawID` VARCHAR(255) DEFAULT NULL,
+  `RawUploadID` VARCHAR(255) DEFAULT NULL,
+  `RawSeqNum` VARCHAR(255) DEFAULT NULL,
+  `RawDeviceType` VARCHAR(255) DEFAULT NULL,
+  `userId` BIGINT(11) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=INNODB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink_2` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0
+ORDER BY bsLevel DESC</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink_2` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0</string>
+		<string>SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`) &gt; 0SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0</string>
+		<string>SELECT NOW()SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`) AS bsLevel, `resultDate`, `userId`,`Id`,`RawValues` AS labels,`RawType` FROM `insight_entries_carelink` WHERE userId = 161 bsLevel &gt; 0SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`) AS bsLevel, `resultDate`, `userId`,`Id`,`RawValues` AS labels,`RawType` FROM `insight_entries_carelink` WHERE userId = 161 AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`) &gt; 0SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel
+,`DailyInsulinTotal` AS dailyInsulinAmount
+,`BolusVolumeDelivered` AS insulinAmount
+, `resultDate`
+, `userId`
+,`Id`
+,`RawValues` AS comments,
+`RawType` AS labels 
+FROM `insight_entries_carelink` 
+WHERE userId = 161 
+AND 
+COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) &gt; 0 
+OR `DailyInsulinTotal` &gt; 0
+OR `BolusVolumeDelivered` &gt; 0</string>
+		<string>SELECT NOW()</string>
+		<string>NOW()</string>
+	</array>
+	<key>rdbms_type</key>
+	<string>mysql</string>
+	<key>rdbms_version</key>
+	<string>5.5.28-log</string>
+	<key>version</key>
+	<integer>1</integer>
+</dict>
+</plist>

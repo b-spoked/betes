@@ -155,6 +155,30 @@ exports.updateUser = function(req, res) {
 
 };
 
+exports.careLinkLogDetail = function(req, res) {
+	var userId = req.params.userId;
+	
+	var bsSelect = "SELECT COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS amount, `resultDate`, `userId`,`Id`,`RawValues` AS comments,`RawType` AS labels, 'glucose' AS entryType FROM `insight_log_carelink` WHERE userId = ? AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0 "; 
+	var insulinSensitivitySelect = " UNION ALL SELECT `BWZInsulinSensitivity` AS amount, `resultDate`, `userId`,`Id`,`RawValues` AS comments, `RawType` AS labels, 'insulin-sensitivity' AS entryType FROM `insight_log_carelink` WHERE userId = ? AND `BWZInsulinSensitivity` > 0 ";
+	var carbRationSelect = " UNION ALL SELECT `BWZCarbRatio` AS amount, `resultDate`, `userId`,`Id`,`RawValues` AS comments,`RawType` AS labels,'carb-ratio' AS entryType FROM `insight_log_carelink` WHERE userId = ? AND `BWZCarbRatio` > 0 ";
+	var bolusSelect = " UNION ALL SELECT `BolusVolumeDelivered` AS amount, `resultDate`, `userId`,`Id`,`RawValues` AS comments,`RawType` AS labels,'bolus' AS entryType FROM `insight_log_carelink` WHERE userId = ? AND `BolusVolumeDelivered` > 0";
+	
+	var queryString = bsSelect+insulinSensitivitySelect+carbRationSelect+bolusSelect;
+	
+	mysqldb.query(queryString, [ userId ],
+			function(err, results) {
+				if (err) {
+					res.send({
+						'error' : 'An error has occurred'
+					});
+				} else {
+					console.log('Success: ' + JSON.stringify(results));
+					res.send(results);
+				}
+			});
+
+};
+
 exports.findCareLinkResults = function(req, res) {
 	var userId = req.params.userId;
 	

@@ -136,7 +136,9 @@ window.InsightsDashboardView = Backbone.View
 							return d3.time.day.ceil(d.resultDate);
 						});
 
-				this.createLogBookChart(logBook, minBloodSugarX,maxBloodSugarX)
+				this
+						.createLogBookChart(logBook, minBloodSugarX,
+								maxBloodSugarX);
 				this.createMonthChart(logBook);
 				this.createDayOfWeekChart(logBook);
 				this.createHourOfDayChart(logBook);
@@ -180,7 +182,7 @@ window.InsightsDashboardView = Backbone.View
 
 				var monthOfYearGroup = monthOfYear.group();
 
-				monthOfYearChart.width(180).height(180).radius(80).innerRadius(
+				monthOfYearChart.width(220).height(220).radius(80).innerRadius(
 						30).dimension(monthOfYear).group(monthOfYearGroup);
 
 			},
@@ -209,7 +211,7 @@ window.InsightsDashboardView = Backbone.View
 				});
 
 				var dayOfWeekGroup = dayOfWeek.group();
-				dayOfWeekChart.width(180).height(180).radius(80)
+				dayOfWeekChart.width(220).height(220).radius(80)
 						.innerRadius(30).dimension(dayOfWeek).group(
 								dayOfWeekGroup);
 
@@ -222,7 +224,7 @@ window.InsightsDashboardView = Backbone.View
 
 				window.hourOfDayChart = dc.barChart("#hour-of-day-chart");
 
-				hourOfDayChart.width(220).height(180).margins({
+				hourOfDayChart.width(220).height(220).margins({
 					top : 10,
 					right : 5,
 					bottom : 30,
@@ -253,7 +255,13 @@ window.InsightsDashboardView = Backbone.View
 						.round(d3.time.day.round).xUnits(d3.time.days)
 						.renderlet(function(chart) {
 							chart.select("g.y").style("display", "none");
+							dailyFactsChart.filter(chart.filter());
+						}).on("filtered", function(chart) {
+							dc.events.trigger(function() {
+								dailyFactsChart.focus(chart.filter());
+							});
 						});
+
 			},
 			createLogBookChart : function(logBook, minBloodSugar, maxBloodSugar) {
 
@@ -264,6 +272,31 @@ window.InsightsDashboardView = Backbone.View
 						return d.bsLevel;
 					}
 				}), bloodSugarGroup = bloodSugar.group().reduceSum(function(d) {
+					return Math.floor(d.bsLevel / 10) * 10;
+				});
+
+				logBloodSugarChart.width(800).height(240).margins({
+					top : 20,
+					right : 5,
+					bottom : 20,
+					left : 30
+				}).dimension(bloodSugar).group(bloodSugarGroup).elasticY(true)
+						.centerBar(true).gap(1).round(dc.round.floor).x(
+								d3.scale.linear().domain(
+										[ minBloodSugar, maxBloodSugar ]))
+						.renderlet(function(chart) {
+							chart.select("g.y").style("display", "none");
+						}).renderHorizontalGridLines(true);
+			},
+			createInsulinChart : function(logBook) {
+
+				//window.logBloodSugarChart = dc.barChart("#log-bs-chart");
+
+				var insulin = logBook.dimension(function(d) {
+					if (d.bsLevel > 0) {
+						return d.bsLevel;
+					}
+				}), insulinGroup = bloodSugar.group().reduceSum(function(d) {
 					return Math.floor(d.bsLevel / 10) * 10;
 				});
 
@@ -342,18 +375,17 @@ window.InsightsDashboardView = Backbone.View
 
 				window.dailyFactsChart
 						.width(800)
-						.height(380)
+						.height(240)
 						.margins({
 							top : 20,
 							right : 5,
 							bottom : 20,
-							left : 30
+							left : 50
 						})
 						.dimension(date)
 						.group(dayFacts)
 						.transitionDuration(1500)
-						.colors(
-								["red", "#ccc","steelblue","green" ])
+						.colors([ "red", "#ccc", "steelblue", "green" ])
 						.colorDomain([ 0, 100 ])
 						.colorAccessor(function(d) {
 							return d.value.inRangePercent;
@@ -365,12 +397,12 @@ window.InsightsDashboardView = Backbone.View
 							return p.value.inRangePercent;
 						})
 						.radiusValueAccessor(function(p) {
-							return p.value.count;
+							return p.value.count * 0.01;
 						})
 						.maxBubbleRelativeSize(0.05)
 						.x(d3.scale.linear().domain([ 0, 350 ]))
 						.y(d3.scale.linear().domain([ 0, 100 ]))
-						.r(d3.scale.linear().domain([ 0, 100 ]))
+						.r(d3.scale.linear().domain([ 0, 10 ]))
 						.elasticY(true)
 						.elasticX(true)
 						.renderHorizontalGridLines(true)
@@ -397,7 +429,7 @@ window.InsightsDashboardView = Backbone.View
 											+ numberFormat(p.value.aboveRangePercent)
 											+ "%\n";
 								}).yAxis().tickFormat(function(v) {
-							return v + "%";
+							return v + " %";
 						});
 
 				/*dc.dataTable("#dc-data-table")
@@ -439,15 +471,22 @@ window.InsightsDashboardView = Backbone.View
 					logResults.push(entry.toJSON());
 				});
 
-				// A little coercion, since the CSV is untyped.
 				logResults
 						.forEach(function(d, i) {
 							d.resultDate = new Date(d.resultDate);
-							d.insulinAmount = d.insulinAmount ? parseFloat(d.insulinAmount)
-									: 0;
-							d.dailyInsulinAmount = d.dailyInsulinAmount ? parseFloat(d.dailyInsulinAmount)
-									: 0;
-							d.bsLevel = d.bsLevel ? parseFloat(d.bsLevel) : 0;
+							
+							if(parseFloat(d.insulinAmount)){
+								d.insulinAmount = d.insulinAmount ? parseFloat(d.insulinAmount)
+										: 0;
+								d.type = 'bolus-insulin';
+							}else if(parseFloat(d.dailyInsulinAmount)>0){
+								d.dailyInsulinAmount = d.dailyInsulinAmount ? parseFloat(d.dailyInsulinAmount)
+										: 0;
+								d.type = 'daily-insulin';
+							}else if(parseFloat(d.bsLevel)>0){
+								d.bsLevel = d.bsLevel ? parseFloat(d.bsLevel) : 0;
+								d.type = 'blood-sugar';
+							}
 						});
 
 				logResults.sort(function(a, b) {

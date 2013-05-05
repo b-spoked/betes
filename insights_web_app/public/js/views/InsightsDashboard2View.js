@@ -141,6 +141,7 @@ window.InsightsDashboardView = Backbone.View
 				this.createCarbRatioChart(date, axisStartDate, axisEndDate);
 				this.createBolusChart(date, axisStartDate, axisEndDate);
 				this.createInsulinSensitivityChart(date, axisStartDate, axisEndDate);
+				this.createBloodGlucoseChart(date, axisStartDate, axisEndDate);
 
 				dc.renderAll();
 			},
@@ -247,18 +248,128 @@ window.InsightsDashboardView = Backbone.View
 					bottom : 20,
 					left : 5
 				}).dimension(date).group(dates).elasticY(true).centerBar(true)
-						.gap(1).x(
+						.gap(0).x(
 								d3.time.scale().domain([ startDate, endDate ]))
 						.round(d3.time.day.round).xUnits(d3.time.days)
 						.renderlet(function(chart) {
 							chart.select("g.y").style("display", "none");
 							dailyFactsChart.filter(chart.filter());
+							bolusChart.filter(chart.filter());
+							carbRatioChart.filter(chart.filter());
+							insulinSensitivityChart.filter(chart.filter());
+							bloodGlucoseChart.filter(chart.filter());
 						}).on("filtered", function(chart) {
 							dc.events.trigger(function() {
 								dailyFactsChart.focus(chart.filter());
+								bolusChart.focus(chart.filter());
+								carbRatioChart.focus(chart.filter());
+								insulinSensitivityChart.focus(chart.filter());
+								bloodGlucoseChart.focus(chart.filter());
 							});
 						});
 
+			},createCarbRatioChart : function(date,startDate, endDate) {
+				window.carbRatioChart = dc.lineChart("#carb-ratio-chart");
+				
+				var carbRatioGroup = date.group().reduce(
+						//add
+						function(p, v) {
+							if(v.carbRatio>0){
+								++p.count;
+							}
+							p.total += v.carbRatio;
+							p.meanCarbRatio = p.total / p.count;
+							
+							return p;
+						},
+						//remove
+						function(p, v) {
+							if(v.carbRatio>0){
+								--p.count;
+							}
+							p.total -= v.carbRatio;
+							p.meanCarbRatio = p.total / p.count;
+							
+							return p;
+						},
+						//init
+						function() {
+							return {
+								count : 0,
+								total : 0,
+								meanCarbRatio : 0
+							};
+						});
+				
+				carbRatioChart
+	               .width(800)
+	                .height(240)
+	                .margins({top: 10, right: 50, bottom: 30, left: 60})
+	                .dimension(date)
+	                .group(carbRatioGroup)
+	                .valueAccessor(function(d) {
+	                    return d.value.meanCarbRatio;
+	                })
+	                .x(d3.time.scale().domain([startDate, endDate]))
+	                .renderHorizontalGridLines(true)
+	                .elasticY(true)
+	                .brushOn(false)
+	                .title(function(d){
+	                    return d.value.meanCarbRatio;
+	                });
+			},
+			createBloodGlucoseChart : function(date,startDate, endDate) {
+				window.bloodGlucoseChart = dc.lineChart("#blood-glucose-chart");
+				
+				
+				var bloodGlucoseGroup = date.group().reduce(
+						//add
+						function(p, v) {
+							
+							if(v.glucoseLevel>0){
+								++p.count;
+							}
+							p.total += v.glucoseLevel;
+							p.meanGlucoseLevel = p.total / p.count;
+							
+							return p;
+						},
+						//remove
+						function(p, v) {
+							if(v.glucoseLevel>0){
+								--p.count;
+							}
+							p.total -= v.glucoseLevel;
+							p.meanGlucoseLevel = p.total / p.count;
+						
+							
+							return p;
+						},
+						//init
+						function() {
+							return {
+								count : 0,
+								total : 0,
+								meanGlucoseLevel : 0
+							};
+						});
+
+				bloodGlucoseChart
+	               .width(800)
+	                .height(240)
+	                .margins({top: 10, right: 50, bottom: 30, left: 60})
+	                .dimension(date)
+	                .group(bloodGlucoseGroup)
+	                .valueAccessor(function(d) {
+	                    return d.value.meanGlucoseLevel;
+	                })
+	                .x(d3.time.scale().domain([startDate, endDate]))
+	                .renderHorizontalGridLines(true)
+	                .elasticY(true)
+	                .brushOn(false)
+	                .title(function(d){
+	                    return d.value.meanGlucoseLevel;
+	                });
 			},
 			createCarbRatioChart : function(date,startDate, endDate) {
 				window.carbRatioChart = dc.lineChart("#carb-ratio-chart");

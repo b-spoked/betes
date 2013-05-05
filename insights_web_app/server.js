@@ -24,7 +24,7 @@ app.put('/insights-users/:id', user.updateUser);
 app.post('/insights-users/:id/upload-data', user.addUserData);
 
 /* User Log Book */
-app.get('/insights-users/:userId/logbook/carelink', user.findCareLinkResults);
+app.get('/insights-users/:userId/logbook/carelink', user.careLinkLogDetail);
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));

@@ -17,7 +17,6 @@ window.CareLinkEntries = Backbone.Collection
 		        this.trigger('fetch', this, options);
 		        return Backbone.Collection.prototype.fetch.call(this, options);
 		    },
-		
 			filterEntries : function(letters) {
 
 				if (letters == "") {
@@ -73,7 +72,6 @@ window.CareLinkEntries = Backbone.Collection
 							|| pattern.test(data.get("comments"));
 				}));
 			},
-
 			filterPlus : function(included) {
 
 				var pattern1 = new RegExp(included[0].trim(), "gi");
@@ -85,7 +83,6 @@ window.CareLinkEntries = Backbone.Collection
 							|| pattern2.test(data.get("comments"));
 				}));
 			},
-
 			filterGreaterThan : function(level) {
 				return _(this.filter(function(data) {
 					return (parseInt(data.get("bsLevel")) > level);

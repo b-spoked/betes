@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/vendor/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="css/vendor/font-awesome.css" />
 <link rel="stylesheet" href="css/vendor/dc.css" />
+<link rel="stylesheet" href="css/vendor/daterangepicker.css" />
 <link rel="stylesheet" href="css/main.css" />
 <title>Insights Betes Log</title>
 </head>
@@ -20,177 +21,161 @@
 	</div>
 	<script type="text/template" id="graphs-template">
 	<div class="navbar navbar-inverse ">
-		<div class="navbar-inner">
-			<ul class="nav">
-				<li><a href="#">Log</a></li>
-				<li class="active"><a href="#/graphs">Insights</a></li>
-			</ul>
-			<div class="pull-right">
-				<%if(authenticated) {%>
-					<div class="btn-group">
-  						<button class="btn">Hey <%= name%></button>
-  						<button class="btn dropdown-toggle" data-toggle="dropdown">
-    						<span class="caret"></span>
-  						</button>
-  						<ul class="dropdown-menu">
-    						<li><a href="#/account"> Account</a></li>
-    						<li><a href="#" id="logout"> Logout</a></li>
-  						</ul>
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li><a href="#">Log</a></li>
+			<li class="active"><a href="#/graphs">Insights</a></li>
+		</ul>
+		<div class="pull-right">
+			<%if(authenticated) {%>
+			<div class="btn-group">
+				<button class="btn">Hey <%= name%></button>
+				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#/account"> Account</a></li>
+					<li><a href="#" id="logout"> Logout</a></li>
+				</ul>
+			</div>
+			<%} else { %> <a href="#" id="login" class="btn btn-small"><i
+				class="icon-signin"></i> Login</a> <%}%>
+		</div>
+	</div>
+</div>
+<div id="graphs">
+
+	<div class="container-fluid">
+		<form class="form-horizontal">
+  			<fieldset>
+    			<div class="control-group">
+      				<label class="control-label" for="log-dates">Show for dates:</label>
+      					<div class="controls">
+        					<div class="input-prepend">
+          						<span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="log-dates" id="log-dates" />
+        					</div>
+      					</div>
+    			</div>
+  			</fieldset>
+			</form>
+		<div class="row-fluid">
+			
+			<div class="span3 ">
+				<p>
+				<button type="button" class="btn btn-block btn-info" data-toggle="collapse"
+					data-target="#collapseHour">Filter by hour of day</button>
+				<div id="collapseHour" class="collapse">
+					<div id="hour-of-day-chart">
+						<span class="reset" style="display: none;">Showing: <span
+							class="filter"></span></span>
+						<button type="button" id="reset-hour-of-day-chart"
+							class="btn btn-link reset" style="display: none;">reset</button>
 					</div>
-				<%} else { %>
-					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
-				<%}%>    
+				</div>
+				</p>
+				<p>
+				<button type="button" class="btn btn-block btn-info" data-toggle="collapse"
+					data-target="#collapseDay">Filter by day of week</button>
+				<div id="collapseDay" class="collapse">
+					<div id="day-of-week-chart">
+						<span class="reset" style="display: none;">Showing: <span
+							class="filter"></span></span>
+						<button type="button" id="reset-day-of-week-chart"
+							class="btn btn-link reset" style="display: none;">reset</button>
+					</div>
+				</div>
+				</p>
+				<p>	
+				<button type="button" class="btn btn-block btn-info" data-toggle="collapse"
+					data-target="#collapseMonth">Filter by month of Year</button>
+				<div id="collapseMonth" class="collapse">
+					<div id="month-of-year-chart">
+						<span class="reset" style="display: none;">Showing: <span
+							class="filter"></span></span>
+						<button type="button" id="reset-month-of-year-chart"
+							class="btn btn-link reset" style="display: none;">reset</button>
+					</div>
+				</div>
+				</p>
+			</div>
+			<div class="span9">
+				<div class="alert alert-success">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<h3>Getting started?</h3>
+					<p>
+						Some questions we could look at are: what are my blood sugars like
+						in the <a href="#" id="filter-morning">morning?</a> How about in
+						the <a href="#" id="filter-evening">evenings?</a> I wonder how
+						things looked at <a href="#" id="filter-xmas">christmas time?</a>
+						And what about <a href="#" id="filter-weekday">weekday</a> verses
+						<a href="#" id="filter-weekendday">weekend day?</a> How many
+						results are in the range <a href="#" id="filter-bs-range">80-180
+							mg/dl?</a>
+					</p>
+				</div>
+				<div id="log-period-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Dates</strong> <span class="reset" style="display: none;">Showing:
+						<span class="filter"></span>
+					</span>
+					<button type="button" id="reset-log-period-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="log-bs-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Blood Sugar Range</strong> (mg/dl) <span class="reset"
+						style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-log-bs-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="bs-facts-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Daily Average</strong> (x: av blood sugar, y: % results in
+					target range, radius: number of results) <span class="reset"
+						style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-bs-facts-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="blood-glucose-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Blood Glucose</strong> <span class="reset"
+						style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-log-bs-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="carb-ratio-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Carb Ratio</strong> <span class="reset"
+						style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-log-period-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="bolus-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Bolus</strong> <span class="reset" style="display: none;">Showing:
+						<span class="filter"></span>
+					</span>
+					<button type="button" id="reset-log-bs-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
+				<div id="insulin-sensitivity-chart" class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+					<strong>Inuslin Sensitivity</strong> <span class="reset"
+						style="display: none;">Showing: <span class="filter"></span></span>
+					<button type="button" id="reset-bs-facts-chart"
+						class="btn btn-link reset" style="display: none;">reset</button>
+					<div class="clearfix"></div>
+				</div>
 			</div>
 		</div>
 	</div>
-	<div id="graphs">
-		<ul class="nav nav-tabs" id="myTab">
-  			<li class="active"><a href="#date-period">Examine Over Period</a></li>
-  			<li><a href="#date-metric">Examine By Period</a></li>
-		</ul>
- 
-<div class="tab-content">
-  <div class="tab-pane active" id="date-period">
-		<div class="container-fluid">
-		<div class="row-fluid">
-    		<div class="span3 ">
-      			<div id="hour-of-day-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Hour</strong> (24hr)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-hour-of-day-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				
-				<div id="day-of-week-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Day</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-day-of-week-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="month-of-year-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Month</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-month-of-year-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-    		</div>
-    		<div class="span9">
-				<div class="alert alert-success">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>	
-					<h3>Getting started?</h3>
-					<p>Some questions we could look at are: what are my blood sugars like in the <a href="#" id="filter-morning">morning?</a>
-        			How about in the <a href="#" id="filter-evening">evenings?</a> I wonder how things looked at <a href="#" id="filter-xmas">christmas time?</a> 
-					And what about <a href="#" id="filter-weekday">weekday</a> verses <a href="#" id="filter-weekendday">weekend day?</a> How many results are in the range <a href="#" id="filter-bs-range">80-180 mg/dl?</a> </p>
-				</div>
-				<div id="log-period-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Dates</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-period-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-				</div>
-				<div id="log-bs-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Blood Sugar Range</strong> (mg/dl)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="bs-facts-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Daily Average</strong> (x: av blood sugar, y: % results in target range, radius: number of results)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-bs-facts-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="blood-glucose-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Blood Glucose</strong> 
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="carb-ratio-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Carb Ratio</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-period-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-				</div>
-				<div id="bolus-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Bolus</strong> 
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="insulin-sensitivity-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Inuslin Sensitivity</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-bs-facts-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-    		</div>
-			
-		</div>		
-		</div>
 </div>
-<div class="tab-pane active" id="date-period">
-<div class="container-fluid">
-		<div class="row-fluid">
-    		<div class="span3 ">
-      			<div id="hour-of-day-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Hour</strong> (24hr)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-hour-of-day-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="day-of-week-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Day</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-day-of-week-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="month-of-year-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Month</strong>
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-month-of-year-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-    		</div>
-    		<div class="span9">
-				<div class="alert alert-success">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>	
-					<h3>Getting started?</h3>
-					<p>Some questions we could look at are: what are my blood sugars like in the <a href="#" id="filter-morning">morning?</a>
-        			How about in the <a href="#" id="filter-evening">evenings?</a> I wonder how things looked at <a href="#" id="filter-xmas">christmas time?</a> 
-					And what about <a href="#" id="filter-weekday">weekday</a> verses <a href="#" id="filter-weekendday">weekend day?</a> How many results are in the range <a href="#" id="filter-bs-range">80-180 mg/dl?</a> </p>
-				</div>
-				<div id="log-bs-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Blood Sugar Range</strong> (mg/dl)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-log-bs-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-				<div id="bs-facts-chart" class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
-        			<strong>Daily Average</strong> (x: av blood sugar, y: % results in target range, radius: number of results)
-					<span class="reset" style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-bs-facts-chart" class="btn btn-link reset" style="display: none;">reset</button>
-        			<div class="clearfix"></div>
-    			</div>
-    		</div>
-</div>
-</div><!--tabs-->	
-	</div>
 	</script>
 	<script type="text/template" id="account-template">
 <div class="navbar navbar-inverse ">
@@ -421,10 +406,12 @@
 	<script type="text/javascript" src="js/vendor/backbone.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone_offline.js"></script>
-	<!--<script type="text/javascript" src="js/vendor/backbone-patch.js"></script>-->
+	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/vendor/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/vendor/d3.v2.min.js"></script>
-	<script type="text/javascript" src="js/vendor/d3.horizon.js"></script>
+	<script type="text/javascript" src="js/vendor/moment.min.js"></script>
+	<script type="text/javascript" src="js/vendor/daterangepicker.js"></script>
+	<!-- <script type="text/javascript" src="js/vendor/d3.horizon.js"></script>-->
 	<script type="text/javascript" src="js/vendor/d3.crossfilter.js"></script>
 	<script type="text/javascript" src="js/vendor/dc.min.js"></script>
 

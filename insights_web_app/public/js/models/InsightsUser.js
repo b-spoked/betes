@@ -1,9 +1,14 @@
 /**
- * Created by JetBrains PhpStorm.
- * User: Jamie
- * Date: 27/02/13
- * Time: 3:41 PM
- * To change this template use File | Settings | File Templates.
+ * Log information source
+ * 
+ */
+var LogSource = {
+      manual: false,
+      carelink: false
+    };
+
+/**
+ * User Model
  */
 window.InsightsUser = Backbone.Model.extend({
 	
@@ -16,7 +21,8 @@ window.InsightsUser = Backbone.Model.extend({
 		authenticated : false,
 		allowSharing : false,
 		shareLinkId : null,
-		logEntries : []
+		logEntries : [],
+		logSources : []
 	},
 
 	urlRoot : "/insights-users",

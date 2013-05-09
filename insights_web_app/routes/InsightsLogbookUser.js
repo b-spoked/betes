@@ -188,35 +188,3 @@ exports.careLinkLogDetail = function(req, res) {
 			});
 
 };
-
-exports.findCareLinkResults = function(req, res) {
-	var userId = req.params.userId;
-	
-	var queryString = "SELECT `Id`"
-	+" ,`userId`"
-	+" ,`resultDate`"
-	+" ,COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS bsLevel"
-	+" ,`DailyInsulinTotal` AS dailyInsulinAmount"
-	+" ,`BolusVolumeDelivered` AS insulinAmount"
-	+" ,`RawValues` AS comments"
-	+" ,`RawType` AS labels" 
-	+" FROM `insight_log_carelink`" 
-	+" WHERE userId = ?" 
-	+" AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0" 
-	+" OR `DailyInsulinTotal` > 0"
-	+" OR `BolusVolumeDelivered` > 0"
-	+" ORDER BY resultDate DESC";
-	
-	mysqldb.query(queryString, [ userId ],
-			function(err, results) {
-				if (err) {
-					res.send({
-						'error' : 'An error has occurred'
-					});
-				} else {
-					console.log('Success: ' + JSON.stringify(results));
-					res.send(results);
-				}
-			});
-
-};

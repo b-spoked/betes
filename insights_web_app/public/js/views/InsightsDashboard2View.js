@@ -17,13 +17,16 @@ window.InsightsDashboardView = Backbone.View
 				"click #filter-xmas" : "filterXmas",
 				"click #filter-weekday" : "filterWeekday",
 				"click #filter-weekendday" : "filterWeekendDay",
-				"click #filter-bs-range" : "filterBloodSugarRange"
+				"click #filter-bs-range" : "filterBloodSugarRange",
+				"clickApply #" : "applyDateFilter"
+					
 			},
 
 			initialize : function() {
 				_.bindAll(this);
 				this.template = _.template($('#graphs-template').html());
 				this.model.logEntries.bind('reset', this.render, this);
+				
 			},
 			render : function() {
 				$(this.el).html(this.template(this.model.toJSON()));
@@ -33,7 +36,16 @@ window.InsightsDashboardView = Backbone.View
 				_.defer(function(view) {
 					view.showFilterableDashboard();
 				}, this);
+				
+				$('#log-dates').daterangepicker({},
+						function(start, end) {
+                    		alert("todo");
+                });
+				
 				return this;
+			},
+			applyDateFilter : function(e){
+				alert('date range');
 			},
 			closeHelp : function() {
 				if (this.model.logEntries.length > 0) {
@@ -129,23 +141,25 @@ window.InsightsDashboardView = Backbone.View
 				var minBloodSugarX = 30;
 
 				// Create the crossfilter for the relevant dimensions and groups.
-				var logBook = crossfilter(logBookData),
-				date = logBook.dimension(function(d) { return d3.time.day.ceil(d.resultDate); });
+				var logBook = crossfilter(logBookData);
+				var day = logBook.dimension(function(d) { return d.day; });
 				
 				this.createLogBookChart(logBook, minBloodSugarX,maxBloodSugarX);
-				this.createMonthChart(logBook);
+				this.createMonthOfYearChart(logBook);
 				this.createDayOfWeekChart(logBook);
 				this.createHourOfDayChart(logBook);
-				this.createAllDatesChart(date, axisStartDate, axisEndDate);
-				this.createDiabetesFactsChart(date);
-				this.createCarbRatioChart(date, axisStartDate, axisEndDate);
-				this.createBolusChart(date, axisStartDate, axisEndDate);
-				this.createInsulinSensitivityChart(date, axisStartDate, axisEndDate);
-				this.createBloodGlucoseChart(date, axisStartDate, axisEndDate);
+				
+				this.createAllDatesChart(day, axisStartDate, axisEndDate);
+				this.createDiabetesFactsChart(day);
+				
+				this.createCarbRatioChart(day, axisStartDate, axisEndDate);
+				this.createBolusChart(day, axisStartDate, axisEndDate);
+				this.createInsulinSensitivityChart(day, axisStartDate, axisEndDate);
+				this.createBloodGlucoseChart(day, axisStartDate, axisEndDate);
 
 				dc.renderAll();
 			},
-			createMonthChart : function(logBook) {
+			createMonthOfYearChart : function(logBook) {
 				window.monthOfYearChart = dc.pieChart("#month-of-year-chart");
 
 				var monthOfYear = logBook.dimension(function(d) {
@@ -236,9 +250,9 @@ window.InsightsDashboardView = Backbone.View
 								}).renderHorizontalGridLines(true);
 
 			},
-			createAllDatesChart : function(date, startDate, endDate) {
+			createAllDatesChart : function(day, startDate, endDate) {
 
-				var dates = date.group();
+				var days = day.group();
 
 				window.datesChart = dc.barChart("#log-period-chart");
 
@@ -247,7 +261,7 @@ window.InsightsDashboardView = Backbone.View
 					right : 5,
 					bottom : 20,
 					left : 5
-				}).dimension(date).group(dates).elasticY(true).centerBar(true)
+				}).dimension(day).group(days).elasticY(true).centerBar(true)
 						.gap(0).x(
 								d3.time.scale().domain([ startDate, endDate ]))
 						.round(d3.time.day.round).xUnits(d3.time.days)
@@ -268,71 +282,23 @@ window.InsightsDashboardView = Backbone.View
 							});
 						});
 
-			},createCarbRatioChart : function(date,startDate, endDate) {
-				window.carbRatioChart = dc.lineChart("#carb-ratio-chart");
-				
-				var carbRatioGroup = date.group().reduce(
-						//add
-						function(p, v) {
-							if(v.carbRatio>0){
-								++p.count;
-							}
-							p.total += v.carbRatio;
-							p.meanCarbRatio = p.total / p.count;
-							
-							return p;
-						},
-						//remove
-						function(p, v) {
-							if(v.carbRatio>0){
-								--p.count;
-							}
-							p.total -= v.carbRatio;
-							p.meanCarbRatio = p.total / p.count;
-							
-							return p;
-						},
-						//init
-						function() {
-							return {
-								count : 0,
-								total : 0,
-								meanCarbRatio : 0
-							};
-						});
-				
-				carbRatioChart
-	               .width(800)
-	                .height(240)
-	                .margins({top: 10, right: 50, bottom: 30, left: 60})
-	                .dimension(date)
-	                .group(carbRatioGroup)
-	                .valueAccessor(function(d) {
-	                    return d.value.meanCarbRatio;
-	                })
-	                .x(d3.time.scale().domain([startDate, endDate]))
-	                .renderHorizontalGridLines(true)
-	                .elasticY(true)
-	                .brushOn(false)
-	                .title(function(d){
-	                    return d.value.meanCarbRatio;
-	                });
 			},
-			createBloodGlucoseChart : function(date,startDate, endDate) {
+			createBloodGlucoseChart : function(timePeriod,startDate, endDate) {
 				window.bloodGlucoseChart = dc.lineChart("#blood-glucose-chart");
 				
-				
-				var bloodGlucoseGroup = date.group().reduce(
+				var bloodGlucoseGroup = timePeriod.group().reduce(
 						//add
 						function(p, v) {
 							
 							if(v.glucoseLevel>0){
 								++p.count;
 							}
-							p.total += v.glucoseLevel;
-							p.meanGlucoseLevel = p.total / p.count;
+								//console.log("bs: "+v.glucoseLevel);
+								p.total += v.glucoseLevel;
+								p.meanGlucoseLevel = p.total / p.count;
 							
 							return p;
+						
 						},
 						//remove
 						function(p, v) {
@@ -344,6 +310,7 @@ window.InsightsDashboardView = Backbone.View
 						
 							
 							return p;
+							
 						},
 						//init
 						function() {
@@ -358,10 +325,10 @@ window.InsightsDashboardView = Backbone.View
 	               .width(800)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
-	                .dimension(date)
+	                .dimension(timePeriod)
 	                .group(bloodGlucoseGroup)
 	                .valueAccessor(function(d) {
-	                    return d.value.meanGlucoseLevel;
+	                	return d.value.meanGlucoseLevel;
 	                })
 	                .x(d3.time.scale().domain([startDate, endDate]))
 	                .renderHorizontalGridLines(true)
@@ -371,10 +338,10 @@ window.InsightsDashboardView = Backbone.View
 	                    return d.value.meanGlucoseLevel;
 	                });
 			},
-			createCarbRatioChart : function(date,startDate, endDate) {
+			createCarbRatioChart : function(timePeriod,startDate, endDate) {
 				window.carbRatioChart = dc.lineChart("#carb-ratio-chart");
 				
-				var carbRatioGroup = date.group().reduce(
+				var carbRatioGroup = timePeriod.group().reduce(
 						//add
 						function(p, v) {
 							if(v.carbRatio>0){
@@ -408,7 +375,7 @@ window.InsightsDashboardView = Backbone.View
 	               .width(800)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
-	                .dimension(date)
+	                .dimension(timePeriod)
 	                .group(carbRatioGroup)
 	                .valueAccessor(function(d) {
 	                    return d.value.meanCarbRatio;
@@ -421,11 +388,11 @@ window.InsightsDashboardView = Backbone.View
 	                    return d.value.meanCarbRatio;
 	                });
 			},
-			createInsulinSensitivityChart : function(date,startDate, endDate) {
+			createInsulinSensitivityChart : function(timePeriod,startDate, endDate) {
 				window.insulinSensitivityChart = dc.lineChart("#insulin-sensitivity-chart");
 				
 				
-				var insulinSensitivityGroup = date.group().reduce(
+				var insulinSensitivityGroup = timePeriod.group().reduce(
 						//add
 						function(p, v) {
 							
@@ -461,7 +428,7 @@ window.InsightsDashboardView = Backbone.View
 	               .width(800)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
-	                .dimension(date)
+	                .dimension(timePeriod)
 	                .group(insulinSensitivityGroup)
 	                .valueAccessor(function(d) {
 	                    return d.value.meanInsulinSensitivity;
@@ -474,10 +441,10 @@ window.InsightsDashboardView = Backbone.View
 	                    return d.value.meanInsulinSensitivity;
 	                });
 			},
-			createBolusChart : function(date,startDate, endDate) {
+			createBolusChart : function(timePeriod,startDate, endDate) {
 				window.bolusChart = dc.lineChart("#bolus-chart");
 				
-				var bolusGroup = date.group().reduce(
+				var bolusGroup = timePeriod.group().reduce(
 						//add
 						function(p, v) {
 							if(v.bolusAmount>0){
@@ -511,7 +478,7 @@ window.InsightsDashboardView = Backbone.View
 	               .width(800)
 	                .height(240)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
-	                .dimension(date)
+	                .dimension(timePeriod)
 	                .group(bolusGroup)
 	                .valueAccessor(function(d) {
 	                    return d.value.meanBolusAmount;
@@ -549,14 +516,14 @@ window.InsightsDashboardView = Backbone.View
 							chart.select("g.y").style("display", "none");
 						}).renderHorizontalGridLines(true);
 			},
-			createDiabetesFactsChart : function(date) {
+			createDiabetesFactsChart : function(day) {
 
 				window.dailyFactsChart = dc.bubbleChart("#bs-facts-chart");
 
 				var dateFormat = d3.time.format("%m/%d/%Y");
 				var numberFormat = d3.format(".1f")
 
-				var dayFacts = date.group().reduce(
+				var dayFacts = day.group().reduce(
 				//add
 				function(p, v) {
 					
@@ -620,7 +587,7 @@ window.InsightsDashboardView = Backbone.View
 							bottom : 20,
 							left : 50
 						})
-						.dimension(date)
+						.dimension(day)
 						.group(dayFacts)
 						.transitionDuration(1500)
 						.colors([ "red", "#ccc", "steelblue", "green" ])
@@ -684,6 +651,8 @@ window.InsightsDashboardView = Backbone.View
 					d.insulinSensitivity = parseFloat(d.insulinSensitivity);
 					d.bolusAmount = parseFloat(d.bolusAmount);
 					d.carbRatio = parseFloat(d.carbRatio);
+					d.day = d3.time.day(d.resultDate); // pre-calculate day for better performance
+					d.hour = d3.time.hour(d.resultDate); // pre-calculate hour for better performance
 				});
 
 				return logResults;

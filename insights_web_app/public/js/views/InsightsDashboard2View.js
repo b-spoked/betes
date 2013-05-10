@@ -39,26 +39,22 @@ window.InsightsDashboardView = Backbone.View
 					view.showFilterableDashboard(null,null);
 				}, this);
 				
+				var self = this;
 				
-				
-				
+				$('#log-dates').daterangepicker(
+						{},
+						function(start, end) {
+	                    	 //self.showFilterableDashboard(start, end);
+	                    	 alert("todo");
+	                     }
+	                     
+	             );
 				
 				return this;
 			},
 			initializeDatePicker:function (fromDate,toDate){
 				
-				var self = this;
-				
-				$('#log-dates').daterangepicker(
-						{
-							startDate: fromDate,
-							endDate: toDate
-	                     },
-						function(start, end) {
-	                    	 //self.showFilterableDashboard(start, end);
-	                    	 alert("todo");
-	                     }
-	             );
+				$('#log-dates').val(moment(fromDate).format("MMMM D, YYYY") + ' - ' + moment(toDate).format("MMMM D, YYYY"));
 			},	
 			applyDateFilter : function(e){
 				alert('date range');

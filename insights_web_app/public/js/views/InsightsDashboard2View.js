@@ -29,21 +29,37 @@ window.InsightsDashboardView = Backbone.View
 				
 			},
 			render : function() {
+				
+				
 				$(this.el).html(this.template(this.model.toJSON()));
 				_.defer(function(view) {
 					view.closeHelp();
 				}, this);
 				_.defer(function(view) {
-					view.showFilterableDashboard();
+					view.showFilterableDashboard(null,null);
 				}, this);
 				
-				$('#log-dates').daterangepicker({},
-						function(start, end) {
-                    		alert("todo");
-                });
+				
+				
+				
 				
 				return this;
 			},
+			initializeDatePicker:function (fromDate,toDate){
+				
+				var self = this;
+				
+				$('#log-dates').daterangepicker(
+						{
+							startDate: fromDate,
+							endDate: toDate
+	                     },
+						function(start, end) {
+	                    	 //self.showFilterableDashboard(start, end);
+	                    	 alert("todo");
+	                     }
+	             );
+			},	
 			applyDateFilter : function(e){
 				alert('date range');
 			},
@@ -122,7 +138,7 @@ window.InsightsDashboardView = Backbone.View
 				window.dayOfWeekChart.filter("Sat");
 				dc.renderAll();
 			},
-			showFilterableDashboard : function() {
+			showFilterableDashboard : function(startDate, endDate) {
 				this.hideLoadingDialog();
 
 				if (this.model.logEntries.length <= 0) {
@@ -130,7 +146,7 @@ window.InsightsDashboardView = Backbone.View
 				}
 
 				//Data
-				var logBookData = this.getCleanedData(this.model.logEntries);
+				var logBookData = this.getCleanedData(startDate, endDate);
 
 				//Date dimension range
 				var startDate = new Date(logBookData[0].resultDate); 
@@ -503,7 +519,7 @@ window.InsightsDashboardView = Backbone.View
 					return Math.floor(d.glucoseLevel / 10) * 10;
 				});
 
-				logBloodSugarChart.width(800).height(240).margins({
+				logBloodSugarChart.width(220).height(140).margins({
 					top : 20,
 					right : 5,
 					bottom : 20,
@@ -638,7 +654,32 @@ window.InsightsDashboardView = Backbone.View
 						});
 			},
 
-			getCleanedData : function(data) {
+			getCleanedData : function(fromDate,toDate) {
+				
+				var data;
+				
+				if(fromDate&&toDate){
+					
+					data = this.model.logEntries.filterPeriod(fromDate,toDate);
+					
+				}else{
+					console.log("show data for the last month");
+					toDate = new Date(this.model.logEntries.at(0).get("resultDate"));
+					fromDate = new Date(
+							toDate.getFullYear(), 
+							toDate.getMonth() -1, 
+							toDate.getDate(),
+							toDate.getHours(),
+							toDate.getMinutes(),
+							toDate.getSeconds(),
+							toDate.getMilliseconds()
+					    );
+					
+					data = this.model.logEntries.filterPeriod(fromDate,toDate);
+				}
+				
+				this.initializeDatePicker(fromDate,toDate);
+				
 				var logResults = new Array();
 				data.forEach(function(entry) {
 					logResults.push(entry.toJSON());

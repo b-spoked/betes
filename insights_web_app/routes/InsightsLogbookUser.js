@@ -7,6 +7,22 @@ var mysqldb = mysql.createConnection({
 	database : 'heroku_dd76de52e0812e0',
 });
 
+var logBookCarelinkSelectBase = "SELECT `Id`"
+	+", `userId`"
+	+", `resultDate`"
+	+", COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS glucoseLevel"
+	+", `BWZInsulinSensitivity` AS insulinSensitivity"
+	+", `BolusVolumeDelivered` AS bolusAmount"
+	+", `BWZCarbRatio` AS carbRatio"
+	+", `RawValues` AS comments"
+	+", `RawType` AS labels"
+	+" FROM `insight_log_carelink`"
+	+" WHERE userId = ?"
+	+" AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0"
+	+" OR `BWZInsulinSensitivity` > 0"
+	+" OR `BolusVolumeDelivered` > 0"
+	+" OR `BWZCarbRatio` > 0";
+
 function handleDisconnect(connection) {
 	connection
 			.on(
@@ -157,34 +173,44 @@ exports.updateUser = function(req, res) {
 
 exports.careLinkLogDetail = function(req, res) {
 	var userId = req.params.userId;
+	var getAll = req.query.all;
+	var fromDate = req.query.fromDate;
+	var toDate = req.query.toDate;
+	var logBookSelect = "";
 	
-	var logBookSelect = "SELECT `Id`"
-		+", `userId`"
-		+", `resultDate`"
-		+", COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) AS glucoseLevel"
-		+", `BWZInsulinSensitivity` AS insulinSensitivity"
-		+", `BolusVolumeDelivered` AS bolusAmount"
-		+", `BWZCarbRatio` AS carbRatio"
-		+", `RawValues` AS comments"
-		+", `RawType` AS labels"
-		+" FROM `insight_log_carelink`"
-		+" WHERE userId = ?"
-		+" AND COALESCE(`bsLevel`,`SensorGlucose`,`BWZBGInput`,`SensorCalibrationBG`) > 0"
-		+" OR `BWZInsulinSensitivity` > 0"
-		+" OR `BolusVolumeDelivered` > 0"
-		+" OR `BWZCarbRatio` > 0"
-		+" ORDER BY resultDate DESC";
+	logBookSelect = getAllLogEntriesSelect();
+	/*
+	if(getAll){
+		console.log('Get All Entries: ');
+		logBookSelect  = getAllLogEntriesSelect();
+	}else{
+		console.log('Get Months Entries: ');
+		logBookSelect = getMonthsLogEntriesSelect();
+	}*/
 	
-	mysqldb.query(logBookSelect, [ userId ],
+	mysqldb.query(logBookSelect, [userId],
 			function(err, results) {
 				if (err) {
 					res.send({
-						'error' : 'An error has occurred'
+						'error' : 'An error has occurred' +JSON.stringify(err)
 					});
 				} else {
 					console.log('Success: ' + JSON.stringify(results));
 					res.send(results);
 				}
 			});
-
+	
 };
+
+function getLogEntriesForDateRangeSelect(fromDate,toDate){
+	var datesBetween = " AND `resultDate` BETWEEN ? AND ? ORDER BY `resultDate` DESC";
+	return logBookCarelinkSelectBase.concat(datesBetween);
+}
+
+function getAllLogEntriesSelect(){
+	return logBookCarelinkSelectBase.concat(" ORDER BY `resultDate` DESC");
+}
+
+function getMonthsLogEntriesSelect(){
+	return logBookCarelinkSelectBase.concat(" LIMIT 1000 ORDER BY `resultDate` DESC");
+}

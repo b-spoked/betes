@@ -114,7 +114,10 @@ var AppRouter = Backbone.Router.extend({
 				&& currentUser.get('sid') > 0) {
 			this.showLoadingDialog();
 			this.appUser = currentUser;
-			this.appUser.logEntries.fetch();
+			this.appUser.logEntries.fetch({
+				data : { all : false },
+				processData : true
+				});
 		}
 	}
 });

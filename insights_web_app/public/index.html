@@ -119,7 +119,7 @@
 				<p>
 					<button type="button" class="btn btn-block btn-success"
 						data-toggle="collapse" data-target="#collapseHelp">Getting
-						started?</button>
+						started? Patterns you can look for</button>
 				<div id="collapseHelp" class="collapse">
 					<p>
 						Some questions we could look at are: what are my blood sugars like
@@ -133,20 +133,26 @@
 					</p>
 				</div>
 				</p>
+				<p>
+					<button type="button" class="btn btn-block"
+						data-toggle="collapse" data-target="#collapseFactsChart">Blood Glucose
+						Daily Averages (x: av blood sugar, y: % results in
+						target range, radius: number of results)</button>
+				<div id="collapseFactsChart" class="collapse">
+					<div id="bs-facts-chart" >
+						<span class="reset"
+							style="display: none;">Showing: <span class="filter"></span></span>
+						<button type="button" id="reset-bs-facts-chart"
+							class="btn btn-link reset" style="display: none;">reset</button>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				</p>
 				<div id="log-period-chart">
 					<strong>Dates</strong> <span class="reset" style="display: none;">Showing:
 						<span class="filter"></span>
 					</span>
 					<button type="button" id="reset-log-period-chart"
-						class="btn btn-link reset" style="display: none;">reset</button>
-					<div class="clearfix"></div>
-				</div>
-				
-				<div id="bs-facts-chart" >
-					<strong>Daily Average</strong> (x: av blood sugar, y: % results in
-					target range, radius: number of results) <span class="reset"
-						style="display: none;">Showing: <span class="filter"></span></span>
-					<button type="button" id="reset-bs-facts-chart"
 						class="btn btn-link reset" style="display: none;">reset</button>
 					<div class="clearfix"></div>
 				</div>

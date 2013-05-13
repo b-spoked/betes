@@ -61,7 +61,7 @@
 				<p>
 					<button type="button" class="btn btn-block btn-primary"
 						data-toggle="collapse" data-target="#collapseRange">
-						Filter glucose range (mg/dl) 
+						Glucose range (mg/dl) 
 					</button>
 					<div id="collapseRange" class="collapse in">	
 						<div id="log-bs-chart" >
@@ -76,7 +76,7 @@
 				<p>
 					<button type="button" class="btn btn-block btn-primary"
 						data-toggle="collapse" data-target="#collapseHour">
-						Filter hour of day
+						Hour of day
 					</button>
 				<div id="collapseHour" class="collapse in">
 					<div id="hour-of-day-chart">
@@ -90,7 +90,7 @@
 				<p>
 					<button type="button" class="btn btn-block btn-primary"
 						data-toggle="collapse" data-target="#collapseDay">
-						Filter day of week
+						Day of week
 					</button>
 				<div id="collapseDay" class="collapse in">
 					<div id="day-of-week-chart">
@@ -104,7 +104,7 @@
 				<p>
 					<button type="button" class="btn btn-block btn-primary"
 						data-toggle="collapse" data-target="#collapseMonth">
-						Filter month of Year
+						Month of Year
 					</button>
 				<div id="collapseMonth" class="collapse in">
 					<div id="month-of-year-chart">
@@ -118,6 +118,7 @@
 				
 			</div>
 			<div class="span9">
+				<h2>Results</h2>
 				<p>
 					<button type="button" class="btn btn-block btn-success"
 						data-toggle="collapse" data-target="#collapseHelp">Getting
@@ -245,8 +246,9 @@
 			</form>
 		</div>
 		<div class="row-fluid">
+		<div class="span6">
 			<div id="log-period-chart">
-					<strong>Select Range </strong> <span class="reset" style="display: none;">Showing:
+					<strong>Date Range</strong> <span class="reset" style="display: none;">Showing:
 						<span class="filter"></span>
 					</span>
 					<button type="button" id="reset-log-period-chart"
@@ -254,13 +256,38 @@
 					<div class="clearfix"></div>
 			</div>
 			<div id="quick-insights-chart">
-				<strong>Results</strong>
+				<strong>Glucose Level</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-quick-insights-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
+			<div id="quick-insulin-amount">
+				<strong>Bolus</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-quick-insights-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			<div id="quick-carb-ratio">
+				<strong>Carb Ratio</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-quick-insights-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			<div id="quick-insulin-sensitivity">
+				<strong>Insulin Sensitivity</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-quick-insights-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+		</div>
 		</div>
 	</div>
 </div>
@@ -478,12 +505,10 @@
 	</div>
 	</script>
 	<script type="text/template" id="logbookitem-template">
-	<% if(bsLevel>0) { %>
-    <td  class="alert alert-success"><h4><%= bsLevel %></h4></td>
-	<% }else if(insulinAmount>0) { %>
-	<td  class="alert alert-info"><h4><%= insulinAmount %> u</h4></td>
-	<% }else if(dailyInsulinAmount>0) { %>
-	<td  class="alert alert-warning"><h4><%= dailyInsulinAmount %> u</h4></td>
+	<% if(glucoseLevel>0) { %>
+    <td  class="alert alert-success"><h4><%= glucoseLevel %></h4></td>
+	<% }else if(bolusAmount>0) { %>
+	<td  class="alert alert-info"><h4><%= bolusAmount %> u</h4></td>
 	<%}%>
     <td><small><%=resultDate%></small></td>
     <td><small><%=comments%></small></td>	

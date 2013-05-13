@@ -36,7 +36,7 @@ window.InsightsDashboardView = Backbone.View
 					view.closeHelp();
 				}, this);
 				_.defer(function(view) {
-					view.showFilterableDashboard(null,null);
+					view.showFilterableDashboard(null,null,false);
 				}, this);
 				
 				var self = this;
@@ -44,8 +44,8 @@ window.InsightsDashboardView = Backbone.View
 				$('#log-dates').daterangepicker(
 						{},
 						function(start, end) {
-	                    	 //self.showFilterableDashboard(start, end);
-	                    	 alert("todo");
+							self.showFilterableDashboard(start, end,false);
+	                    	// alert("todo");
 	                     }
 	                     
 	             );
@@ -57,7 +57,8 @@ window.InsightsDashboardView = Backbone.View
 				$('#log-dates').val(moment(fromDate).format("MMMM D, YYYY") + ' - ' + moment(toDate).format("MMMM D, YYYY"));
 			},	
 			showAll : function(e){
-				this.showFilterableDashboard(null,null);
+				e.preventDefault();
+				this.showFilterableDashboard(null,null,true);
 			},
 			closeHelp : function() {
 				if (this.model.logEntries.length > 0) {
@@ -134,7 +135,7 @@ window.InsightsDashboardView = Backbone.View
 				window.dayOfWeekChart.filter("Sat");
 				dc.renderAll();
 			},
-			showFilterableDashboard : function(startDate, endDate) {
+			showFilterableDashboard : function(startDate, endDate, showAll) {
 				this.hideLoadingDialog();
 
 				if (this.model.logEntries.length <= 0) {
@@ -142,7 +143,7 @@ window.InsightsDashboardView = Backbone.View
 				}
 
 				//Data
-				var logBookData = this.getCleanedData(startDate, endDate);
+				var logBookData = this.getCleanedData(startDate, endDate, showAll);
 
 				//Date dimension range
 				
@@ -152,6 +153,9 @@ window.InsightsDashboardView = Backbone.View
 				var axisEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 				var maxBloodSugarX = parseInt(d3.max(logBookData, function(d) {return d.glucoseLevel;})) + 10;
 				var minBloodSugarX = 30;
+				
+				//picker
+				this.setDatePickerPeriod(startDate,endDate);
 
 				// Create the crossfilter for the relevant dimensions and groups.
 				var logBook = crossfilter(logBookData);
@@ -270,12 +274,8 @@ window.InsightsDashboardView = Backbone.View
 
 				window.datesChart = dc.barChart("#log-period-chart");
 				
-				datesChart.width(800).height(80).margins({
-					top : 10,
-					right : 5,
-					bottom : 20,
-					left : 5
-				})
+				datesChart.width(800).height(80)
+				.margins({top: 10, right: 50, bottom: 30, left: 60})
 				.dimension(day)
                 .group(days)
                 .centerBar(true)
@@ -307,7 +307,7 @@ window.InsightsDashboardView = Backbone.View
 				var bloodGlucoseGroup = timePeriod.group().reduceSum(function(d){return d.glucoseLevel});
 				
 				bloodGlucoseChart
-				 .width(400)
+				 .width(800)
 	                .height(200)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
 	                .dimension(timePeriod)
@@ -516,11 +516,15 @@ window.InsightsDashboardView = Backbone.View
 						});
 			},
 
-			getCleanedData : function(fromDate,toDate) {
+			getCleanedData : function(fromDate,toDate,showAll) {
 				
 				var data;
 				
-				if(fromDate&&toDate){
+				if(showAll){
+					console.log("show all");
+					data = this.model.logEntries;
+					
+				}else if(fromDate&&toDate){
 					console.log("show data period");
 					data = this.model.logEntries.filterPeriod(fromDate,toDate);
 					
@@ -539,8 +543,6 @@ window.InsightsDashboardView = Backbone.View
 					
 					data = this.model.logEntries.filterPeriod(fromDate,toDate);
 				}
-				
-				this.setDatePickerPeriod(fromDate,toDate);
 				
 				var logResults = new Array();
 				data.forEach(function(entry) {

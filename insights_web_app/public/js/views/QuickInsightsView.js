@@ -23,7 +23,7 @@ window.QuickInsightsView = Backbone.View
 				$(this.el).html(this.template(this.model.toJSON()));
 				
 				_.defer(function(view) {
-					view.showFilterableDashboard(null,null);
+					view.showFilterableDashboard(null,null,false);
 				}, this);
 				
 				var self = this;
@@ -31,8 +31,8 @@ window.QuickInsightsView = Backbone.View
 				$('#log-dates').daterangepicker(
 						{},
 						function(start, end) {
-	                    	 //self.showFilterableDashboard(start, end);
-	                    	 alert("todo");
+	                    	 self.showFilterableDashboard(start, end,false);
+	                    	 //alert("todo");
 	                     }      
 	             );
 				
@@ -43,7 +43,8 @@ window.QuickInsightsView = Backbone.View
 				$('#log-dates').val(moment(fromDate).format("MMMM D, YYYY") + ' - ' + moment(toDate).format("MMMM D, YYYY"));
 			},	
 			showAll : function(e){
-				this.showFilterableDashboard(null,null);
+				e.preventDefault();
+				this.showFilterableDashboard(null,null,true);
 			},
 			hideLoadingDialog : function() {
 				var loadingDialog = new LoadingModal();
@@ -57,7 +58,7 @@ window.QuickInsightsView = Backbone.View
 				window.quickInsightsChart.filterAll();
 				dc.redrawAll();
 			},
-			showFilterableDashboard : function(startDate, endDate) {
+			showFilterableDashboard : function(startDate, endDate,showAll) {
 				this.hideLoadingDialog();
 
 				if (this.model.logEntries.length <= 0) {
@@ -65,7 +66,7 @@ window.QuickInsightsView = Backbone.View
 				}
 
 				//Data
-				var logBookData = this.getCleanedData(startDate, endDate);
+				var logBookData = this.getCleanedData(startDate, endDate,showAll);
 
 				//Date dimension range
 				
@@ -75,6 +76,10 @@ window.QuickInsightsView = Backbone.View
 				var axisEndDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
 				var maxBloodSugarX = parseInt(d3.max(logBookData, function(d) {return d.glucoseLevel;})) + 10;
 				var minBloodSugarX = 30;
+				
+
+				//picker
+				this.setDatePickerPeriod(startDate,endDate);
 
 				// Create the crossfilter for the relevant dimensions and groups.
 				var logBook = crossfilter(logBookData);
@@ -93,13 +98,9 @@ window.QuickInsightsView = Backbone.View
 				window.datesChart = dc.barChart("#log-period-chart");
 				
 				datesChart
-					.width(800)
-					.height(80).margins({
-						top : 10,
-						right : 5,
-						bottom : 20,
-						left : 5
-					})
+					.width(480)
+					.height(40)
+		            .margins({top: 10, right: 5, bottom: 20, left: 20})
 					.dimension(timePeriod)
 	                .group(timePeriodGroup)
 	                .centerBar(true)
@@ -110,69 +111,94 @@ window.QuickInsightsView = Backbone.View
 	                .renderlet(function(chart) {
 						chart.select("g.y").style("display", "none");
 						window.quickInsightsChart.filter(chart.filter());
+						window.carbRatioChart.filter(chart.filter());
+						window.bolusAmountChart.filter(chart.filter());
+						window.insulinSensitivityChart.filter(chart.filter());
 					}).on("filtered", function(chart) {
 						dc.events.trigger(function() {
 							window.quickInsightsChart.focus(chart.filter());
+							window.carbRatioChart.focus(chart.filter());
+							window.bolusAmountChart.focus(chart.filter());
+							window.insulinSensitivityChart.focus(chart.filter());
 						});
 					});
 
 			},
 			createQuickInsightsChart : function(timePeriod,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
-				window.quickInsightsChart = dc.compositeChart("#quick-insights-chart");
 				
-				var bloodGlucoseGroup = timePeriod.group().reduceSum(function(d){return d.glucoseLevel});
-				var carbRatioGroup = timePeriod.group().reduceSum(function(d){return d.carbRatio});
+				var bloodGlucoseGroup = timePeriod.group().reduceSum(function(d){ return d.glucoseLevel});
+				var carbRatioGroup = timePeriod.group().reduceSum(function(d){ return d.carbRatio});
 				var insulinSensitivityGroup = timePeriod.group().reduceSum(function(d){return d.insulinSensitivity});
 				var bolusAmountGroup = timePeriod.group().reduceSum(function(d){return d.bolusAmount});
 				
-				/*quickInsightsChart
-				    .width(800) // (optional) define chart width, :default = 200
-				    .height(240) // (optional) define chart height, :default = 200
-				    .margins({top: 10, right: 50, bottom: 30, left: 40})
-				    .dimension(timePeriod) // set dimension
-				    .group(bloodGlucoseGroup) // set group
-				    .elasticY(true)
-				    .elasticX(true)
-				    .x(d3.time.scale().domain([startDate, endDate]))
-				    .renderHorizontalGridLines(true)
-				    .renderVerticalGridLines(true)
-				    .renderArea(true)
-				    .stack(carbRatioGroup)
-				    .stack(insulinSensitivityGroup)
-				    .stack(bolusAmountGroup)
-				    .brushOn(true)
-				    .title(function(d) { return "Value: " + d.value; })
-				    .renderTitle(true)
-				    .dotRadius(10);*/
+				window.quickInsightsChart = dc.barChart("#quick-insights-chart");
 				
-				quickInsightsChart.width(800)
-	                .height(180)
-	                .transitionDuration(1000)
-	                .margins({top: 10, right: 50, bottom: 25, left: 40})
-	                .dimension(timePeriod) // set dimension
-				    .group(bloodGlucoseGroup) // set group
-	                .x(d3.time.scale().domain([startDate, endDate]))
-	                .round(d3.time.day.round)
-	                .xUnits(d3.time.days)
-	                .elasticY(true)
-	                .renderHorizontalGridLines(true)
-	                .brushOn(false)
-	                .compose([
-	                    dc.lineChart(quickInsightsChart)
-	                    	.group(bloodGlucoseGroup)
-	                        .renderArea(true)
-	                        .stack(carbRatioGroup)
-	                        .stack(insulinSensitivityGroup)
-	                        .stack(bolusAmountGroup)    
-	                ])
-	                .xAxis();
+				quickInsightsChart
+					.width(480)
+		            .height(200)
+		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .dimension(timePeriod)
+		            .group(bloodGlucoseGroup)   
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .y(d3.scale.linear().domain([minBloodSugarX,maxBloodSugarX]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
+				
+				window.carbRatioChart = dc.barChart("#quick-carb-ratio");
+				
+				carbRatioChart
+					.width(480)
+		            .height(200)
+		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .dimension(timePeriod)
+		            .group(carbRatioGroup)   
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
+				
+				window.bolusAmountChart = dc.barChart("#quick-insulin-amount");
+				
+				bolusAmountChart
+					.width(480)
+		            .height(200)
+		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .dimension(timePeriod)
+		            .group(bolusAmountGroup)   
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
+				
+				
+				window.insulinSensitivityChart = dc.barChart("#quick-insulin-sensitivity");
+				
+				insulinSensitivityChart
+					.width(480)
+		            .height(200)
+		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .dimension(timePeriod)
+		            .group(insulinSensitivityGroup)   
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
 				
 			},
 			getCleanedData : function(fromDate,toDate) {
 				
 				var data;
 				
-				if(fromDate&&toDate){
+				if(showAll){
+					console.log("show all");
+					data = this.model.logEntries;
+					
+				}else if(fromDate&&toDate){
 					console.log("show data period");
 					data = this.model.logEntries.filterPeriod(fromDate,toDate);
 					
@@ -191,8 +217,6 @@ window.QuickInsightsView = Backbone.View
 					
 					data = this.model.logEntries.filterPeriod(fromDate,toDate);
 				}
-				
-				this.setDatePickerPeriod(fromDate,toDate);
 				
 				var logResults = new Array();
 				data.forEach(function(entry) {

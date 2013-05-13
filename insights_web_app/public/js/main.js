@@ -29,6 +29,7 @@ var AppRouter = Backbone.Router.extend({
 		"" : "showLogBook",
 		"share/:linkId" : "shareLogBook",
 		"graphs" : "showDashboard",
+		"quick" : "showQuickInsights",
 		"account" : "showAccount"
 	},
 
@@ -81,6 +82,15 @@ var AppRouter = Backbone.Router.extend({
 	showDashboard : function() {
 		if (app.appUser) {
 			app.showView(new InsightsDashboardView({
+				model : app.appUser
+			}));
+		} else {
+			this.showHomeView();
+		}
+	},
+	showQuickInsights : function() {
+		if (app.appUser) {
+			app.showView(new QuickInsightsView({
 				model : app.appUser
 			}));
 		} else {

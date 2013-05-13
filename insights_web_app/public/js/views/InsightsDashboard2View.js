@@ -307,11 +307,11 @@ window.InsightsDashboardView = Backbone.View
 				var bloodGlucoseGroup = timePeriod.group().reduceSum(function(d){return d.glucoseLevel});
 				
 				bloodGlucoseChart
-				 .width(800)
-	                .height(240)
+				 .width(400)
+	                .height(200)
 	                .margins({top: 10, right: 50, bottom: 30, left: 60})
 	                .dimension(timePeriod)
-	                .group(bloodGlucoseGroup)
+	                .group(bloodGlucoseGroup)   
                 .centerBar(true)
                 .gap(0)
                 .x(d3.time.scale().domain([startDate, endDate]))
@@ -469,7 +469,7 @@ window.InsightsDashboardView = Backbone.View
 						.group(dayFacts)
 						.transitionDuration(1500)
 						.colors([ "red", "#ccc", "steelblue", "green" ])
-						.colorDomain([ 0, 100 ])
+						.colorDomain([ 80, 180 ])
 						.colorAccessor(function(d) {
 							return d.value.inRangePercent;
 						})

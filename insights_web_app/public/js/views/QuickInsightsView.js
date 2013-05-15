@@ -26,21 +26,26 @@ window.QuickInsightsView = Backbone.View
 					view.showFilterableDashboard(null,null,false);
 				}, this);
 				
-				var self = this;
-				
-				$('#log-dates').daterangepicker(
-						{},
-						function(start, end) {
-	                    	 self.showFilterableDashboard(start, end,false);
-	                    	 //alert("todo");
-	                     }      
-	             );
-				
 				return this;
 			},
 			setDatePickerPeriod:function (fromDate,toDate){
 				
+				var self = this;
+				
 				$('#log-dates').val(moment(fromDate).format("MMMM D, YYYY") + ' - ' + moment(toDate).format("MMMM D, YYYY"));
+				
+				$('#log-dates').daterangepicker(
+						{
+							startDate: fromDate,
+			                endDate: toDate,
+			                dateLimit: { days: 31 }
+			            },
+						function(start, end) {
+	                    	 self.showFilterableDashboard(start, end,false);
+	                     }      
+	             );
+				
+			
 			},	
 			showAll : function(e){
 				e.preventDefault();
@@ -77,30 +82,52 @@ window.QuickInsightsView = Backbone.View
 				var maxBloodSugarX = parseInt(d3.max(logBookData, function(d) {return d.glucoseLevel;})) + 10;
 				var minBloodSugarX = 30;
 				
-
 				//picker
 				this.setDatePickerPeriod(startDate,endDate);
 
 				// Create the crossfilter for the relevant dimensions and groups.
 				var logBook = crossfilter(logBookData);
-				var timePeriod = logBook.dimension(function(d) { return d.resultDate; });
-				var day = logBook.dimension(function(d) { return d.day; });
+				var timePeriod = logBook.dimension(function(d) { return d.resultDate; }),
+				day = logBook.dimension(function(d) { return d.day; });
 				
-				this.createAllDatesChart(day, axisStartDate, axisEndDate);
-				this.createQuickInsightsChart(timePeriod, axisStartDate, axisEndDate,minBloodSugarX,maxBloodSugarX);
+				//var period = this.getPeriod(startDate,endDate);
+				//if(period==="day"){
+				//	console.log("day summary");
+				//	timePeriod = day;
+				//}else{
+				//	console.log("all records");
+					//timePeriod = logBook.dimension(function(d) { return d.resultDate; });
+				//}
+				
+				var groupBuilder = new BuildGroups(timePeriod);
 
+				this.createAllDatesChart(day, axisStartDate, axisEndDate);
+				this.createQuickBGChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
+				this.createQuickBolusChart(timePeriod, groupBuilder.bolusAmountGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
+				this.createQuickCarbRatioChart(timePeriod, groupBuilder.carbRatioGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
+				this.createQuickSensitivityChart(timePeriod, groupBuilder.insulinSensitivityGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX)
+				
 				dc.renderAll();
 			},
+			getPeriod : function(start,end){
+				var oneDay = 24*60*60*1000;
+				var daysDiff = Math.round(Math.abs((start.getTime()-end.getTime())/(oneDay)));
+				if(daysDiff<=60){
+					return "all";
+				}
+				return "day";
+			},
+			
 			createAllDatesChart : function(timePeriod, startDate, endDate) {
 
 				var timePeriodGroup = timePeriod.group();
 
 				window.datesChart = dc.barChart("#log-period-chart");
 				
-				datesChart
+				window.datesChart
 					.width(480)
 					.height(40)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .margins({top: 10, right: 5, bottom: 20, left: 40})
 					.dimension(timePeriod)
 	                .group(timePeriodGroup)
 	                .centerBar(true)
@@ -120,67 +147,36 @@ window.QuickInsightsView = Backbone.View
 							window.carbRatioChart.focus(chart.filter());
 							window.bolusAmountChart.focus(chart.filter());
 							window.insulinSensitivityChart.focus(chart.filter());
+							dc.redrawAll();
 						});
-					});
+					}).xAxis().ticks(5);
 
 			},
-			createQuickInsightsChart : function(timePeriod,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
-				
-				var bloodGlucoseGroup = timePeriod.group().reduceSum(function(d){ return d.glucoseLevel});
-				var carbRatioGroup = timePeriod.group().reduceSum(function(d){ return d.carbRatio});
-				var insulinSensitivityGroup = timePeriod.group().reduceSum(function(d){return d.insulinSensitivity});
-				var bolusAmountGroup = timePeriod.group().reduceSum(function(d){return d.bolusAmount});
-				
-				window.quickInsightsChart = dc.barChart("#quick-insights-chart");
-				
-				quickInsightsChart
-					.width(480)
-		            .height(200)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
-		            .dimension(timePeriod)
-		            .group(bloodGlucoseGroup)   
-		            .centerBar(true)
-		            .gap(0)
-		            .x(d3.time.scale().domain([startDate, endDate]))
-		            .y(d3.scale.linear().domain([minBloodSugarX,maxBloodSugarX]))
-		            .renderHorizontalGridLines(true)
-		            .xAxis().ticks(5);
-				
-				window.carbRatioChart = dc.barChart("#quick-carb-ratio");
-				
-				carbRatioChart
-					.width(480)
-		            .height(200)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
-		            .dimension(timePeriod)
-		            .group(carbRatioGroup)   
-		            .centerBar(true)
-		            .gap(0)
-		            .x(d3.time.scale().domain([startDate, endDate]))
-		            .renderHorizontalGridLines(true)
-		            .xAxis().ticks(5);
+			createQuickBolusChart : function(timePeriod,bolusAmountGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
 				
 				window.bolusAmountChart = dc.barChart("#quick-insulin-amount");
 				
-				bolusAmountChart
+				window.bolusAmountChart
 					.width(480)
-		            .height(200)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .height(180)
+		            .margins({top: 10, right: 5, bottom: 20, left: 40})
 		            .dimension(timePeriod)
-		            .group(bolusAmountGroup)   
+		            .group(bolusAmountGroup) 
 		            .centerBar(true)
 		            .gap(0)
 		            .x(d3.time.scale().domain([startDate, endDate]))
 		            .renderHorizontalGridLines(true)
 		            .xAxis().ticks(5);
 				
+			},
+			createQuickSensitivityChart : function(timePeriod,insulinSensitivityGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
 				
 				window.insulinSensitivityChart = dc.barChart("#quick-insulin-sensitivity");
 				
-				insulinSensitivityChart
+				window.insulinSensitivityChart
 					.width(480)
-		            .height(200)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .height(180)
+		            .margins({top: 10, right: 5, bottom: 20, left: 40})
 		            .dimension(timePeriod)
 		            .group(insulinSensitivityGroup)   
 		            .centerBar(true)
@@ -190,7 +186,42 @@ window.QuickInsightsView = Backbone.View
 		            .xAxis().ticks(5);
 				
 			},
-			getCleanedData : function(fromDate,toDate) {
+			createQuickCarbRatioChart : function(timePeriod,carbRatioGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
+				
+				window.carbRatioChart = dc.barChart("#quick-carb-ratio");
+				
+				window.carbRatioChart
+					.width(480)
+		            .height(180)
+		            .margins({top: 10, right: 5, bottom: 20, left: 40})
+		            .dimension(timePeriod)
+		            .group(carbRatioGroup)
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
+				
+			},
+			createQuickBGChart : function(timePeriod,bloodGlucoseGroup, startDate, endDate,minBloodSugarX,maxBloodSugarX) {
+			
+				window.quickInsightsChart = dc.barChart("#quick-insights-chart");
+				
+				window.quickInsightsChart
+					.width(480)
+		            .height(180)
+		            .margins({top: 10, right: 5, bottom: 20, left: 40})
+		            .dimension(timePeriod)
+		            .group(bloodGlucoseGroup)   
+		            .centerBar(true)
+		            .gap(0)
+		            .x(d3.time.scale().domain([startDate, endDate]))
+		            .y(d3.scale.linear().domain([minBloodSugarX,maxBloodSugarX]))
+		            .renderHorizontalGridLines(true)
+		            .xAxis().ticks(5);
+				
+			},
+			getCleanedData : function(fromDate,toDate,showAll) {
 				
 				var data;
 				

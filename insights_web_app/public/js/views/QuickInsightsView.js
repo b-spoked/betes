@@ -141,6 +141,7 @@ window.QuickInsightsView = Backbone.View
 						window.carbRatioChart.filter(chart.filter());
 						window.bolusAmountChart.filter(chart.filter());
 						window.insulinSensitivityChart.filter(chart.filter());
+						dc.redrawAll();
 					}).on("filtered", function(chart) {
 						dc.events.trigger(function() {
 							window.quickInsightsChart.focus(chart.filter());
@@ -152,6 +153,24 @@ window.QuickInsightsView = Backbone.View
 					}).xAxis().ticks(5);
 
 			},
+			/*createFactsChart : function(timePeriod,factsGroup){
+				
+				dc.dataTable("#data-table")
+			    .dimension(dateDimension)
+			    .group(function(d) {
+			        return d.dd.getFullYear() + "/" + (d.dd.getMonth() + 1);
+			    })
+			    .size(7)
+			    .columns([
+			        function(d) { return d.date; },
+			        function(d) { return d.open; },
+			        function(d) { return d.close; },
+			        function(d) { return Math.floor((d.close - d.open)/d.open*100) + "%"; },
+			        function(d) { return d.volume; }
+			    ])
+			    .sortBy(function(d){ return d.day; })
+			    .order(d3.ascending);
+			},*/
 			createQuickBolusChart : function(timePeriod,bolusAmountGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
 				
 				window.bolusAmountChart = dc.barChart("#quick-insulin-amount");

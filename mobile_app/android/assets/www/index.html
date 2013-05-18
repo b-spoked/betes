@@ -22,17 +22,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="format-detection" content="telephone=no" />
 <meta name="viewport"
-	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+	content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=medium-dpi" />
 <link rel="stylesheet" href="stylesheet/vendor/bootstrap.min.css" />
 <link rel="stylesheet"
 	href="stylesheet/vendor/bootstrap-responsive.min.css" />
 <link rel="stylesheet" href="stylesheet/vendor/font-awesome.css" />
 <link rel="stylesheet" href="stylesheet/vendor/dc.css" />
 <link rel="stylesheet" href="stylesheet/vendor/daterangepicker.css" />
+<link rel="stylesheet" href="stylesheet/vendor/flat-ui.css"/>
 <link rel="stylesheet" href="stylesheet/main.css" />
 </head>
 <body>
-	<div class="container">
+	<div class="container-fluid">
 		<div id="modal-dialog"></div>
 		<div id="app"></div>
 	</div>
@@ -41,8 +42,7 @@
 	<div class="navbar-inner">
 		<ul class="nav">
 			<li><a href="#">Log</a></li>
-			<li><a href="#/graphs">Insights</a></li>
-			<li class="active"><a href="#/quick">Quick Insights</a></li>
+			<li class="active"><a href="#/insights">Insights</a></li>
 		</ul>
 		<div class="pull-right">
 			<%if(authenticated) {%>
@@ -62,8 +62,8 @@
 	</div>
 </div>
 <div id="graphs">
-	<div class="container-fluid">
-		<div class="row-fluid">
+	<div class="container">
+		<div class="row">
 			<form class="form-inline">
 				Showing:
 				<div class="input-prepend">
@@ -73,7 +73,7 @@
 				<!--<button id="show-all-results" class="btn btn-link">Show All</button>-->
 			</form>
 		</div>
-		<div class="row-fluid">
+		<div class="row">
 		<div class="span6">
 			<div id="log-period-chart">
 					<strong>Date Range</strong> <span class="reset" style="display: none;">Showing:
@@ -125,7 +125,7 @@
 	<div class="navbar-inner">
 		<ul class="nav">
 			<li><a href="#">Log</a></li>
-			<li><a href="#/graphs">Insights</a></li>
+			<li><a href="#/insights">Insights</a></li>
 		</ul>
 		<div class="pull-right">
 			<%if(authenticated) {%>
@@ -145,8 +145,8 @@
 	</div>
 </div>
 <div id="account">
-	<div class="container-fluid">
-  		<div class="row-fluid">
+	<div class="container">
+  		<div class="row">
     		<div class="span3 well well-small">
       			<!--Sidebar content-->
 
@@ -193,51 +193,93 @@
 	</script>
 	<script type="text/template" id="logbook-template">
 	<div class="navbar navbar-inverse ">
-		<div class="navbar-inner">
-			<ul class="nav">
-				<li class="active"><a href="#">Log</a></li>
-				<li><a href="#/graphs">Insights</a></li>
-			</ul>
-			<div class="pull-right">
-				<%if(authenticated) {%>
-					<div class="btn-group">
-  						<button class="btn">Hey <%= name%></button>
-  						<button class="btn dropdown-toggle" data-toggle="dropdown">
-    						<span class="caret"></span>
-  						</button>
-  						<ul class="dropdown-menu">
-    						<li><a href="#/account"> Account</a></li>
-    						<li><a href="#" id="logout"> Logout</a></li>
-  						</ul>
-					</div>
-				<%} else { %>
-					<a href="#" id="login" class="btn btn-small"><i class="icon-signin"></i> Login</a>
-				<%}%>    
+	<div class="navbar-inner">
+		<ul class="nav">
+			<li class="active"><a href="#">Log</a></li>
+			<li><a href="#/insights">Insights</a></li>
+		</ul>
+		<div class="pull-right">
+			<%if(authenticated) {%>
+			<div class="btn-group">
+				<button class="btn">Hey <%= name%></button>
+				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li><a href="#/account"> Account</a></li>
+					<li><a href="#" id="logout"> Logout</a></li>
+				</ul>
 			</div>
+			<%} else { %> <a href="#" id="login" class="btn btn-primary"><i
+				class="icon-signin"></i> Login</a> <%}%>
 		</div>
 	</div>
-	<div id="logbook">
-			<form class="form-inline">
-				<!--<button class="btn btn-primary force-load">Load</button>
-				<label for="logbook-days">Show:</label>	
-  				<input id="logbook-days" class="logbook-days" type="text" placeholder="Number of days">-->
-				<label for="logbook-filter">Filter:</label>
-				<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
-			</form>
-			
-			<table class="table table-bordered table-condensed">
-			<thead>
-				<tr>
-					<th>What</th>
-					<th>When</th>
-					<th>Comments</th>
-					<th>Lables</th>
-				</tr>
-			</thead>
-			<tbody id="events-list">
-			</tbody>
-		</table>	
+</div>
+<div id="logbook">
+	<p>
+	<button class="btn btn-large btn-primary" data-toggle="collapse"
+		data-target="#create-new-entry">Add Event</button>
+
+	<div id="create-new-entry" class="collapse">
+		<form>
+			<div class="controls controls-row">
+				<label for="entry-name">Basics</label>
+			</div>
+			<div class="controls controls-row">
+				<select id="entry-name" autofocus>
+					<option value="Breakfast">Breakfast</option>
+					<option value="Lunch">Lunch</option>
+					<option value="Dinner">Dinner</option>
+					<option value="Bed">Bed</option>
+					<option value="Other">Other</option>
+				</select> <input type="text" name="entry-date" id="entry-date">
+			</div>
+			<div class="controls controls-row">
+				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
+				<input type="text" id="entry-insulin" placeholder="Insulin Given">
+			</div>
+			<div class="controls controls-row">
+				<label for="entry-exercise-duration">exercise</label> <input
+					type="text" id="entry-exercise-duration"
+					placeholder="exercise duration?"> <select
+					id="entry-exercise-intensity">
+					<option value="">NA</option>
+					<option value="Easy">Easy</option>
+					<option value="Easy-Moderate">Easy-Moderate</option>
+					<option value="Moderate">Moderate</option>
+					<option value="Moderate-Intense">Moderate-Intense</option>
+					<option value="Intense">Intense</option>
+				</select>
+			</div>
+			<div class="controls controls-row">
+				<label for="entry-labels">Labels</label> <input type="text"
+					id="entry-labels"
+					placeholder="e.g. sickday, traveling (comma seperated)"> 
+			</div>
+			<div class="controls controls-row">
+			<label
+					for="entry-comments">Comments</label>
+				<textarea rows="3" id="entry-comments"
+					placeholder="General Comments"></textarea>
+			</div>
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary add-entry">Save</button>
+		</form>
 	</div>
+	</p>
+	<table class="table table-bordered table-condensed">
+		<thead>
+			<tr>
+				<th>What</th>
+				<th>When</th>
+				<th>Comments</th>
+				<th>Lables</th>
+			</tr>
+		</thead>
+		<tbody id="events-list">
+		</tbody>
+	</table>
+</div>
 	</script>
 	<script type="text/template" id="share-template">
 	<div class="navbar navbar-inverse ">
@@ -278,24 +320,17 @@
 		<div class="navbar-inner">
 			<ul class="nav">
 				<li class="active"><a class="disabled" href="#">Log</a></li>
-				<li><a class="disabled" href="#/graphs">Insights</a></li>
+				<li><a class="disabled" href="#/insights">Insights</a></li>
 			</ul>
 		</div>
 	</div>
 	<div id="logbook">
 		<div class="hero-unit text-center">
-  			<h1 >Welcome to Betes Log Insights</h1>
-  			<p>Insights into your diabetes</p>
+  			<h3>Welcome to Betes Insights</h3>
   			<p>
     			<a href="#" id="login" class="btn btn-primary btn-large">
 					<i class="icon-signin"></i>
       				Sign Up or Sign In
-    			</a>
-  			</p>
-			<p>
-    			<a href="http://beteslog.com" target="_blank" class="btn btn-large">
-					<i class="icon-bullhorn"></i>
-      				What we are about
     			</a>
   			</p>
 		</div>
@@ -335,8 +370,8 @@
 	<script type="text/template" id="logbookitem-template">
 	<% if(glucoseLevel>0) { %>
     <td  class="alert alert-success"><h4><%= glucoseLevel %></h4></td>
-	<% }else if(bolusAmount>0) { %>
-	<td  class="alert alert-info"><h4><%= bolusAmount %> u</h4></td>
+	<% }else if(insulinAmount>0) { %>
+	<td  class="alert alert-info"><h4><%= insulinAmount %> u</h4></td>
 	<%}%>
     <td><small><%=resultDate%></small></td>
     <td><small><%=comments%></small></td>	
@@ -345,7 +380,7 @@
 	<script type="text/template" id="add-logbookitem-template">
 	<div id="add-entry-dialog" class="modal hide fade">
 		<div class="modal-header">
-			<h3>Add a new log book entry</h3>
+			<h3>Add entry</h3>
 		</div>
 		<div class="modal-body">
 			<label for="entry-name">Basics</label> <select id="entry-name"
@@ -450,11 +485,11 @@
 
 	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
-	<script type="text/javascript"
-		src="js/views/InsightsLogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/LoginModal.js"></script>
-	<script type="text/javascript" src="js/views/InsightsLogbookView.js"></script>
+	<script type="text/javascript" src="js/views/AddEntryModal.js"></script>
+	<script type="text/javascript" src="js/views/LogbookView.js"></script>
 	<script type="text/javascript" src="js/views/QuickInsightsView.js"></script>
 	<script type="text/javascript" src="js/views/ShareView.js"></script>
 	<script type="text/javascript" src="js/BuildGroups.js"></script>

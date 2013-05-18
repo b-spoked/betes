@@ -51,8 +51,9 @@ window.LogbookView = Backbone.View.extend({
 			entries.each(this.addOne, this);
 		}
 	},
-	showEventDialog : function() {
-		var addEntryDialog = new AddLogbookEntryModal({
+	showEventDialog : function(e) {
+		e.preventDefault();
+		var addEntryDialog = new AddEntryModal({
 			model : this.model
 		});
 		addEntryDialog.render();

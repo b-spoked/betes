@@ -23,8 +23,13 @@ app.put('/insights-users/:id', user.updateUser);
 /* User Data*/
 app.post('/insights-users/:id/upload-data', user.addUserData);
 
-/* User Log Book */
+/* Carelink User Log Book */
 app.get('/insights-users/:userId/logbook/carelink', user.careLinkLogDetail);
+
+/* Manual User*/
+app.get('/insights-users/:userId/logbook/manual', user.manualLogDetail);
+app.post('/insights-users/:userId/logbook/manual', user.manualAddResult);
+app.put('/insights-users/:userId/logbook/manual:id', user.manualEditResult);
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));

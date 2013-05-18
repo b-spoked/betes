@@ -214,3 +214,99 @@ function getAllLogEntriesSelect(){
 function getMonthsLogEntriesSelect(){
 	return logBookCarelinkSelectBase.concat(" LIMIT 1000 ORDER BY `resultDate` DESC");
 }
+
+exports.manualAddResult = function(req, res) {
+
+	var logResult = {
+		userId : req.body.userId,
+		resultDate : req.body.resultDate,
+		glucoseLevel : req.body.glucoseLevel,
+		insulinSensitivity : req.body.insulinSensitivity, 
+		bolusAmount : req.body.bolusAmount,
+		carbRatio : req.body.carbRatio,
+		comments : req.body.comments,
+		labels : req.body.labels,	
+		updated_at : new Date()
+	};
+
+	console.log('about to add or update result: ' + JSON.stringify(logResult));
+	mysqldb.query('INSERT INTO user SET ? ON DUPLICATE KEY UPDATE ? ', [ logResult,
+	                                                                     logResult ], function(err, result) {
+		if (err) {
+			res.send({
+				'error' : 'An error has occurred'
+			});
+		} else {
+			// console.log('Success: ' + JSON.stringify(result));
+			res.send({
+				"id" : result.insertId
+			});
+		}
+	});
+
+};
+
+exports.manualEditResult = function(req, res) {
+
+	var logResult = {
+			userId : req.body.userId,
+			resultDate : req.body.resultDate,
+			glucoseLevel : req.body.glucoseLevel,
+			insulinSensitivity : req.body.insulinSensitivity, 
+			bolusAmount : req.body.bolusAmount,
+			carbRatio : req.body.carbRatio,
+			comments : req.body.comments,
+			labels : req.body.labels,	
+			updated_at : new Date()
+		};
+
+	var resultId = req.params.id;
+	console.log('update: ' + logResult);
+
+	mysqldb.query('UPDATE user SET ? WHERE id = ?', [ logResult, resultId ], function(
+			err, results) {
+		if (err) {
+			res.send({
+				'error' : 'An error has occurred'
+			});
+		} else {
+			console.log('Success: ' + JSON.stringify(results));
+			res.send(results);
+		}
+	});
+
+};
+
+exports.manualLogDetail = function(req, res) {
+	var userId = req.params.userId;
+	var getAll = req.query.all;
+	var fromDate = req.query.fromDate;
+	var toDate = req.query.toDate;
+	
+	var logBookSelect = "SELECT `Id`"
+	+", `userId`"
+	+", `resultDate`"
+	+", `glucoseLevel`"
+	+", `insulinSensitivity`"
+	+", `bolusAmount`"
+	+", `carbRatio`"
+	+", `comments`"
+	+", `labels`"
+	+" FROM `insight_log_manual`"
+	+" WHERE userId = ?"
+	+" ORDER BY `resultDate` DESC";
+	
+	
+	mysqldb.query(logBookSelect, [userId],
+			function(err, results) {
+				if (err) {
+					res.send({
+						'error' : 'An error has occurred' +JSON.stringify(err)
+					});
+				} else {
+					console.log('Success: ' + JSON.stringify(results));
+					res.send(results);
+				}
+			});
+	
+};

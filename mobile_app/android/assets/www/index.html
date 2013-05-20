@@ -233,7 +233,7 @@
 </div>
 <div id="logbook">
 	<p>
-	<button class="btn btn-large btn-primary" data-toggle="collapse"
+	<button class="btn btn-large btn-primary" id="show-new-entry" data-toggle="collapse"
 		data-target="#create-new-entry">Add Event</button>
 
 	<div id="create-new-entry" class="collapse">
@@ -283,6 +283,7 @@
 		</form>
 	</div>
 	</p>
+	<div class="palette palette-info-dark">
 	<table class="table table-bordered table-condensed">
 		<thead>
 			<tr>
@@ -295,6 +296,7 @@
 		<tbody id="events-list">
 		</tbody>
 	</table>
+	</div>
 </div>
 	</script>
 	<script type="text/template" id="share-template">
@@ -341,7 +343,7 @@
 		</div>
 	</div>
 	<div id="logbook">
-		<div class="hero-unit text-center">
+		<div class="palette palette-info-dark text-center">
   			<h3>Welcome to Betes Insights</h3>
   			<p>
     			<a href="#" id="login" class="btn btn-primary btn-large">
@@ -355,27 +357,27 @@
 
 	<script type="text/template" id="login-template">
 	<div id="login-dialog" class="modal hide fade">
-		<div class="modal-header">
-			<h3>Sign Up or Sign In</h3>
+		<div class="modal-header palette palette-info-dark">
+			<h3>Sign In</h3>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body palette palette-info-dark">
 	
 			<button id="login-google" class="btn btn-block btn-primary btn-large">
-				<i class="icon-google-plus icon-large"></i> Google Account
+				<i class="icon-google-plus icon-large"></i> Sign In with Google Account
 			</button>
 	
 		</div>
-		<div class="modal-footer">
+		<div class="modal-footer palette palette-info-dark">
 			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 		</div>
 	</div>
 	</script>
 	<script type="text/template" id="loading-template">
 	<div id="loading-dialog" class="modal hide fade">
-		<div class="modal-header">
+		<div class="modal-header palette palette-info-dark">
 			<h3>Loading ... </h3>
 		</div>
-		<div class="modal-body text-center">
+		<div class="modal-body text-center palette palette-info-dark">
 			<img src='/img/loader.gif'>
 		</div>
 	</div>
@@ -508,8 +510,8 @@
 	<script type="text/javascript" src="js/BuildGroups.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
-	document.addEventListener("deviceready", startApplication, true);
-	//startApplication();
+	//document.addEventListener("deviceready", startApplication, true);
+	startApplication();
 	</script>
 
 </body>

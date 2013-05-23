@@ -15,7 +15,7 @@ window.HypoView = Backbone.View.extend({
 
 	initialize : function() {
 		_.bindAll(this);
-		this.template = _.template($('#logbook-template').html());
+		this.template = _.template($('#hypo-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
 		this.model.logEntries.bind('add', this.addOne, this);
 	},
@@ -32,7 +32,7 @@ window.HypoView = Backbone.View.extend({
 		return this;
 	},
 	addOne : function(entry) {
-		var view = new LowMateLogBookEntryView({
+		var view = new LogbookEntryView({
 			model : entry
 		});
 		this.$('#events-list').append(view.render().el);

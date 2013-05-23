@@ -40,32 +40,20 @@
 	<script type="text/template" id="quick-insights-template">
 	<div class="navbar navbar-inverse">
 	<div class="navbar-inner">
-		<ul class="nav">
-			<li><a href="#">Log</a></li>
-			<li class="active"><a href="#/insights">Insights</a></li>
-		</ul>
-		<div class="pull-right">
-			<%if(authenticated) {%>
-			<div class="btn-group">
-				<button class="btn">Hey <%= name%></button>
-				<button class="btn dropdown-toggle" data-toggle="dropdown">
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="#/account">Account</a></li>
-					<li><a href="#" id="logout">Logout</a></li>
+		<div class="container">
+			<ul class="nav">
+				<li><a href="#"><i class="icon-home"></i></a></li>
+			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
 				</ul>
 			</div>
-			<%} else { %> 
-			<ul class="nav">
-				<li>
-				<a href="#" id="login" ><i class="icon-signin"></i> Login</a> 
-				</li>
-			</ul>
-			<%}%>
 		</div>
 	</div>
-</div>
 </div>
 <div id="graphs">
 	<div class="container-fluid">
@@ -124,159 +112,77 @@
 	<script type="text/template" id="account-template">
 <div class="navbar navbar-inverse">
 	<div class="navbar-inner">
-		<ul class="nav">
-			<li><a href="#">Log</a></li>
-			<li><a href="#/insights">Insights</a></li>
-		</ul>
-		<div class="pull-right">
-			<%if(authenticated) {%>
-			<div class="btn-group">
-				<button class="btn">Hey <%= name%></button>
-				<button class="btn dropdown-toggle" data-toggle="dropdown">
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="#/account">Account</a></li>
-					<li><a href="#" id="logout">Logout</a></li>
+		<div class="container">
+			<ul class="nav">
+				<li><a href="#"><i class="icon-home"></i></a></li>
+			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
 				</ul>
 			</div>
-			<%} else { %> 
-			<ul class="nav">
-				<li>
-				<a href="#" id="login" ><i class="icon-signin"></i> Login</a> 
-				</li>
-			</ul>
-			<%}%>
 		</div>
 	</div>
 </div>
 <div id="account">
 	<div class="container-fluid">
-  		<div class="row-fluid">
-    		<div class="span3 well well-small">
-      			<!--Sidebar content-->
+		<div class="row-fluid">
+			<img class="media-object" style="width: 45px; height: 45px;"
+				src="<%= thumbnailPath%>">
+			<p><%= name%></p>
 
-				<img class="media-object" style="width: 90px; height: 90px;" src="<%= thumbnailPath%>">
-				<p><%= name%></p>
-				<%if(allowSharing) {%>
-					Share link: <span class="input-xlarge uneditable-input"><%=shareLinkId%></span>
-				<%}%>
-    		</div>
-    		<div class="span9">
-				<h3>Upload Results:</h3>
-				<form action="/insights-users/<%=sid%>/upload-data" enctype="multipart/form-data" method="post">
-    				<input type="file" name="upload" multiple="multiple">
-					<div class="form-actions">	
-						<button class="btn">Cancel</button>
-						<button type="submit" class="btn btn-primary">Upload</button>
-					</div>	
-    			</form>
+			<div id="settings-section" class="palette palette-info-dark">
 				<h3>Settings:</h3>
-				<form id="account-settings" >
-					
-						<label class="control-label">
-							<input id="userNewsletter" type="checkbox" value="true"> 
-							Receive Newsletter?
-						</label>
-						<label class="control-label">  
-							<input id="allowSharing" type="checkbox" value="true"> 
-							Allow sharing and generate link?
-						</label>
-						<label class="control-label">Testing Units</label> 
-						<select id="userTestingUnits">
-								<option value="mmol/l">mmol/l</option>
-								<option value="mg/dL">mg/dL</option>
-							</select>
-						<div class="form-actions">
-							<button class="btn">Cancel</button>
-							<button type="submit" class="save-account-settings btn btn-primary">Save</button>
-						</div>
-				</form>
-    		</div>
-  		</div>
+				<div class="row">
+					<strong>Do you want to revcieve our newsletter?</strong>
+					<input type="checkbox" id="newsletter" value="true">
+				</div>
+				<div class="row">
+					<strong>Do you want a email summary of your results?</strong>
+					<input type="checkbox" id="email-summary" value="true">
+				</div>
+				<div class="row">
+					<strong>Glucose measurement units</strong>
+					<input type="radio" name="optionsRadios" id="mmoll" value="mmoll" checked> mmol/l
+				</div>
+				<div class="row">
+					<input type="radio" name="optionsRadios" id="mgdl" value="mgdl"> mgdl
+				</div>
+			
+				<h3>Options:</h3>
+				<div class="row">
+					<button id="logout" class="btn btn-block">Logout</button>
+					<button id="remove-account" class="btn btn-block btn-small btn-danger">Remove Account</button>
+				</div>	
+			</div>
+		</div>
 	</div>
-	</div>
+</div>
 	</script>
 	<script type="text/template" id="logbook-template">
 	<div class="navbar navbar-inverse">
 	<div class="navbar-inner">
-		<ul class="nav">
-			<li class="active"><a href="#">Log</a></li>
-			<li><a href="#/insights">Insights</a></li>
-		</ul>
-		<div class="pull-right">
-			<%if(authenticated) {%>
-			<div class="btn-group">
-				<button class="btn">Hey <%= name%></button>
-				<button class="btn dropdown-toggle" data-toggle="dropdown">
-					<span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu">
-					<li><a href="#/account">Account</a></li>
-					<li><a href="#" id="logout">Logout</a></li>
+		<div class="container">
+			<ul class="nav">
+				<li><a href="#"><i class="icon-home"></i> </a></li>
+			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
 				</ul>
 			</div>
-			<%} else { %> 
-			<ul class="nav">
-				<li>
-				<a href="#" id="login" ><i class="icon-signin"></i> Login</a> 
-				</li>
-			</ul>
-			<%}%>
 		</div>
 	</div>
 </div>
 <div id="logbook">
 	<p>
-	<button class="btn btn-large btn-primary" id="show-new-entry" data-toggle="collapse"
-		data-target="#create-new-entry">Add Event</button>
-
-	<div id="create-new-entry" class="collapse">
-		<form>
-			<div class="controls controls-row">
-				<label for="entry-name">Basics</label>
-			</div>
-			<div class="controls controls-row">
-				<select id="entry-name" autofocus>
-					<option value="Breakfast">Breakfast</option>
-					<option value="Lunch">Lunch</option>
-					<option value="Dinner">Dinner</option>
-					<option value="Bed">Bed</option>
-					<option value="Other">Other</option>
-				</select> <input type="text" name="entry-date" id="entry-date">
-			</div>
-			<div class="controls controls-row">
-				<input type="text" id="entry-level" placeholder="Your Blood Sugar">
-				<input type="text" id="entry-insulin" placeholder="Insulin Given">
-			</div>
-			<div class="controls controls-row">
-				<label for="entry-exercise-duration">exercise</label> <input
-					type="text" id="entry-exercise-duration"
-					placeholder="exercise duration?"> <select
-					id="entry-exercise-intensity">
-					<option value="">NA</option>
-					<option value="Easy">Easy</option>
-					<option value="Easy-Moderate">Easy-Moderate</option>
-					<option value="Moderate">Moderate</option>
-					<option value="Moderate-Intense">Moderate-Intense</option>
-					<option value="Intense">Intense</option>
-				</select>
-			</div>
-			<div class="controls controls-row">
-				<label for="entry-labels">Labels</label> <input type="text"
-					id="entry-labels"
-					placeholder="e.g. sickday, traveling (comma seperated)"> 
-			</div>
-			<div class="controls controls-row">
-			<label
-					for="entry-comments">Comments</label>
-				<textarea rows="3" id="entry-comments"
-					placeholder="General Comments"></textarea>
-			</div>
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-			<button class="btn btn-primary add-entry">Save</button>
-		</form>
-	</div>
+	<a href="#/add" class="btn btn-large btn-primary">Add Event</button>
 	</p>
 	<div class="palette palette-info-dark">
 	<table class="table table-bordered table-condensed">
@@ -328,42 +234,126 @@
 		</table>
 	</div>
 	</script>
-	<script type="text/template" id="home-template">
-	<div class="navbar navbar-inverse ">
-		<div class="navbar-inner">
+	
+	<script type="text/template" id="hypo-template">
+	<div class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
 			<ul class="nav">
-				<li class="active"><a class="disabled" href="#">Log</a></li>
-				<li><a class="disabled" href="#/insights">Insights</a></li>
+				<li><a href="#"><i class="icon-home"></i> </a></li>
 			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
+				</ul>
+			</div>
 		</div>
 	</div>
+</div>
 	<div id="logbook">
-		<div class="palette palette-info-dark text-center">
-  			<h3>Welcome to Betes Insights</h3>
-  			<p>
-    			<a href="#" id="login" class="btn btn-primary btn-large">
-					<i class="icon-signin"></i>
-      				Sign Up or Sign In
-    			</a>
-  			</p>
+		<div class="well text-center">
+			<button class="btn btn-danger btn-large treat-hypo"><i class="icon-play"></i><br /> Having a<br />Hypo</button>
+			<button class="btn btn-success btn-large hypo-treated"><i class="icon-stop"></i><br /> Hypo <br />Treated</button>
 		</div>
+		<div id="process-detail" class="alert alert-block alert-success fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Steps to treat your hypo</h4>
+			<ul>
+				<li>15g of fast acting glucose  (eg. 8 jelly beans or 5 dextrose tabs)</li>
+				<li>Wait 15 minutes and then retest</li>
+				<li>If above your hypo level eat your meal or 1 slice of bread</li>				
+				<li>If still hypo repeat the process</li>
+			</ul>
+        </div>
+		<div id="retest-reminder" class="alert alert-block alert-warning fade in" style="display:none;">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            <h4 class="alert-heading">Retest Reminder</h4>
+            <p>
+              <a class="btn btn-danger treat-hypo" href="#">Still Hypo</a> <a class="btn hypo-treated" href="#">All OK</a>
+            </p>
+        </div>
+		<table class="table table-bordered table-condensed">
+			<thead>
+				<tr>
+					<th>Time</th>
+					<th>Event</th>
+				</tr>
+			</thead>
+			<tbody id="events-list">
+			</tbody>
+		</table>
 	</div>
 	</script>
-
-	<script type="text/template" id="login-template">
-	<div id="login-dialog" class="modal hide fade">
-		<div class="modal-header palette palette-info-dark">
-			<h3>Sign In</h3>
+	<script type="text/template" id="loggedin-home-template">
+	<div class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
+			<ul class="nav">
+				<li><a href="#"><i class="icon-tint"></i></a></li>
+			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
+				</ul>
+			</div>
 		</div>
-		<div class="modal-body palette palette-info-dark">
+	</div>
+</div>
+<div class="container" id="logbook">
+	<div class="text-center">
+		<ul class="inline">
+  			<li ><a  href="#/hypo" class="btn btn-danger btn-large">
+				<i class="icon-exclamation-sign"></i><br />Track <br />Hypo
+			</a></li>
+			<li>
+			<a  href="#/add" class="btn btn-success btn-large">
+				<i class="icon-plus"></i><br />Add <br /> Event
+			</a>
+			</li>
+		</ul>	
+		<ul class="inline">
+  			<li><a href="#/log" class="btn btn-large">
+				<i class="icon-list"></i><br />Show <br />Log
+			</a>
+			</li>
+			<li>
+			 <a href="#/insights"
+				class="btn btn-large"> <i class="icon-picture"></i><br />Show
+				<br />Insights
+			</a>
+			</li>
+		</ul>
+		<ul class="inline">
+  			<li><a  href="#/account"
+				class="btn btn-large"> <i class="icon-user"></i><br />Show
+				<br />Account
+			</a>
+			</li>
+			<li> 
+			<a  href="#" class="btn btn-large">
+				<i class="icon-question-sign"></i><br />Need <br />Help
+			</a>
+			</li>
+		</ul>
+	</div>
+</div>
+	</script>
+	<script type="text/template" id="home-template">
 	
-			<button id="login-google" class="btn btn-block btn-primary btn-large">
+	<div id="logbook">
+		<div class="palette palette-info-dark text-center">
+  			<h2>Welcome to Betes Insights</h2>
+  			<p>
+				<button id="login-google" class="btn btn-block btn-success btn-large">
 				<i class="icon-google-plus icon-large"></i> Sign In with Google Account
-			</button>
-	
-		</div>
-		<div class="modal-footer palette palette-info-dark">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+				</button>
+  			</p>
 		</div>
 	</div>
 	</script>
@@ -373,57 +363,74 @@
 			<h3>Loading ... </h3>
 		</div>
 		<div class="modal-body text-center palette palette-info-dark">
-			<img src='/img/loader.gif'>
+			<img src='img/loader.gif'>
 		</div>
 	</div>
 	</script>
 	<script type="text/template" id="logbookitem-template">
 	<% if(glucoseLevel>0) { %>
-    <td  class="alert alert-success"><h4><%= glucoseLevel %></h4></td>
+    <td><h4><%= glucoseLevel %></h4></td>
 	<% }else if(insulinAmount>0) { %>
-	<td  class="alert alert-info"><h4><%= insulinAmount %> u</h4></td>
+	<td><h4><%= insulinAmount %> u</h4></td>
 	<%}%>
     <td><small><%=resultDate%></small></td>
     <td><small><%=comments%></small></td>	
     <td><small><%=labels%></small></td>
 	</script>
 	<script type="text/template" id="add-logbookitem-template">
-	<div id="add-entry-dialog" class="modal hide fade">
-		<div class="modal-header">
-			<h3>Add entry</h3>
-		</div>
-		<div class="modal-body">
-			<label for="entry-name">Basics</label> <select id="entry-name"
-				autofocus>
-				<option value="Breakfast">Breakfast</option>
-				<option value="Lunch">Lunch</option>
-				<option value="Dinner">Dinner</option>
-				<option value="Bed">Bed</option>
-				<option value="Other">Other</option>
-			</select> <input type="text" name="entry-date" id="entry-date"> <input
-				type="text" id="entry-level" placeholder="Your Blood Sugar">
-			<input type="text" id="entry-insulin" placeholder="Insulin Given">
-			<label for="entry-exercise-duration">exercise</label> <input
-				type="text" id="entry-exercise-duration"
-				placeholder="exercise duration?"> <select
-				id="entry-exercise-intensity">
-				<option value="">NA</option>
-				<option value="Easy">Easy</option>
-				<option value="Easy-Moderate">Easy-Moderate</option>
-				<option value="Moderate">Moderate</option>
-				<option value="Moderate-Intense">Moderate-Intense</option>
-				<option value="Intense">Intense</option>
-			</select> <label for="entry-labels">Labels</label> <input type="text"
-				id="entry-labels"
-				placeholder="e.g. sickday, traveling (comma seperated)"> <label
-				for="entry-comments">Comments</label>
-			<textarea rows="3" id="entry-comments" placeholder="General Comments"></textarea>
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-			<button class="btn btn-primary add-entry">Save</button>
+	<div class="navbar navbar-inverse">
+	<div class="navbar-inner">
+		<div class="container">
+			<ul class="nav">
+				<li><a href="#"><i class="icon-home"></i></a></li>
+			</ul>
+			<div class="pull-right">
+				<ul class="nav">
+					<%if(authenticated) {%>
+					<li><a href="#/account">Hey <%=name%></a></li> <%} else { %>
+					<li><a href="#" id="login"><i class="icon-signin"></i>
+							Login</a></li> <%}%>
+				</ul>
+			</div>
 		</div>
 	</div>
+</div>
+<div id="add-entry">
+
+	<div class="palette palette-info-dark">
+		<h3>Add Entry</h3>
+
+		<label for="entry-name"> Basics</label> <select id="entry-name"
+			autofocus>
+			<option value="Breakfast">Breakfast</option>
+			<option value="Lunch">Lunch</option>
+			<option value="Dinner">Dinner</option>
+			<option value="Bed">Bed</option>
+			<option value="Other">Other</option>
+		</select> <input type="text" name="entry-date" id="entry-date"> <input
+			type="text" id="entry-level" placeholder="Your Blood Sugar">
+		<input type="text" id="entry-insulin" placeholder="Insulin Given">
+		<label for="entry-exercise-duration">Exercise</label> <input
+			type="text" id="entry-exercise-duration"
+			placeholder="exercise duration?"> <select
+			id="entry-exercise-intensity">
+			<option value="">NA</option>
+			<option value="Easy">Easy</option>
+			<option value="Easy-Moderate">Easy-Moderate</option>
+			<option value="Moderate">Moderate</option>
+			<option value="Moderate-Intense">Moderate-Intense</option>
+			<option value="Intense">Intense</option>
+		</select> <label for="entry-labels">Labels</label> <input type="text"
+			id="entry-labels"
+			placeholder="e.g. sickday, traveling (comma seperated)"> <label
+			for="entry-comments">Comments</label>
+		<textarea rows="3" id="entry-comments" placeholder="General Comments"></textarea>
+		<p>
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-primary add-entry">Save</button>
+		</p>
+	</div>
+</div>
 	</script>
 	<script type="text/template" id="edit-logbookitem-template">
 	<div id="edit-entry" class="modal hide fade">
@@ -488,21 +495,22 @@
 	<script type="text/javascript" src="js/vendor/daterangepicker.js"></script>
 	<script type="text/javascript" src="js/vendor/d3.crossfilter.js"></script>
 	<script type="text/javascript" src="js/vendor/dc.min.js"></script>
-	<script type="text/javascript" src="js/backbone.oauth.mobile.js"></script>
+	<script type="text/javascript" src="js/control/backbone.oauth.mobile.js"></script>
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
 	<script type="text/javascript" src="js/models/InsightsUser.js"></script>
 
 	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
+	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
+	<script type="text/javascript" src="js/views/HypoView.js"></script>
 	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
-	<script type="text/javascript" src="js/views/LoginModal.js"></script>
-	<script type="text/javascript" src="js/views/AddEntryModal.js"></script>
+	<script type="text/javascript" src="js/views/AddEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LogbookView.js"></script>
 	<script type="text/javascript" src="js/views/QuickInsightsView.js"></script>
-	<script type="text/javascript" src="js/views/ShareView.js"></script>
-	<script type="text/javascript" src="js/BuildGroups.js"></script>
+	<script type="text/javascript" src="js/control/BuildGroups.js"></script>
+	<script type="text/javascript" src="js/control/hypo_workflow.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
 	document.addEventListener("deviceready", startApplication, true);

@@ -73,15 +73,23 @@
 						class="btn btn-link reset" style="display: none;">reset</button>
 					<div class="clearfix"></div>
 			</div>
+			<div id="bs-range-chart">
+				<strong>Glucose Level Range</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-bs-range-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
 			<div id="quick-insights-chart">
-				<strong>Glucose Level</strong>
+				<strong>Glucose Level over Time</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-quick-insights-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
-			<div id="quick-insulin-amount">
+			<!--<div id="quick-insulin-amount">
 				<strong>Bolus</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
@@ -104,7 +112,7 @@
 				<button type="button" id="reset-quick-insights-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
-			</div>
+			</div>-->
 		</div>
 	</div>
 </div>
@@ -252,40 +260,50 @@
 			</div>
 		</div>
 	</div>
-</div>
-	<div id="logbook">
-		<div class="well text-center">
-			<button class="btn btn-danger btn-large treat-hypo"><i class="icon-play"></i><br /> Having a<br />Hypo</button>
-			<button class="btn btn-success btn-large hypo-treated"><i class="icon-stop"></i><br /> Hypo <br />Treated</button>
-		</div>
-		<div id="process-detail" class="alert alert-block alert-success fade in" style="display:none;">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <h4 class="alert-heading">Steps to treat your hypo</h4>
-			<ul>
-				<li>15g of fast acting glucose  (eg. 8 jelly beans or 5 dextrose tabs)</li>
-				<li>Wait 15 minutes and then retest</li>
-				<li>If above your hypo level eat your meal or 1 slice of bread</li>				
-				<li>If still hypo repeat the process</li>
-			</ul>
-        </div>
-		<div id="retest-reminder" class="alert alert-block alert-warning fade in" style="display:none;">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <h4 class="alert-heading">Retest Reminder</h4>
-            <p>
-              <a class="btn btn-danger treat-hypo" href="#">Still Hypo</a> <a class="btn hypo-treated" href="#">All OK</a>
-            </p>
-        </div>
-		<table class="table table-bordered table-condensed">
-			<thead>
-				<tr>
-					<th>Time</th>
-					<th>Event</th>
-				</tr>
-			</thead>
-			<tbody id="events-list">
-			</tbody>
-		</table>
+</div><div class="palette palette-info-dark" id="logbook">
+	<div class="text-center">
+		<p>
+		<button class="btn btn-danger btn-large treat-hypo">
+			<i class="icon-play"></i><br /> Having a<br />Hypo
+		</button>
+		<button class="btn btn-success btn-large hypo-treated">
+			<i class="icon-stop"></i><br /> Hypo <br />Treated
+		</button>
+		</p>
 	</div>
+	<div id="process-detail"
+		class="alert alert-block alert-success fade in" style="display: none;">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<h4 class="alert-heading">Steps to treat your hypo</h4>
+		<ul>
+			<li>15g of fast acting glucose (eg. 8 jelly beans or 5 dextrose
+				tabs)</li>
+			<li>Wait 15 minutes and then retest</li>
+			<li>If above your hypo level eat your meal or 1 slice of bread</li>
+			<li>If still hypo repeat the process</li>
+		</ul>
+	</div>
+	<div id="retest-reminder"
+		class="alert alert-block alert-warning fade in" style="display: none;">
+		<button type="button" class="close" data-dismiss="alert">×</button>
+		<h4 class="alert-heading">Retest Reminder</h4>
+		<p>
+			<a class="btn btn-danger btn-large treat-hypo" href="#">Still Hypo</a> <a
+				class="btn btn-large hypo-treated" href="#">All OK</a>
+		</p>
+	</div>
+	<table class="table table-bordered table-condensed">
+		<thead>
+			<tr>
+				<th>When</th>
+				<th>Comments</th>
+				<th>Lables</th>
+			</tr>
+		</thead>
+		<tbody id="events-list">
+		</tbody>
+	</table>
+</div>
 	</script>
 	<script type="text/template" id="loggedin-home-template">
 	<div class="navbar navbar-inverse">
@@ -306,42 +324,39 @@
 	</div>
 </div>
 <div class="container" id="logbook">
-	<div class="text-center">
-		<ul class="inline">
-  			<li ><a  href="#/hypo" class="btn btn-danger btn-large">
-				<i class="icon-exclamation-sign"></i><br />Track <br />Hypo
-			</a></li>
-			<li>
-			<a  href="#/add" class="btn btn-success btn-large">
-				<i class="icon-plus"></i><br />Add <br /> Event
-			</a>
-			</li>
-		</ul>	
-		<ul class="inline">
-  			<li><a href="#/log" class="btn btn-large">
-				<i class="icon-list"></i><br />Show <br />Log
-			</a>
-			</li>
-			<li>
-			 <a href="#/insights"
-				class="btn btn-large"> <i class="icon-picture"></i><br />Show
-				<br />Insights
-			</a>
-			</li>
-		</ul>
-		<ul class="inline">
-  			<li><a  href="#/account"
-				class="btn btn-large"> <i class="icon-user"></i><br />Show
-				<br />Account
-			</a>
-			</li>
-			<li> 
-			<a  href="#" class="btn btn-large">
-				<i class="icon-question-sign"></i><br />Need <br />Help
-			</a>
-			</li>
-		</ul>
-	</div>
+
+	<table class="home-buttons">
+		<tbody class="text-center">
+			<tr>
+				<td><a style="width: 50%" href="#/hypo"
+					class="btn btn-danger btn-large"> <i
+						class="icon-exclamation-sign"></i><br />Track <br />Hypo
+				</a></td>
+				<td><a style="width: 50%" href="#/add"
+					class="btn btn-success btn-large"> <i class="icon-plus"></i><br />Add
+						<br /> Event
+				</a></td>
+			</tr>
+			<tr>
+				<td><a style="width: 50%" href="#/log" class="btn btn-large">
+						<i class="icon-list"></i><br />Show <br />Log
+				</a></td>
+				<td><a style="width: 50%" href="#/insights"
+					class="btn btn-large"> <i class="icon-picture"></i><br />Show
+						<br />Insights
+				</a></td>
+			</tr>
+			<tr>
+				<td><a style="width: 50%" href="#/account"
+					class="btn btn-large"> <i class="icon-user"></i><br />Show <br />Account
+				</a></td>
+				<td><a style="width: 50%" href="#" class="btn btn-large"> <i
+						class="icon-question-sign"></i><br />Need <br />Help
+				</a></td>
+			</tr>
+		</tbody>
+	</table>
+
 </div>
 	</script>
 	<script type="text/template" id="home-template">
@@ -377,6 +392,11 @@
     <td><small><%=comments%></small></td>	
     <td><small><%=labels%></small></td>
 	</script>
+	<script type="text/template" id="hypoitem-template">
+	<td><small><%=resultDate%></small></td>
+    <td><small><%=comments%></small></td>	
+    <td><small><%=labels%></small></td>
+	</script>
 	<script type="text/template" id="add-logbookitem-template">
 	<div class="navbar navbar-inverse">
 	<div class="navbar-inner">
@@ -396,40 +416,41 @@
 	</div>
 </div>
 <div id="add-entry">
-
 	<div class="palette palette-info-dark">
-		<h3>Add Entry</h3>
-
-		<label for="entry-name"> Basics</label> <select id="entry-name"
-			autofocus>
-			<option value="Breakfast">Breakfast</option>
-			<option value="Lunch">Lunch</option>
-			<option value="Dinner">Dinner</option>
-			<option value="Bed">Bed</option>
-			<option value="Other">Other</option>
-		</select> <input type="text" name="entry-date" id="entry-date"> <input
-			type="text" id="entry-level" placeholder="Your Blood Sugar">
-		<input type="text" id="entry-insulin" placeholder="Insulin Given">
-		<label for="entry-exercise-duration">Exercise</label> <input
-			type="text" id="entry-exercise-duration"
-			placeholder="exercise duration?"> <select
-			id="entry-exercise-intensity">
-			<option value="">NA</option>
-			<option value="Easy">Easy</option>
-			<option value="Easy-Moderate">Easy-Moderate</option>
-			<option value="Moderate">Moderate</option>
-			<option value="Moderate-Intense">Moderate-Intense</option>
-			<option value="Intense">Intense</option>
-		</select> <label for="entry-labels">Labels</label> <input type="text"
-			id="entry-labels"
-			placeholder="e.g. sickday, traveling (comma seperated)"> <label
-			for="entry-comments">Comments</label>
-		<textarea rows="3" id="entry-comments" placeholder="General Comments"></textarea>
-		<p>
+	<form>
+		<fieldset>
+			<legend>Add Entry</legend>
+			<label>Name</label> <select class="input-xlarge" id="entry-name" autofocus>
+				<option value="Breakfast">Breakfast</option>
+				<option value="Lunch">Lunch</option>
+				<option value="Dinner">Dinner</option>
+				<option value="Bed">Bed</option>
+				<option value="Other">Other</option>
+			</select> <label>When</label> <input class="input-xlarge" type="text"
+				name="entry-date" id="entry-date"> <label>Glucose
+				level</label> <input class="input-xlarge" type="number" id="entry-level"
+				placeholder="Your Blood Sugar"> <label>Insulin given</label>
+			<input class="input-xlarge" type="number" id="entry-insulin"
+				placeholder="Insulin Given"> <label>Exercise
+				duration (mins)</label> <input class="input-xlarge" type="number" id="entry-exercise-duration"
+				placeholder="exercise duration?"> <label>Exercise
+				intensity</label> <select class="input-xlarge" id="entry-exercise-intensity">
+				<option value="">NA</option>
+				<option value="Easy">Easy</option>
+				<option value="Easy-Moderate">Easy-Moderate</option>
+				<option value="Moderate">Moderate</option>
+				<option value="Moderate-Intense">Moderate-Intense</option>
+				<option value="Intense">Intense</option>
+			</select> <label>Labels</label> <input class="input-xlarge" type="text"
+				id="entry-labels"
+				placeholder="e.g. sickday, traveling (comma seperated)"> <label>Comments</label>
+			<textarea class="input-xlarge" rows="3" id="entry-comments"
+				placeholder="General Comments"></textarea>
 			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 			<button class="btn btn-primary add-entry">Save</button>
-		</p>
-	</div>
+		</fieldset>
+	</form>
+</div>
 </div>
 	</script>
 	<script type="text/template" id="edit-logbookitem-template">
@@ -504,6 +525,7 @@
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
+	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/AddEntryView.js"></script>

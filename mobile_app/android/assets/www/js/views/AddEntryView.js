@@ -16,7 +16,9 @@ window.AddEntryView = Backbone.View.extend({
 
     render: function() {
     	$(this.el).html(this.template(this.model.toJSON()));
-    	this.setDefaults();
+    	_.defer(function(view) {
+			view.setDefaults();
+		}, this);
         return this;
     },
     setDefaults: function() {

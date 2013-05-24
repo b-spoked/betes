@@ -32,7 +32,7 @@ window.HypoView = Backbone.View.extend({
 		return this;
 	},
 	addOne : function(entry) {
-		var view = new LogbookEntryView({
+		var view = new HypoEntryView({
 			model : entry
 		});
 		this.$('#events-list').append(view.render().el);

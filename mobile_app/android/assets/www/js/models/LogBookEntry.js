@@ -91,12 +91,21 @@ window.LogBookEntries = Backbone.Collection.extend({
 	},
 	filterGreaterThan : function(level) {
 		return _(this.filter(function(data) {
-			return (parseInt(data.get("bsLevel")) > level);
+			return (parseInt(data.get("glucoseLevel")) > level);
 		}));
 	},
 	filterLessThan : function(level) {
 		return _(this.filter(function(data) {
-			return (parseInt(data.get("bsLevel")) < level);
+			return (parseInt(data.get("glucoseLevel")) < level);
+		}));
+
+	},
+	filterHypos : function() {
+		var hypoPattern = new RegExp('hypo', "gi");
+		var lowPattern = new RegExp('low', "gi");
+		return _(this.filter(function(data) {
+			return lowPattern.test(data.get("labels"))
+			|| hypoPattern.test(data.get("labels"));
 		}));
 
 	},

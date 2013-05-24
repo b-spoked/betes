@@ -7,9 +7,7 @@ window.LogbookView = Backbone.View.extend({
 	events : {
 		'click #login' : 'showLoginDialog',
 		'click .force-load' : 'loadLogBook',
-		'keyup .filter-logbook' : 'filterLogEntries',
-		'click .add-entry': 'saveNewEntry',
-		'click #show-new-entry': 'setEventDate'
+		'keyup .filter-logbook' : 'filterLogEntries'
 	},
 	initialize : function() {
 		_.bindAll(this);
@@ -37,13 +35,6 @@ window.LogbookView = Backbone.View.extend({
 		}
 		return self;
 	},
-	setEventDate: function(e) {
-		e.preventDefault();
-        var local = new Date();
-        var date = new Date();
-        local.setHours(date.getHours() + (date.getTimezoneOffset() / -60));
-        $('#entry-date').val(local.toJSON().substring(0, 19).replace('T', ' '));
-    },
 	loadLogBook : function(e) {
 		this.model.logEntries.fetch({
 			success : this.render()
@@ -70,24 +61,6 @@ window.LogbookView = Backbone.View.extend({
 			}
 		}
 	},
-	saveNewEntry:function(e) {
-		e.preventDefault();
-        this.model.logEntries.create(this.entryValues());
-        $("#create-new-entry").collapse('hide')
-    },
-    entryValues: function() {
-        return {
-            name: $("#entry-name").val().trim(),
-            glucoseLevel: $("#entry-level").val().trim(),
-            resultDate: $("#entry-date").val().trim(),
-            insulinAmount: $("#entry-insulin").val().trim(),
-            exerciseDuration: $("#entry-exercise-duration").val().trim(),
-            exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
-            labels: $("#entry-labels").val().trim(),
-            comments: $("#entry-comments").val().trim(),
-            userId : this.model.get('sid')
-        };
-    },
 	hideLoadingDialog : function() {
 		var loadingDialog = new LoadingModal();
 		loadingDialog.hideDialog();

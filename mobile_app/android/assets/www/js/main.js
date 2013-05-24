@@ -52,6 +52,7 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	showHome : function() {
+		//app.appUser = new InsightsUser();
 		if (app.appUser) {
 			app.showView(new LoggedInHomeView({
 				model : app.appUser

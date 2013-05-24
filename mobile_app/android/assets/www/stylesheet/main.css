@@ -11,3 +11,13 @@
 .palette{
 	text-transform: none;
 }
+
+table.home-buttons {
+	width: 100%;
+}
+
+table.home-buttons tr a {
+	margin-bottom: 30px;
+}
+
+

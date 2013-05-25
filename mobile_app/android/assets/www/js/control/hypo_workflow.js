@@ -31,7 +31,8 @@ window.hypoWorkflow = {
 
 	    remindRetest: function(model) {
 	    	app.appUser.logEntries.create({name:"Other", resultDate:new Date(),comments:'Time has past now retest',labels:'hypo,low', userId : app.appUser.get('sid')});
-	    	jQuery("#retest-reminder").show();		    	
+	    	jQuery("#retest-reminder").show();	
+	    	navigator.notification.vibrate(0);
 	    },
 
 	    remindProcess: function() {	    	

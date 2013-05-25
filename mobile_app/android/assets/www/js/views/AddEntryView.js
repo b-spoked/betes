@@ -43,6 +43,14 @@ window.AddEntryView = Backbone.View.extend({
             comments: $("#entry-comments").val().trim(),
             userId : this.model.get('sid')
         };
+    },
+    getLocation: function() {
+        var suc = function(p) {
+            return p.coords;//.latitude + " " + p.coords.longitude);
+        };
+        var locFail = function() {
+        	log.console("can't get location");
+        };
+        navigator.geolocation.getCurrentPosition(suc, locFail);
     }
-
 });

@@ -1,5 +1,8 @@
-// A car "class"
-
+/**
+ * 
+ * @param dimension
+ * @returns
+ */
 function BuildGroups( dimension ) {
 
 	this.dimension = dimension;

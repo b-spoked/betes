@@ -6,7 +6,17 @@
  * To change this template use File | Settings | File Templates.
  */
 window.LogBookEntry = Backbone.Model.extend({
-
+	defaults : {
+		name: "",
+        glucoseLevel: 0,
+        resultDate: "",
+        insulinAmount: 0,
+        exerciseDuration: 0,
+        exerciseIntensity: "",
+        labels: "",
+        comments: "",
+        userId : ""
+	}
 });
 
 window.LogBookEntries = Backbone.Collection.extend({

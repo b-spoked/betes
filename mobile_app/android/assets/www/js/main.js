@@ -101,6 +101,7 @@ var AppRouter = Backbone.Router.extend({
 			success : function(results) {
 				self.showLoadingDialog();
 				app.appUser.logEntries.fetch({success: function(){
+					
 					app.showView(new LogbookView({
 						model : app.appUser
 					}));
@@ -146,7 +147,7 @@ var AppRouter = Backbone.Router.extend({
 		console.log('current user: '+JSON.stringify(currentUser));
 		if (currentUser && currentUser.get('authenticated')
 				) {
-			this.showLoadingDialog();
+//TODO			//this.showLoadingDialog();
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch({
 				data : { all : false },

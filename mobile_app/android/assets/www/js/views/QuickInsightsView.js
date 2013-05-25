@@ -15,8 +15,6 @@ window.QuickInsightsView = Backbone.View
 				_.bindAll(this);
 				this.template = _.template($('#quick-insights-template').html());
 				this.model.logEntries.bind('reset', this.render, this);
-				
-				
 			},
 			render : function() {
 				
@@ -101,11 +99,8 @@ window.QuickInsightsView = Backbone.View
 				var groupBuilder = new BuildGroups(timePeriod);
 
 				this.createAllDatesChart(day, axisStartDate, axisEndDate);
-				//this.createGlucoseLevelRangeChart(logBook, minBloodSugarX, maxBloodSugarX);
+				this.createGlucoseLevelRangeChart(logBook, minBloodSugarX, maxBloodSugarX);
 				this.createQuickBGChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
-				//this.createQuickBolusChart(timePeriod, groupBuilder.bolusAmountGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
-				//this.createQuickCarbRatioChart(timePeriod, groupBuilder.carbRatioGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
-				//this.createQuickSensitivityChart(timePeriod, groupBuilder.insulinSensitivityGroup(), axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX)
 				
 				dc.renderAll();
 			},
@@ -127,7 +122,7 @@ window.QuickInsightsView = Backbone.View
 				window.datesChart
 					.width(320)
 					.height(40)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
+		            .margins({top: 10, right: 5, bottom: 20, left: 30})
 					.dimension(timePeriod)
 	                .group(timePeriodGroup)
 	                .centerBar(true)
@@ -169,7 +164,7 @@ window.QuickInsightsView = Backbone.View
 					top : 20,
 					right : 5,
 					bottom : 20,
-					left : 20
+					left : 30
 				}).dimension(bloodSugar).group(bloodSugarGroup).elasticY(true)
 						.centerBar(true).gap(1).round(dc.round.floor).x(
 								d3.scale.linear().domain(
@@ -186,43 +181,9 @@ window.QuickInsightsView = Backbone.View
 				window.bolusAmountChart
 					.width(360)
 		            .height(180)
-		            .margins({top: 10, right: 5, bottom: 20, left: 40})
+		            .margins({top: 10, right: 5, bottom: 20, left: 30})
 		            .dimension(timePeriod)
 		            .group(bolusAmountGroup) 
-		            .centerBar(true)
-		            .gap(0)
-		            .x(d3.time.scale().domain([startDate, endDate]))
-		            .renderHorizontalGridLines(true)
-		            .xAxis().ticks(5);
-				
-			},
-			createQuickSensitivityChart : function(timePeriod,insulinSensitivityGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
-				
-				window.insulinSensitivityChart = dc.barChart("#quick-insulin-sensitivity");
-				
-				window.insulinSensitivityChart
-					.width(480)
-		            .height(180)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
-		            .dimension(timePeriod)
-		            .group(insulinSensitivityGroup)   
-		            .centerBar(true)
-		            .gap(0)
-		            .x(d3.time.scale().domain([startDate, endDate]))
-		            .renderHorizontalGridLines(true)
-		            .xAxis().ticks(5);
-				
-			},
-			createQuickCarbRatioChart : function(timePeriod,carbRatioGroup,startDate, endDate,minBloodSugarX,maxBloodSugarX) {
-				
-				window.carbRatioChart = dc.barChart("#quick-carb-ratio");
-				
-				window.carbRatioChart
-					.width(480)
-		            .height(180)
-		            .margins({top: 10, right: 5, bottom: 20, left: 20})
-		            .dimension(timePeriod)
-		            .group(carbRatioGroup)
 		            .centerBar(true)
 		            .gap(0)
 		            .x(d3.time.scale().domain([startDate, endDate]))
@@ -237,7 +198,7 @@ window.QuickInsightsView = Backbone.View
 				window.quickInsightsChart
 					.width(320)
 		            .height(180)
-		            .margins({top: 10, right: 5, bottom: 20, left: 40})
+		            .margins({top: 10, right: 5, bottom: 20, left: 30})
 		            .dimension(timePeriod)
 		            .group(bloodGlucoseGroup)   
 		            .centerBar(true)
@@ -285,9 +246,8 @@ window.QuickInsightsView = Backbone.View
 				.forEach(function(d, i) {
 					d.resultDate = new Date(d.resultDate);
 					d.glucoseLevel = parseFloat(d.glucoseLevel);
-					d.insulinSensitivity = parseFloat(d.insulinSensitivity);
-					d.bolusAmount = parseFloat(d.bolusAmount);
-					d.carbRatio = parseFloat(d.carbRatio);
+					d.insulinAmount = parseFloat(d.insulinAmount);
+					d.exerciseDuration = d.exerciseDuration;
 					d.day = d3.time.day(d.resultDate);
 				});
 

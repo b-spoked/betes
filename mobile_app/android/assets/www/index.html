@@ -66,7 +66,7 @@
 		</div>
 		<div class="row-fluid">
 			<div id="log-period-chart">
-					<strong>Date Range</strong> <span class="reset" style="display: none;">Showing:
+					<strong>Dates</strong> <span class="reset" style="display: none;">Showing:
 						<span class="filter"></span>
 					</span>
 					<button type="button" id="reset-log-period-chart"
@@ -74,7 +74,7 @@
 					<div class="clearfix"></div>
 			</div>
 			<div id="bs-range-chart">
-				<strong>Glucose Level Range</strong>
+				<strong>Glucose level range</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-bs-range-chart"
@@ -82,7 +82,7 @@
 				<div class="clearfix"></div>
 			</div>
 			<div id="quick-insights-chart">
-				<strong>Glucose Level over Time</strong>
+				<strong>Glucose level over time</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-quick-insights-chart"
@@ -143,28 +143,22 @@
 			<p><%= name%></p>
 
 			<div id="settings-section" class="palette palette-info-dark">
-				<h3>Settings:</h3>
-				<div class="row">
-					<strong>Do you want to revcieve our newsletter?</strong>
-					<input type="checkbox" id="newsletter" value="true">
-				</div>
-				<div class="row">
-					<strong>Do you want a email summary of your results?</strong>
-					<input type="checkbox" id="email-summary" value="true">
-				</div>
-				<div class="row">
-					<strong>Glucose measurement units</strong>
-					<input type="radio" name="optionsRadios" id="mmoll" value="mmoll" checked> mmol/l
-				</div>
-				<div class="row">
-					<input type="radio" name="optionsRadios" id="mgdl" value="mgdl"> mgdl
-				</div>
-			
-				<h3>Options:</h3>
-				<div class="row">
-					<button id="logout" class="btn btn-block">Logout</button>
-					<button id="remove-account" class="btn btn-block btn-small btn-danger">Remove Account</button>
-				</div>	
+				<form>
+					<fieldset>
+						<legend>Settings</legend>
+						<label> <input type="checkbox" id="newsletter"
+							value="true">Receive newsletter?
+						</label> <label> <input type="checkbox" id="c"
+							value="true">Email summary of your results?
+						</label> <label>Glucose units</label> <label> <input type="radio"
+							name="optionsRadios" id="mmoll" value="mmoll" checked>mmol/l
+						</label> <label> <input type="radio" name="optionsRadios"
+							id="mgdl" value="mgdl">mg/dl
+						</label>
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button class="btn btn-primary add-entry">Save</button>
+					</fieldset>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -189,16 +183,12 @@
 	</div>
 </div>
 <div id="logbook">
-	<p>
-	<a href="#/add" class="btn btn-large btn-primary">Add Event</button>
-	</p>
 	<div class="palette palette-info-dark">
-	<table class="table table-bordered table-condensed">
+	<table class="table table-condensed">
 		<thead>
 			<tr>
 				<th>What</th>
 				<th>When</th>
-				<th>Comments</th>
 				<th>Lables</th>
 			</tr>
 		</thead>
@@ -228,12 +218,11 @@
 			<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
 		</form>
 			
-		<table class="table table-bordered table-condensed">
+		<table class="table table-condensed">
 			<thead>
 				<tr>
 					<th>What</th>
 					<th>When</th>
-					<th>Comments</th>
 					<th>Lables</th>
 				</tr>
 			</thead>
@@ -292,7 +281,7 @@
 				class="btn btn-large hypo-treated" href="#">All OK</a>
 		</p>
 	</div>
-	<table class="table table-bordered table-condensed">
+	<table class="table table-condensed">
 		<thead>
 			<tr>
 				<th>When</th>
@@ -354,6 +343,12 @@
 						class="icon-question-sign"></i><br />Need <br />Help
 				</a></td>
 			</tr>
+			<tr>
+				<td><a style="width: 50%" href="#/emergency"
+					class="btn btn-large btn-danger"> <i class="icon-plus-sign"></i><br />Emergency <br />Contacts
+				</a></td>
+				
+			</tr>
 		</tbody>
 	</table>
 
@@ -384,16 +379,17 @@
 	</script>
 	<script type="text/template" id="logbookitem-template">
 	<% if(glucoseLevel>0) { %>
-    <td><h4><%= glucoseLevel %></h4></td>
+    <td><small><%= glucoseLevel %></small></td>
 	<% }else if(insulinAmount>0) { %>
-	<td><h4><%= insulinAmount %> u</h4></td>
+	<td><small><%= insulinAmount %> u</small></td>
+	<% }else { %>
+	<td><small>Other</small></td>
 	<%}%>
-    <td><small><%=resultDate%></small></td>
-    <td><small><%=comments%></small></td>	
+    <td><small><%=formatDate(resultDate)%></small></td>
     <td><small><%=labels%></small></td>
 	</script>
 	<script type="text/template" id="hypoitem-template">
-	<td><small><%=resultDate%></small></td>
+	<td><small><%=formatDate(resultDate)%></small></td>
     <td><small><%=comments%></small></td>	
     <td><small><%=labels%></small></td>
 	</script>
@@ -446,8 +442,8 @@
 				placeholder="e.g. sickday, traveling (comma seperated)"> <label>Comments</label>
 			<textarea class="input-xlarge" rows="3" id="entry-comments"
 				placeholder="General Comments"></textarea>
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-			<button class="btn btn-primary add-entry">Save</button>
+			<button class="btn btn-large" data-dismiss="modal" aria-hidden="true">Cancel</button>
+			<button class="btn btn-large btn-primary add-entry">Save</button>
 		</fieldset>
 	</form>
 </div>

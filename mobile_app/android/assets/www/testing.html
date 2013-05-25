@@ -1,35 +1,29 @@
-<div class="palette palette-info-dark">
-	<form>
-		<fieldset>
-			<legend>Add Entry</legend>
-			<label>Name</label> <select id="entry-name" autofocus>
-				<option value="Breakfast">Breakfast</option>
-				<option value="Lunch">Lunch</option>
-				<option value="Dinner">Dinner</option>
-				<option value="Bed">Bed</option>
-				<option value="Other">Other</option>
-			</select> <label>When</label> <input class="input-xlarge" type="text"
-				name="entry-date" id="entry-date"> <label>Glucose
-				level</label> <input class="input-xlarge" type="number" id="entry-level"
-				placeholder="Your Blood Sugar"> <label>Insulin given</label>
-			<input class="input-xlarge" type="number" id="entry-insulin"
-				placeholder="Insulin Given"> <label>Exercise
-				duration (mins)</label> <input class="input-xlarge" type="number" id="entry-exercise-duration"
-				placeholder="exercise duration?"> <label>Exercise
-				intensity</label> <select class="input-xlarge" id="entry-exercise-intensity">
-				<option value="">NA</option>
-				<option value="Easy">Easy</option>
-				<option value="Easy-Moderate">Easy-Moderate</option>
-				<option value="Moderate">Moderate</option>
-				<option value="Moderate-Intense">Moderate-Intense</option>
-				<option value="Intense">Intense</option>
-			</select> <label>Labels</label> <input class="input-xlarge" type="text"
-				id="entry-labels"
-				placeholder="e.g. sickday, traveling (comma seperated)"> <label>Comments</label>
-			<textarea class="input-xlarge" rows="3" id="entry-comments"
-				placeholder="General Comments"></textarea>
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-			<button class="btn btn-primary add-entry">Save</button>
-		</fieldset>
-	</form>
+
+<div id="account">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<img class="media-object" style="width: 45px; height: 45px;"
+				src="<%= thumbnailPath%>">
+			<p><%= name%></p>
+
+			<div id="settings-section" class="palette palette-info-dark">
+				<form>
+					<fieldset>
+						<legend>Settings</legend>
+						<label> <input type="checkbox" id="newsletter"
+							value="true">Receive newsletter?
+						</label> <label> <input type="checkbox" id="email-summary"
+							value="true">Email summary of your results?
+						</label> <label>Glucose units</label> <label> <input type="radio"
+							name="optionsRadios" id="mmoll" value="mmoll" checked>mmol/l
+						</label> <label> <input type="radio" name="optionsRadios"
+							id="mgdl" value="mgdl">mg/dl
+						</label>
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+						<button class="btn btn-primary add-entry">Save</button>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

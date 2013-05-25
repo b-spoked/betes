@@ -15,6 +15,8 @@ window.LogBookEntry = Backbone.Model.extend({
         exerciseIntensity: "",
         labels: "",
         comments: "",
+        latitude: 0,
+        longitude: 0,
         userId : ""
 	}
 });

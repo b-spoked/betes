@@ -32,6 +32,9 @@ window.AddEntryView = Backbone.View.extend({
     },
 
     entryValues: function() {
+    	
+    	var loc = this.getLocation();
+    	
         return {
             name: $("#entry-name").val().trim(),
             glucoseLevel: $("#entry-level").val().trim(),
@@ -41,6 +44,8 @@ window.AddEntryView = Backbone.View.extend({
             exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
             labels: $("#entry-labels").val().trim(),
             comments: $("#entry-comments").val().trim(),
+            latitude:loc.latitude,
+            longitude:loc.longitude,
             userId : this.model.get('sid')
         };
     },

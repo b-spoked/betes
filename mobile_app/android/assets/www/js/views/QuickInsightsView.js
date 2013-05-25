@@ -96,11 +96,11 @@ window.QuickInsightsView = Backbone.View
 				var timePeriod = logBook.dimension(function(d) { return d.resultDate; }),
 				day = logBook.dimension(function(d) { return d.day; });
 				
-				var groupBuilder = new BuildGroups(timePeriod);
+				//var groupBuilder = new BuildGroups(timePeriod);
 
 				this.createAllDatesChart(day, axisStartDate, axisEndDate);
 				this.createGlucoseLevelRangeChart(logBook, minBloodSugarX, maxBloodSugarX);
-				this.createQuickBGChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
+				//this.createQuickBGChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
 				
 				dc.renderAll();
 			},
@@ -132,14 +132,14 @@ window.QuickInsightsView = Backbone.View
 	                .xUnits(d3.time.days)
 	                .renderlet(function(chart) {
 						chart.select("g.y").style("display", "none");
-						window.quickInsightsChart.filter(chart.filter());
+						//window.quickInsightsChart.filter(chart.filter());
 						//window.carbRatioChart.filter(chart.filter());
 						//window.bolusAmountChart.filter(chart.filter());
 						//window.insulinSensitivityChart.filter(chart.filter());
 						dc.redrawAll();
 					}).on("filtered", function(chart) {
 						dc.events.trigger(function() {
-							window.quickInsightsChart.focus(chart.filter());
+							//window.quickInsightsChart.focus(chart.filter());
 							//window.carbRatioChart.focus(chart.filter());
 							//window.bolusAmountChart.focus(chart.filter());
 							//window.insulinSensitivityChart.focus(chart.filter());

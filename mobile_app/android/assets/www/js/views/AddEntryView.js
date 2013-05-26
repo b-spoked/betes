@@ -27,15 +27,15 @@ window.AddEntryView = Backbone.View.extend({
         local.setHours(date.getHours() + (date.getTimezoneOffset() / -60));
         $('#entry-date').val(local.toJSON().substring(0, 19).replace('T', ' '));
     },
-    saveNewEntry:function() {
-        this.model.logEntries.create(this.entryValues());
+    loadLogBook:function(){
+    	Backbone.history.navigate('#/log');
+    	window.location.reload();
     },
+    saveNewEntry: function(e) {
 
-    entryValues: function() {
+    	//e.preventDefault();
     	
-    	var loc = this.getLocation();
-    	
-        return {
+    	this.model.logEntries.create( {
             name: $("#entry-name").val().trim(),
             glucoseLevel: $("#entry-level").val().trim(),
             resultDate: $("#entry-date").val().trim(),
@@ -44,18 +44,46 @@ window.AddEntryView = Backbone.View.extend({
             exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
             labels: $("#entry-labels").val().trim(),
             comments: $("#entry-comments").val().trim(),
-            latitude:loc.latitude,
-            longitude:loc.longitude,
             userId : this.model.get('sid')
+        });
+    	
+    	this.loadLogBook();
+    	
+    	
+    	/*var self = this;
+    	
+    	var withLocation = function(p) {
+    		self.model.logEntries.create( {
+                name: $("#entry-name").val().trim(),
+                glucoseLevel: $("#entry-level").val().trim(),
+                resultDate: $("#entry-date").val().trim(),
+                insulinAmount: $("#entry-insulin").val().trim(),
+                exerciseDuration: $("#entry-exercise-duration").val().trim(),
+                exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
+                labels: $("#entry-labels").val().trim(),
+                comments: $("#entry-comments").val().trim(),
+                latitude:p.coords.latitude,
+                longitude:p.coords.longitude,
+                userId : self.model.get('sid')
+            });
+    		self.loadLogBook();
         };
-    },
-    getLocation: function() {
-        var suc = function(p) {
-            return p.coords;//.latitude + " " + p.coords.longitude);
+        var withoutLocation = function() {
+        	self.model.logEntries.create( {
+                name: $("#entry-name").val().trim(),
+                glucoseLevel: $("#entry-level").val().trim(),
+                resultDate: $("#entry-date").val().trim(),
+                insulinAmount: $("#entry-insulin").val().trim(),
+                exerciseDuration: $("#entry-exercise-duration").val().trim(),
+                exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
+                labels: $("#entry-labels").val().trim(),
+                comments: $("#entry-comments").val().trim(),
+                userId : self.model.get('sid')
+            });
+
+    		self.loadLogBook();
         };
-        var locFail = function() {
-        	log.console("can't get location");
-        };
-        navigator.geolocation.getCurrentPosition(suc, locFail);
+        navigator.geolocation.getCurrentPosition(withLocation, withoutLocation);*/
+    	   
     }
 });

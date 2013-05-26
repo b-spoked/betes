@@ -5,6 +5,8 @@
  * Time: 3:45 PM
  * To change this template use File | Settings | File Templates.
  */
+var hypoWorkflow;
+
 window.HypoView = Backbone.View.extend({
 
 	events : {
@@ -38,9 +40,12 @@ window.HypoView = Backbone.View.extend({
 		this.$('#events-list').append(view.render().el);
 	},
 	startProcess : function(e) {
-		hypoWorkflow.startHypoProcess(this.model);				
+		this.hypoWorkflow = new HypoWorkflow(this.model)
+		this.hypoWorkflow.startHypoProcess();
 	},
 	finishProcess : function(e) {
-		hypoWorkflow.endHypoProcess(this.model);
+		if(this.hypoWorkflow){
+			this.hypoWorkflow.endHypoProcess();
+		}
 	}
 });

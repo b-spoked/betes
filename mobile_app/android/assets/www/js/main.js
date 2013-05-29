@@ -33,7 +33,10 @@ var AppRouter = Backbone.Router.extend({
 
 	initialize : function() {
 		this.getAuthenticatedUser();
-		
+		$("#toucharea").hammer().on("doubletap", function(event) {
+			Backbone.history.navigate('');
+	    	window.location.reload();
+	    });
 	},
 	showLoadingDialog : function() {
 		var loadingDialog = new LoadingModal();
@@ -52,7 +55,6 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	showHome : function() {
-		//app.appUser = new InsightsUser();
 		if (app.appUser) {
 			app.showView(new LoggedInHomeView({
 				model : app.appUser

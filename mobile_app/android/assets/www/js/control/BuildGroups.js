@@ -13,7 +13,7 @@ function BuildGroups( dimension ) {
 		
 	};
 	
-	this.bolusAmountGroup = function() {
+	/*this.bolusAmountGroup = function() {
 
 		return this.dimension.group().reduceSum(function(d){return d.bolusAmount});
 	};
@@ -81,5 +81,5 @@ function BuildGroups( dimension ) {
 			
 			return factsGroup;
 		
-	};
+	};*/
 }

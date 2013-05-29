@@ -7,7 +7,7 @@
  */
 window.LoggedInHomeView = Backbone.View
 		.extend({
-
+			 
 			initialize : function() {
 				_.bindAll(this);
 				this.template = _.template($('#loggedin-home-template').html());

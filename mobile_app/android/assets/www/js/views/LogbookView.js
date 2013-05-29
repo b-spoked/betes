@@ -35,6 +35,10 @@ window.LogbookView = Backbone.View.extend({
 		}
 		return self;
 	},
+	goHome: function(e){
+		Backbone.history.navigate('');
+    	window.location.reload();
+	},
 	loadLogBook : function(e) {
 		this.model.logEntries.fetch({
 			success : this.render()

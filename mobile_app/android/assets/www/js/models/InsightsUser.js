@@ -22,6 +22,7 @@ window.InsightsUser = Backbone.Model.extend({
 		allowSharing : false,
 		shareLinkId : null,
 		logEntries : [],
+		settings: [],
 		logSources : []
 	},
 
@@ -43,6 +44,22 @@ window.InsightsUser = Backbone.Model.extend({
 			}
 			return logUrl;
 		};
+		
+		this.settings = new UserSettings(this.get('settings'));
+		
+		this.settings.url = function() {
+			
+			var settingsUrl;
+			
+			if(self.get('sid')){
+				settingsUrl = self.urlRoot+'/'+self.get('sid')+'/settings';
+			}else{
+				settingsUrl = self.urlRoot+'/'+self.get('id')+'/settings';
+			}
+			return settingsUrl;
+		};
+		
+		
 
 	},
 	highs : function() {

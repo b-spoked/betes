@@ -155,6 +155,10 @@ var AppRouter = Backbone.Router.extend({
 				data : { all : false },
 				processData : true
 				});
+			this.appUser.settings.fetch({
+				data : { all : false },
+				processData : true
+				});
 		}
 	}
 });

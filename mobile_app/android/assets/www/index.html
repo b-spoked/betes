@@ -40,22 +40,7 @@
 	<script type="text/template" id="quick-insights-template">
 <div id="graphs">
 	<div class="container-fluid">
-		<!--<div class="row-fluid">
-			<form class="form-inline">
-				<label for="log-dates">Showing Dates: </label>
-				<input type="text" name="log-dates" id="log-dates" />
-				<button id="show-all-results" class="btn btn-link">Show All</button>
-			</form>
-		</div>-->
 		<div class="row-fluid">
-			<!--<div id="log-period-chart">
-					<strong>Dates</strong> <span class="reset" style="display: none;">Showing:
-						<span class="filter"></span>
-					</span>
-					<button type="button" id="reset-log-period-chart"
-						class="btn btn-link reset" style="display: none;">reset</button>
-					<div class="clearfix"></div>
-			</div>-->
 			<div id="bs-facts-chart">
 				<strong>Averaged glucose level by % in target range</strong>
 				<span class="reset" style="display: none;">Showing: <span
@@ -80,44 +65,11 @@
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
-			<!--<div id="quick-insulin-amount">
-				<strong>Bolus</strong>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-quick-insights-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
-			</div>
-			<div id="quick-carb-ratio">
-				<strong>Carb Ratio</strong>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-quick-insights-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
-			</div>
-			<div id="quick-insulin-sensitivity">
-				<strong>Insulin Sensitivity</strong>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-quick-insights-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
-			</div>-->
 		</div>
 	</div>
 </div>
 	</script>
 	<script type="text/template" id="account-template">
-<div class="navbar navbar-inverse">
-	<div class="navbar-inner">
-		<div class="container">
-			<ul class="nav">
-				<li><a href="#"><i class="icon-backward"></i></a></li>
-			</ul>
-		</div>
-	</div>
-</div>
 <div id="account">
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -129,7 +81,11 @@
 				<form>
 					<fieldset>
 						<legend>Settings</legend>
-						<label> <input type="checkbox" id="newsletter"
+						<label>Target low range</label> <input class="input-xlarge" type="number" id="target-low-level">
+						<label>Target high range</label> <input class="input-xlarge" type="number" id="target-high-level">
+						<label>Hypo level</label> <input class="input-xlarge" type="number" id="hypo-level">
+						
+<!--<label> <input type="checkbox" id="newsletter"
 							value="true">Receive newsletter?
 						</label> <label> <input type="checkbox" id="c"
 							value="true">Email summary of your results?
@@ -137,7 +93,8 @@
 							name="optionsRadios" id="mmoll" value="mmoll" checked>mmol/l
 						</label> <label> <input type="radio" name="optionsRadios"
 							id="mgdl" value="mgdl">mg/dl
-						</label>
+						</label>-->
+						
 						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 						<button class="btn btn-primary add-entry">Save</button>
 					</fieldset>
@@ -148,7 +105,6 @@
 </div>
 	</script>
 	<script type="text/template" id="logbook-template">
-	
 <div id="logbook">
 	<div class="palette palette-info-dark">
 	<table class="table table-condensed">
@@ -285,11 +241,9 @@
 			</tr>-->
 		</tbody>
 	</table>
-
 </div>
 	</script>
 	<script type="text/template" id="home-template">
-	
 	<div id="logbook">
 		<div class="palette palette-info-dark text-center">
   			<h2>Welcome to Betes Insights</h2>
@@ -437,6 +391,7 @@
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
 	<script type="text/javascript" src="js/models/InsightsUser.js"></script>
+	<script type="text/javascript" src="js/models/UserSetting.js"></script>
 
 	<script type="text/javascript" src="js/views/AccountView.js"></script>
 	<script type="text/javascript" src="js/views/HomeView.js"></script>

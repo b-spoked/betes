@@ -22,9 +22,21 @@ window.AccountView = Backbone.View
 				return this;
 			},
 			saveAccountSettings : function(){
-				this.model.set(this.getUserValues());
-				this.model.set("shareLinkId",this.createSharingKey());
-				this.model.save();
+				//this.model.set(this.getUserValues());
+				//this.model.set("shareLinkId",this.createSharingKey());
+				//this.model.save();
+				
+				var validUntilDate = new Date();
+				validUntilDate.setMonth(validUntilDate.getMonth()+5);
+				
+				this.model.settings.create( {
+					lowBloodGlucoseLimit: $("#target-low-level").val().trim(),
+					highBloodGlucoseLimit: $("#target-high-level").val().trim(),
+					hypoBloodGlucoseLevel: $("#hypo-level").val().trim(),
+					validUntilDate: validUntilDate,
+		            userId : this.model.get('sid')
+		        });
+				
 			},
 			logout : function (){
 				console.log('Logging out ...');

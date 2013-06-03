@@ -105,7 +105,7 @@ window.QuickInsightsView = Backbone.View
 				//this.createAllDatesChart(day, axisStartDate, axisEndDate);
 				this.createDiabetesFactsChart(day);
 				this.createGlucoseLevelRangeChart(logBook, minBloodSugarX, maxBloodSugarX);
-				this.createGlucoseOverTimeChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate, minBloodSugarX, maxBloodSugarX);
+				this.createGlucoseOverTimeChart(timePeriod, groupBuilder.glucoseLevelGroup(),startDate, endDate, minBloodSugarX, maxBloodSugarX);
 				//this.createCountChart(timePeriod,timePeriod.group());
 				//this.createInsulinOverTimeChart(timePeriod, groupBuilder.glucoseLevelGroup(),axisStartDate, axisEndDate);
 				dc.renderAll();

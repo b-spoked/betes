@@ -14,7 +14,6 @@ window.LogbookView = Backbone.View.extend({
 		this.template = _.template($('#logbook-template').html());
 		this.model.logEntries.bind('reset', this.render, this);
 		this.model.logEntries.bind('add', this.addOne, this);
-		//$('#create-new-entry').on('show', this.setEventDate)
 	},
 	render : function() {
 		$(this.el).html(this.template(this.model.toJSON()));

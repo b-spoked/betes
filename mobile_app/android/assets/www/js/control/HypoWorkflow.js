@@ -121,7 +121,6 @@ function HypoWorkflow(model) {
 
 	this.startRetestTimer = function() {
 
-		
 		var self = this;
 		var addWithLocation = function(p) {
 			self.addEntryWithLocation("start retest timer", p.coords);
@@ -132,8 +131,8 @@ function HypoWorkflow(model) {
 
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
-		
-		this.timer = setInterval(this.remindRetest, 10000);
+		// 15 mins
+		this.timer = setInterval(this.remindRetest, (15 x 60 x 1000));
 	};
 
 }

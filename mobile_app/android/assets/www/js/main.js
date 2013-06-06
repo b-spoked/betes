@@ -47,7 +47,7 @@ var AppRouter = Backbone.Router.extend({
 	},
 	showLogBook : function() {
 		if (app.appUser) {
-			app.showView(new LogbookView({
+			app.showView(new InsightsLogView({
 				model : app.appUser
 			}));
 		} else {

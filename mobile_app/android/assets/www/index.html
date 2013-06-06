@@ -37,10 +37,66 @@
 		<div id="modal-dialog"></div>
 		<div id="app"></div>
 	</div>
+	<script type="text/template" id="insights-log-template">
+<div id="graphs">
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div id="log-period-chart">
+				<strong>Dates</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-log-period-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			<div>
+				<table id="day-summary-chart" class="table table-hover">
+        			<thead>
+        				<tr class="header">
+            				<th>Time</th>
+            				<th>Glucose</th>
+            				<th>Exercise</th>
+            				<th>Insulin</th>
+        				</tr>
+        			</thead>
+    			</table>
+				
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	</script>
 	<script type="text/template" id="quick-insights-template">
 <div id="graphs">
 	<div class="container-fluid">
 		<div class="row-fluid">
+			<div id="time-in-range-chart">
+				<strong>% results in target range</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-bs-facts-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			<div>
+				<strong>Day's summary</strong>
+				<table id="day-summary-chart" class="table table-hover">
+        			<thead>
+        				<tr class="header">
+            				<th>Time</th>
+            				<th>Glucose</th>
+            				<th>Exercise</th>
+            				<th>Insulin</th>
+        				</tr>
+        			</thead>
+    			</table>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-bs-facts-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
 			<div id="bs-facts-chart">
 				<strong>Averaged glucose level by % in target range</strong>
 				<span class="reset" style="display: none;">Showing: <span
@@ -84,19 +140,14 @@
 						<label>Target low range</label> <input class="input-xlarge" type="number" id="target-low-level">
 						<label>Target high range</label> <input class="input-xlarge" type="number" id="target-high-level">
 						<label>Hypo level</label> <input class="input-xlarge" type="number" id="hypo-level">
-						
-<!--<label> <input type="checkbox" id="newsletter"
-							value="true">Receive newsletter?
-						</label> <label> <input type="checkbox" id="c"
-							value="true">Email summary of your results?
-						</label> <label>Glucose units</label> <label> <input type="radio"
-							name="optionsRadios" id="mmoll" value="mmoll" checked>mmol/l
-						</label> <label> <input type="radio" name="optionsRadios"
+						<label>Glucose units</label> <input type="radio"
+							name="optionsRadios" id="mmoll" value="mmoll" checked>mmol/l <br />
+						<input type="radio" name="optionsRadios"
 							id="mgdl" value="mgdl">mg/dl
-						</label>-->
-						
-						<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-						<button class="btn btn-primary add-entry">Save</button>
+						<p>
+							<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+							<button class="btn btn-primary add-entry">Save</button>
+						</p>
 					</fieldset>
 				</form>
 			</div>
@@ -106,12 +157,17 @@
 	</script>
 	<script type="text/template" id="logbook-template">
 <div id="logbook">
+	<form class="form-inline">
+		<label for="logbook-filter">Filter:</label>
+		<input id"logbook-filter" type="text" placeholder="e.g. 'dinner' or 'sick'" class="filter-logbook">
+	</form>
 	<div class="palette palette-info-dark">
 	<table class="table table-condensed">
 		<thead>
 			<tr>
-				<th>What</th>
-				<th>When</th>
+				<th>Result</th>
+				<th>@</th>
+				<th></th>
 				<th>Lables</th>
 			</tr>
 		</thead>
@@ -229,9 +285,9 @@
 				<td><a style="width: 50%" href="#/account"
 					class="btn btn-large"> <i class="icon-user"></i><br />Show <br />Account
 				</a></td>
-				<!--<td><a style="width: 50%" href="#" class="btn btn-large"> <i
-						class="icon-question-sign"></i><br />Need <br />Help
-				</a></td>-->
+				<td><a style="width: 50%" href="#" class="btn btn-large"> <i
+						class="icon-question-sign"></i><br />Get <br />Help
+				</a></td>
 			</tr>
 			<!--<tr>
 				<td><a style="width: 50%" href="#/emergency"
@@ -267,15 +323,21 @@
 	</script>
 	<script type="text/template" id="logbookitem-template">
 	<% if(glucoseLevel>0 && insulinAmount>0) { %>
-    <td><small><%= glucoseLevel %> <br /><%= insulinAmount %> u</small></td>
+    <td><%= glucoseLevel %> <br /><small><%= insulinAmount %> u</small></td>
 	<% }else if(glucoseLevel>0) { %>
-	<td><small><%= glucoseLevel %> </small></td>
+	<td><%= glucoseLevel %></td>
 	<% }else if(insulinAmount>0) { %>
 	<td><small><%= insulinAmount %> u</small></td>
 	<% }else if(exerciseDuration>0) { %>
 	<td><small><%= exerciseDuration %> mins</small></td>
 	<%}%>
-    <td><small><%=formatDate(resultDate)%></small></td>
+	<% if(name) { %>
+    <td><small><%= name %></small></td>
+	<% }else { %>
+	<td><small>Other</small></td>
+	<%}%>
+	<td><small><%=formatDate(resultDate)%></small></td>
+	 
     <td><small><%=labels%></small></td>
 	</script>
 	<script type="text/template" id="hypoitem-template">
@@ -398,6 +460,7 @@
 	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
+	<script type="text/javascript" src="js/views/InsightsLogView.js"></script>
 	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/AddEntryView.js"></script>

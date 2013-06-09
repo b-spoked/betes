@@ -55,8 +55,49 @@
         				<tr class="header">
             				<th>Time</th>
             				<th>Glucose</th>
-            				<th>Exercise</th>
             				<th>Insulin</th>
+							<th>Exercise</th>
+        				</tr>
+        			</thead>
+    			</table>
+				
+				<div class="clearfix"></div>
+			</div>
+		</div>
+	</div>
+</div>
+	</script>
+	<script type="text/template" id="insights-count-template">
+<div id="graphs">
+	<div class="container-fluid">
+		<form class="form-inline">
+	
+		<label>Show </label> <select id="show-filter" autofocus>
+				<option value="all">Week</option>
+				<option value="high">Highs</option>
+				<option value="low">Lows</option>
+				<option value="excercise">After Exercise</option>
+				<option value="morning">Mornings</option>
+				<option value="bed">Bed Time</option>
+			</select> 
+		</form>
+		<div class="row-fluid">
+			<div id="log-period-chart">
+				<strong>Dates</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-log-period-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			<div>
+				<table id="day-summary-chart" class="table table-hover">
+        			<thead>
+        				<tr class="header">
+            				<th>Time</th>
+            				<th>Glucose</th>
+            				<th>Insulin</th>
+							<th>Exercise</th>
         				</tr>
         			</thead>
     			</table>
@@ -79,7 +120,7 @@
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
-			<div>
+			<!--<div>
 				<strong>Day's summary</strong>
 				<table id="day-summary-chart" class="table table-hover">
         			<thead>
@@ -104,7 +145,7 @@
 				<button type="button" id="reset-bs-facts-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
-			</div>
+			</div>-->
 			<div id="bs-range-chart">
 				<strong>Glucose level range</strong>
 				<span class="reset" style="display: none;">Showing: <span
@@ -280,6 +321,12 @@
 					class="btn btn-large"> <i class="icon-picture"></i><br />Show
 						<br />Insights
 				</a></td>
+			</tr>
+			<tr>
+				<td><a style="width: 50%" href="#/counts" class="btn btn-large">
+						<i class="icon-list"></i><br />Running <br />Counts
+				</a></td>
+				
 			</tr>
 			<tr>
 				<td><a style="width: 50%" href="#/account"
@@ -461,12 +508,11 @@
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
 	<script type="text/javascript" src="js/views/InsightsLogView.js"></script>
-	<script type="text/javascript" src="js/views/LogbookEntryView.js"></script>
+	<script type="text/javascript" src="js/views/RunnngCountInsightsView.js"></script>
+	
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/AddEntryView.js"></script>
-	<script type="text/javascript" src="js/views/LogbookView.js"></script>
 	<script type="text/javascript" src="js/views/QuickInsightsView.js"></script>
-	<script type="text/javascript" src="js/control/BuildGroups.js"></script>
 	<script type="text/javascript" src="js/control/HypoWorkflow.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">

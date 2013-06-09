@@ -28,6 +28,7 @@ var AppRouter = Backbone.Router.extend({
 		"account" : "showAccount",
 		"add" : "addEvent",
 		"hypo" : "showHypo",
+		"counts" : "showCounts",
 		"help" : "showHelp"
 	},
 
@@ -48,6 +49,15 @@ var AppRouter = Backbone.Router.extend({
 	showLogBook : function() {
 		if (app.appUser) {
 			app.showView(new InsightsLogView({
+				model : app.appUser
+			}));
+		} else {
+			this.showHomeView();
+		}
+	},
+	showCounts : function() {
+		if (app.appUser) {
+			app.showView(new RunnngCountInsightsView({
 				model : app.appUser
 			}));
 		} else {

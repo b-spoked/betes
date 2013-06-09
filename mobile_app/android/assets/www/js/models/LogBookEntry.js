@@ -90,6 +90,18 @@ window.LogBookEntries = Backbone.Collection.extend({
 					|| pattern.test(data.get("comments"));
 		}));
 	},
+	filterName : function(name) {
+		var pattern = new RegExp(name, "gi");
+		return _(this.filter(function(data) {
+			return pattern.test(data.get("name"));
+		}));
+	},
+	filterExercise : function(){
+		return _(this.filter(function(data) {
+			
+			return (parseInt(data.get("exerciseDuration")) > 0);
+		}));
+	},
 	filterPlus : function(included) {
 
 		var pattern1 = new RegExp(included[0].trim(), "gi");

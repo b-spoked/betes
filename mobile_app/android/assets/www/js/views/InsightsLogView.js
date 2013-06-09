@@ -60,7 +60,7 @@ window.InsightsLogView = Backbone.View
 					return d.day;
 				});
 
-				this.createAllDatesChart(timePeriod,startDate,endDate);	
+				this.createAllDatesChart(logBookByDay,startDate,endDate);	
 				this.createSummaryTableChart(logBookByDay);
 
 				dc.renderAll();
@@ -77,17 +77,17 @@ window.InsightsLogView = Backbone.View
 					bottom : 20,
 					left : 30
 				}).dimension(timePeriod).group(timePeriodGroup).centerBar(true)
-						.gap(0).x(
+						.gap(2).x(
 								d3.time.scale().domain([ startDate, endDate ]))
 						.round(d3.time.day.round).xUnits(d3.time.days)
 						.renderlet(function(chart) {
 							chart.select("g.y").style("display", "none");
 							window.daySummaryChart.filter(chart.filter());
-							dc.redrawAll();
+							//dc.redrawAll();
 						}).on("filtered", function(chart) {
 							dc.events.trigger(function() {
-								window.daySummaryChart.focus(chart.filter());
-								dc.redrawAll();
+								//window.daySummaryChart.focus(chart.filter());
+								//dc.redrawAll();
 							});
 						}).xAxis().ticks(5);
 
@@ -103,12 +103,12 @@ window.InsightsLogView = Backbone.View
 			    	.group(function(d) {
 			    		return d.day.getDate() + "/" + (d.day.getMonth() + 1);
 			    	})
-			    	.size(10)
+			    	.size(16)
 			    	.columns([
 			    	          function(d) { return dateFormat(d.resultDate); },
-			    	          function(d) { return d.glucoseLevel; },
-			    	          function(d) { return d.exerciseDuration },
-			    	          function(d) { return d.insulinAmount; }
+			    	          function(d) { return d.glucoseLevel>0 ? d.glucoseLevel : ""; },
+			    	          function(d) { return d.insulinAmount>0 ? d.insulinAmount : ""; },
+			    	          function(d) { return d.exerciseDuration>0 ? d.exerciseDuration : ""; }
 			    	          ])
 			    	 .sortBy(function(d){ return d.day; })
 			    	 .order(d3.descending);
@@ -148,7 +148,7 @@ window.InsightsLogView = Backbone.View
 						.forEach(function(d, i) {
 							d.resultDate = new Date(d.resultDate);
 							d.glucoseLevel = d.glucoseLevel ? parseFloat(d.glucoseLevel)
-									: 1;
+									: 0;
 							d.insulinAmount = d.insulinAmount ? parseFloat(d.insulinAmount)
 									: 0;
 							d.exerciseDuration = d.exerciseDuration ? d.exerciseDuration

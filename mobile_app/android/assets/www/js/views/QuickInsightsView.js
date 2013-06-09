@@ -115,8 +115,6 @@ window.QuickInsightsView = Backbone.View
 					return d.day;
 				});
 
-				var groupBuilder = new BuildGroups(timePeriod);
-				this.createDiabetesFactsChart(logBookByDay);
 				this.createGlucoseLevelRangeChart(logBook, minBloodSugarX,
 						maxBloodSugarX);
 				this.createGlucoseOverTimeChart(timePeriod,
@@ -124,7 +122,7 @@ window.QuickInsightsView = Backbone.View
 						minBloodSugarX, maxBloodSugarX);
 
 				this.createGlucoseTimeInRangeChart(logBook);	
-				this.createSummaryTableChart(logBookByDay);
+				//this.createSummaryTableChart(logBookByDay);
 
 				dc.renderAll();
 			},
@@ -199,49 +197,37 @@ window.QuickInsightsView = Backbone.View
 					bloodGlucoseGroup, startDate, endDate, minBloodSugarX,
 					maxBloodSugarX) {
 
-				window.glucoseOverTime = dc.barChart("#quick-insights-chart");
-
+				window.glucoseOverTime = dc.lineChart("#quick-insights-chart");
+				
 				window.glucoseOverTime.width(320).height(180).margins({
 					top : 10,
 					right : 5,
 					bottom : 20,
 					left : 30
-				}).dimension(timePeriod).group(bloodGlucoseGroup).centerBar(
-						true).gap(0).x(
-						d3.time.scale().domain([ startDate, endDate ])).y(
-						d3.scale.linear().domain(
-								[ minBloodSugarX, maxBloodSugarX ]))
-						.renderHorizontalGridLines(true).xAxis().ticks(5);
-
-			},
-			createSummaryTableChart : function(timePeriod) {
-
-				window.daySummaryChart = dc.dataTable("#day-summary-chart");
-				
-				var dateFormat = d3.time.format("%I:%M %p");
-				
-				daySummaryChart
-			    	.dimension(timePeriod)
-			    	.group(function(d) {
-			    		return d.day.getDate() + "/" + (d.day.getMonth() + 1);
-			    	})
-			    	.size(10)
-			    	.columns([
-			    	          function(d) { return dateFormat(d.resultDate); },
-			    	          function(d) { return d.glucoseLevel; },
-			    	          function(d) { return d.exerciseDuration },
-			    	          function(d) { return d.insulinAmount; }
-			    	          ])
-			    	 .sortBy(function(d){ return d.day; })
-			    	 .order(d3.descending);
+				}).dimension(timePeriod)
+				.group(bloodGlucoseGroup)
+				.transitionDuration(500)
+			    .elasticY(true)
+			   .elasticX(true)
+			   .x(d3.time.scale().domain([ startDate, endDate ]))
+			   .y(d3.scale.linear().domain([ minBloodSugarX, maxBloodSugarX ]))
+			    .round(d3.time.month.round)
+			    .renderHorizontalGridLines(true)
+			    .renderVerticalGridLines(true)
+			    .renderArea(true)
+			    .brushOn(true)
+			    .title(function(d) { return "Value: " + d.value; })
+			    .renderTitle(true)
+			    .dotRadius(10)
+			    .xAxis().ticks(5);
 
 			},
 			createGlucoseTimeInRangeChart : function(logBook) {
 
 				window.timeInRangeChart = dc.pieChart("#time-in-range-chart");
-
+				
 				 var range = logBook.dimension(function (d) {
-					 	var range = "";
+					 	var range = "na";
 					 	if(d.glucoseLevel > 0 && d.glucoseLevel < 4){
 					 		range = "below";
 					 	}else if(d.glucoseLevel >= 4 && d.glucoseLevel <= 8){
@@ -252,146 +238,26 @@ window.QuickInsightsView = Backbone.View
 					 	return range;
 		            });
 				 
-				 var rangeGroup = range.group();
+				 
+				 var rangeGroup = range.group()
+				 
+				
 				
 				window.timeInRangeChart
-					.width(240)
-					.height(240)
-					.radius(110)
+					.width(320)
+					.height(320)
+					.radius(150)
 					.dimension(range)
 					.group(rangeGroup)
 					.label(function (d) {
 						return d.data.key;
 					});
 			},
-			createDiabetesFactsChart : function(day) {
-
-				window.dailyFactsChart = dc.bubbleChart("#bs-facts-chart");
-
-				var dateFormat = d3.time.format("%m/%d/%Y");
-				var numberFormat = d3.format(".1f");
-
-				var dayFacts = day.group().reduce(
-				//add
-				function(p, v) {
-
-					if (v.glucoseLevel > 0) {
-						++p.count;
-					}
-					p.total += v.glucoseLevel;
-					p.meanGlucoseLevel = Math.round(p.total / p.count);
-					if (v.glucoseLevel < 4) {
-						++p.belowRange;
-					} else if (v.glucoseLevel > 10) {
-						++p.aboveRange;
-					} else {
-						++p.inRange;
-					}
-					p.belowRangePercent = (p.belowRange / p.count) * 100;
-					p.inRangePercent = (p.inRange / p.count) * 100;
-					p.aboveRangePercent = (p.aboveRange / p.count) * 100;
-					return p;
-				},
-				//remove
-				function(p, v) {
-					if (v.glucoseLevel > 0) {
-						--p.count;
-					}
-					p.total -= v.glucoseLevel;
-					p.meanGlucoseLevel = Math.round(p.total / p.count);
-					if (v.glucoseLevel < 4) {
-						--p.belowRange;
-					} else if (v.glucoseLevel > 10) {
-						--p.aboveRange;
-					} else {
-						--p.inRange;
-					}
-					p.belowRangePercent = (p.belowRange / p.count) * 100;
-					p.inRangePercent = (p.inRange / p.count) * 100;
-					p.aboveRangePercent = (p.aboveRange / p.count) * 100;
-					return p;
-				},
-				//init
-				function() {
-					return {
-						count : 0,
-						total : 0,
-						meanGlucoseLevel : 0,
-						inRange : 0,
-						aboveRange : 0,
-						belowRange : 0,
-						inRangePercent : 0,
-						aboveRangePercent : 0,
-						belowRangePercent : 0
-					};
-				});
-
-				window.dailyFactsChart
-						.width(320)
-						.height(180)
-						.margins({
-							top : 20,
-							right : 5,
-							bottom : 20,
-							left : 30
-						})
-						.dimension(day)
-						.group(dayFacts)
-						.transitionDuration(1500)
-						.colors([ "red", "#ccc", "steelblue", "green" ])
-						.colorDomain([ 80, 180 ])
-						.colorAccessor(function(d) {
-							return d.value.inRangePercent;
-						})
-						.keyAccessor(function(p) {
-							return p.value.meanGlucoseLevel;
-						})
-						.valueAccessor(function(p) {
-							return p.value.inRangePercent;
-						})
-						.radiusValueAccessor(function(p) {
-							return p.value.count * 0.01;
-						})
-						.maxBubbleRelativeSize(0.05)
-						.x(d3.scale.linear().domain([ 0, 350 ]))
-						.y(d3.scale.linear().domain([ 0, 100 ]))
-						.r(d3.scale.linear().domain([ 0, 100 ]))
-						.elasticY(true)
-						.yAxisPadding(10)
-						.elasticX(true)
-						.xAxisPadding(10)
-						.renderHorizontalGridLines(true)
-						.renderVerticalGridLines(true)
-						.renderLabel(false)
-						.label(function(p) {
-							return '';
-						})
-						.renderTitle(true)
-						.title(
-								function(p) {
-									return dateFormat(p.key)
-											+ "\n"
-											+ "Mean Glucose Level: "
-											+ numberFormat(p.value.meanGlucoseLevel)
-											+ "\n"
-											+ "Below Target: "
-											+ numberFormat(p.value.belowRangePercent)
-											+ "%\n"
-											+ "In Target: "
-											+ numberFormat(p.value.inRangePercent)
-											+ "%\n"
-											+ "Above Target: "
-											+ numberFormat(p.value.aboveRangePercent)
-											+ "%\n";
-								}).yAxis().tickFormat(function(v) {
-							return v + " %";
-						});
-			},
 			getCleanedData : function(fromDate, toDate, showAll) {
 
-				var data;
+				var data = this.model.logEntries;
 
-				if (showAll) {
+				/*if (showAll) {
 					console.log("show all");
 					data = this.model.logEntries;
 
@@ -410,22 +276,20 @@ window.QuickInsightsView = Backbone.View
 
 					data = this.model.logEntries.filterPeriod(fromDate, toDate);
 					//console.log(JSON.stringify(data));
-				}
+				}*/
 
 				var logResults = new Array();
 				data.forEach(function(entry) {
-					logResults.push(entry.toJSON());
+					//console.log(entry.get("glucoseLevel"));
+					if(entry.get("glucoseLevel")>0){
+						logResults.push(entry.toJSON());
+					}
 				});
 
 				logResults
 						.forEach(function(d, i) {
 							d.resultDate = new Date(d.resultDate);
-							d.glucoseLevel = d.glucoseLevel ? parseFloat(d.glucoseLevel)
-									: 1;
-							d.insulinAmount = d.insulinAmount ? parseFloat(d.insulinAmount)
-									: 0;
-							d.exerciseDuration = d.exerciseDuration ? d.exerciseDuration
-									: 0;
+							d.glucoseLevel = parseFloat(d.glucoseLevel);
 							d.day = d3.time.day(d.resultDate);
 						});
 				//console.log(JSON.stringify(logResults));

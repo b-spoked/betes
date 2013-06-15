@@ -24,11 +24,11 @@ var AppRouter = Backbone.Router.extend({
 	routes : {
 		"": "showHome",
 		"log" : "showLogBook",
-		"insights" : "showQuickInsights",
+		"insights" : "showGlucoseInsights",
 		"account" : "showAccount",
 		"add" : "addEvent",
 		"hypo" : "showHypo",
-		"counts" : "showCounts",
+		"counts" : "showEvents",
 		"help" : "showHelp"
 	},
 
@@ -48,16 +48,16 @@ var AppRouter = Backbone.Router.extend({
 	},
 	showLogBook : function() {
 		if (app.appUser) {
-			app.showView(new InsightsLogView({
+			app.showView(new DailyLogView({
 				model : app.appUser
 			}));
 		} else {
 			this.showHomeView();
 		}
 	},
-	showCounts : function() {
+	showEvents : function() {
 		if (app.appUser) {
-			app.showView(new RunnngCountInsightsView({
+			app.showView(new EventInsightsView({
 				model : app.appUser
 			}));
 		} else {
@@ -125,9 +125,9 @@ var AppRouter = Backbone.Router.extend({
 	showHomeView : function() {
 		app.showView(new HomeView());
 	},
-	showQuickInsights : function() {
+	showGlucoseInsights : function() {
 		if (app.appUser) {
-			app.showView(new QuickInsightsView({
+			app.showView(new GlucoseInsightsView({
 				model : app.appUser
 			}));
 		} else {

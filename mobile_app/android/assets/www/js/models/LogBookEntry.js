@@ -96,10 +96,17 @@ window.LogBookEntries = Backbone.Collection.extend({
 			return pattern.test(data.get("name"));
 		}));
 	},
-	filterExercise : function(){
+	filterExerciseResults : function(){
+		
+		var getResultAfterExercise = false;
 		return _(this.filter(function(data) {
-			
-			return (parseInt(data.get("exerciseDuration")) > 0);
+			if(parseInt(data.get("exerciseDuration")) > 0){
+				getResultAfterExercise = true;
+				return (parseInt(data.get("exerciseDuration")) > 0);
+			}else if(getResultAfterExercise){
+				getResultAfterExercise = false;
+				return true;
+			}
 		}));
 	},
 	filterPlus : function(included) {
@@ -123,6 +130,21 @@ window.LogBookEntries = Backbone.Collection.extend({
 			return (parseInt(data.get("glucoseLevel")) < level);
 		}));
 
+	},
+	filterGlucoseLevels : function() {
+		return _(this.filter(function(data) {
+			return (parseInt(data.get("glucoseLevel")) > 0);
+		}));
+	},
+	filterInsulin : function() {
+		return _(this.filter(function(data) {
+			return (parseInt(data.get("glucoseLevel")) > 0);
+		}));
+	},
+	filterExcercise : function() {
+		return _(this.filter(function(data) {
+			return (parseInt(data.get("exerciseDuration")) > 0);
+		}));
 	},
 	filterHypos : function() {
 		var hypoPattern = new RegExp('hypo', "gi");

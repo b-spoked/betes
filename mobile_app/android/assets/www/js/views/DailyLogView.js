@@ -2,7 +2,7 @@
  * Created by JetBrains PhpStorm. User: Jamie Date: 27/02/13 Time: 3:45 PM To
  * change this template use File | Settings | File Templates.
  */
-window.InsightsLogView = Backbone.View
+window.DailyLogView = Backbone.View
 		.extend({
 
 			events : {
@@ -89,7 +89,7 @@ window.InsightsLogView = Backbone.View
 								//window.daySummaryChart.focus(chart.filter());
 								//dc.redrawAll();
 							});
-						}).xAxis().ticks(5);
+						}).xAxis().ticks(3);
 
 			},
 			createSummaryTableChart : function(timePeriod) {
@@ -110,8 +110,8 @@ window.InsightsLogView = Backbone.View
 			    	          function(d) { return d.insulinAmount>0 ? d.insulinAmount : ""; },
 			    	          function(d) { return d.exerciseDuration>0 ? d.exerciseDuration : ""; }
 			    	          ])
-			    	 .sortBy(function(d){ return d.day; })
-			    	 .order(d3.descending);
+			    	 .sortBy(function(d){ return -d.day; })
+			    	 .order(d3.ascending);
 
 			},
 			getCleanedData : function(fromDate, toDate, showAll) {

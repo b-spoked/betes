@@ -3,9 +3,10 @@
    Author's custom styles
    ========================================================================== */
 
-
-.btn .caret {
-	margin-right: 10px;
+#home{
+	top: 0px;
+	left:0px;
+	margin-bottom:20px;
 }
 
 .palette{

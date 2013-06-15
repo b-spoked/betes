@@ -28,7 +28,7 @@ window.AddEntryView = Backbone.View.extend({
         $('#entry-date').val(local.toJSON().substring(0, 19).replace('T', ' '));
     },
     loadLogBook:function(){
-    	Backbone.history.navigate('#/log');
+    	Backbone.history.navigate('#/counts');
     	window.location.reload();
     },
     saveNewEntry: function(e) {

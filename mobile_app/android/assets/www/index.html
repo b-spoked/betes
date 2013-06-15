@@ -30,10 +30,14 @@
 <link rel="stylesheet" href="stylesheet/vendor/dc.css" />
 <link rel="stylesheet" href="stylesheet/vendor/daterangepicker.css" />
 <link rel="stylesheet" href="stylesheet/vendor/flat-ui.css"/>
+<link rel="stylesheet" href="rickshaw.min.css"/>
 <link rel="stylesheet" href="stylesheet/main.css" />
 </head>
 <body id="toucharea" class="palette palette-info">
-	<div class="container-fluid">
+	
+    <a class="btn" id="home" href="#">Betes Insights</a>
+     
+	<div class="container-fluid">		
 		<div id="modal-dialog"></div>
 		<div id="app"></div>
 	</div>
@@ -67,13 +71,30 @@
 	</div>
 </div>
 	</script>
-	<script type="text/template" id="insights-count-template">
+	<script type="text/template" id="timeline-template">
+<div id="graphs">
+	<form id="side_panel">
+		<h1>Random Data in the Future</h1>
+		<section><div id="legend"></div></section>
+		
+		
+		<section></section>
+	</form>
+
+	<div id="chart_container">
+		<div id="chart"></div>
+		<div id="timeline"></div>
+		<div id="slider"></div>
+	</div>
+</div>
+	</script>
+	<script type="text/template" id="insights-events-template">
 <div id="graphs">
 	<div class="container-fluid">
 		<form class="form-inline">
 	
 		<label>Show </label> <select id="show-filter" autofocus>
-				<option value="all">Week</option>
+				<option value="all">All</option>
 				<option value="high">Highs</option>
 				<option value="low">Lows</option>
 				<option value="excercise">After Exercise</option>
@@ -82,14 +103,14 @@
 			</select> 
 		</form>
 		<div class="row-fluid">
-			<div id="log-period-chart">
+			<!--<div id="log-period-chart">
 				<strong>Dates</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-log-period-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
-			</div>
+			</div>-->
 			<div>
 				<table id="day-summary-chart" class="table table-hover">
         			<thead>
@@ -113,47 +134,20 @@
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div id="time-in-range-chart">
-				<strong>% results in target range</strong>
+				<strong>Results in ranges</strong>
 				<span class="reset" style="display: none;">Showing: <span
 					class="filter"></span></span>
 				<button type="button" id="reset-bs-facts-chart"
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
-			<!--<div>
-				<strong>Day's summary</strong>
-				<table id="day-summary-chart" class="table table-hover">
-        			<thead>
-        				<tr class="header">
-            				<th>Time</th>
-            				<th>Glucose</th>
-            				<th>Exercise</th>
-            				<th>Insulin</th>
-        				</tr>
-        			</thead>
-    			</table>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-bs-facts-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
-			</div>
-			<div id="bs-facts-chart">
-				<strong>Averaged glucose level by % in target range</strong>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-bs-facts-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
+			<!--<div class="pull-right alert alert-success">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<p>Select a segment of the chart to focus</p>
+				<p><small>e.g. select those results above range will show when they occur and the range an frequency of results above your desired range.</small></p>
 			</div>-->
-			<div id="bs-range-chart">
-				<strong>Glucose level range</strong>
-				<span class="reset" style="display: none;">Showing: <span
-					class="filter"></span></span>
-				<button type="button" id="reset-bs-range-chart"
-					class="btn btn-link reset" style="display: none;">reset</button>
-				<div class="clearfix"></div>
-			</div>
+		</div>
+		<div class="row-fluid">
 			<div id="quick-insights-chart">
 				<strong>Glucose level over time</strong>
 				<span class="reset" style="display: none;">Showing: <span
@@ -162,6 +156,15 @@
 					class="btn btn-link reset" style="display: none;">reset</button>
 				<div class="clearfix"></div>
 			</div>
+			<div id="bs-range-chart">
+				<strong>Glucose level range</strong>
+				<span class="reset" style="display: none;">Showing: <span
+					class="filter"></span></span>
+				<button type="button" id="reset-bs-range-chart"
+					class="btn btn-link reset" style="display: none;">reset</button>
+				<div class="clearfix"></div>
+			</div>
+			
 		</div>
 	</div>
 </div>
@@ -314,27 +317,31 @@
 				</a></td>
 			</tr>
 			<tr>
-				<td><a style="width: 50%" href="#/log" class="btn btn-large">
-						<i class="icon-list"></i><br />Show <br />Log
+				
+				<td><a style="width: 50%" href="#/counts" class="btn btn-large">
+						<i class="icon-list"></i><br />Event <br />Insights
 				</a></td>
 				<td><a style="width: 50%" href="#/insights"
-					class="btn btn-large"> <i class="icon-picture"></i><br />Show
+					class="btn btn-large"> <i class="icon-picture"></i><br />To-date
 						<br />Insights
 				</a></td>
 			</tr>
-			<tr>
+			<!--<tr>
+				<td><a style="width: 50%" href="#/log" class="btn btn-large">
+						<i class="icon-list"></i><br />Daily <br />Log
+				</a></td>
 				<td><a style="width: 50%" href="#/counts" class="btn btn-large">
-						<i class="icon-list"></i><br />Running <br />Counts
+						<i class="icon-list"></i><br />Event <br />Insights
 				</a></td>
 				
-			</tr>
+			</tr>-->
 			<tr>
 				<td><a style="width: 50%" href="#/account"
 					class="btn btn-large"> <i class="icon-user"></i><br />Show <br />Account
 				</a></td>
-				<td><a style="width: 50%" href="#" class="btn btn-large"> <i
+				<!--<td><a style="width: 50%" href="#" class="btn btn-large"> <i
 						class="icon-question-sign"></i><br />Get <br />Help
-				</a></td>
+				</a></td>-->
 			</tr>
 			<!--<tr>
 				<td><a style="width: 50%" href="#/emergency"
@@ -496,6 +503,7 @@
 	<script type="text/javascript" src="js/vendor/d3.crossfilter.js"></script>
 	<script type="text/javascript" src="js/vendor/dc.min.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery.hammer.min.js"></script>
+	<script type="text/javascript" src="js/vendor/rickshaw.min.js"></script>
 	<script type="text/javascript" src="js/control/backbone.oauth.mobile.js"></script>
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
@@ -507,12 +515,12 @@
 	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
-	<script type="text/javascript" src="js/views/InsightsLogView.js"></script>
-	<script type="text/javascript" src="js/views/RunnngCountInsightsView.js"></script>
+	<script type="text/javascript" src="js/views/DailyLogView.js"></script>
+	<script type="text/javascript" src="js/views/EventInsightsView.js"></script>
 	
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/AddEntryView.js"></script>
-	<script type="text/javascript" src="js/views/QuickInsightsView.js"></script>
+	<script type="text/javascript" src="js/views/GlucoseInsightsView.js"></script>
 	<script type="text/javascript" src="js/control/HypoWorkflow.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">

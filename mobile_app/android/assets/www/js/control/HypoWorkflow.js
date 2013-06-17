@@ -132,7 +132,7 @@ function HypoWorkflow(model) {
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
 		// 15 mins
-		this.timer = setInterval(this.remindRetest, (15 x 60 x 1000));
+		this.timer = setInterval(self.remindRetest, (15 x 60 x 1000));
 	};
 
 }

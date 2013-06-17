@@ -57,7 +57,7 @@ var AppRouter = Backbone.Router.extend({
 	},
 	showEvents : function() {
 		if (app.appUser) {
-			app.showView(new EventInsightsView({
+			app.showView(new TimelineView({
 				model : app.appUser
 			}));
 		} else {

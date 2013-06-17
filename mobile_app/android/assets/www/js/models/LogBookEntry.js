@@ -131,10 +131,22 @@ window.LogBookEntries = Backbone.Collection.extend({
 		}));
 
 	},
-	filterGlucoseLevels : function() {
-		return _(this.filter(function(data) {
-			return (parseInt(data.get("glucoseLevel")) > 0);
-		}));
+	filterGlucoseLevels : function(fromDate, toDate) {
+		
+		if(fromDate&&toDate){
+			return _(this.filter(function(data) {
+				
+				var resultDate = new Date(data.get('resultDate')).getTime();
+				var isInPeriod = (resultDate <= toDate && resultDate >= fromDate);
+				
+				return (isInPeriod && parseInt(data.get("glucoseLevel")) > 0);
+			}));
+		}else{
+		
+			return _(this.filter(function(data) {
+				return (parseInt(data.get("glucoseLevel")) > 0);
+			}));
+		}
 	},
 	filterInsulin : function() {
 		return _(this.filter(function(data) {

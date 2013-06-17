@@ -29,14 +29,16 @@
 <link rel="stylesheet" href="stylesheet/vendor/font-awesome.css" />
 <link rel="stylesheet" href="stylesheet/vendor/dc.css" />
 <link rel="stylesheet" href="stylesheet/vendor/daterangepicker.css" />
-<link rel="stylesheet" href="stylesheet/vendor/flat-ui.css"/>
-<link rel="stylesheet" href="rickshaw.min.css"/>
+<link rel="stylesheet" href="stylesheet/vendor/jquery-ui.css"/>
+<link rel="stylesheet" href="stylesheet/vendor/rickshaw.min.css"/>
 <link rel="stylesheet" href="stylesheet/main.css" />
 </head>
 <body id="toucharea" class="palette palette-info">
-	
-    <a class="btn" id="home" href="#">Betes Insights</a>
-     
+	<div class="navbar navbar-fixed-top">
+  		<div class="navbar-inner">
+    		<a class="brand"  href="#">Betes Insights</a>
+  		</div>
+	</div> 
 	<div class="container-fluid">		
 		<div id="modal-dialog"></div>
 		<div id="app"></div>
@@ -73,18 +75,23 @@
 	</script>
 	<script type="text/template" id="timeline-template">
 <div id="graphs">
-	<form id="side_panel">
-		<h1>Random Data in the Future</h1>
-		<section><div id="legend"></div></section>
 		
-		
-		<section></section>
-	</form>
-
-	<div id="chart_container">
-		<div id="chart"></div>
-		<div id="timeline"></div>
-		<div id="slider"></div>
+	<div id="chart_container" class="timeline-graph container-fluid">
+<div class="btn-toolbar">
+  			<div class="btn-group">
+    			<button id="this-week" class="btn btn-primary">This Week</button>
+				<button id="last-week" class="btn">Last Week</button>
+  			</div>
+			<div class="btn-group">
+    			<button id="am" class="btn">AM</button>
+				<button id="pm" class="btn">PM</button>
+  			</div>
+		</div>
+		<div id="chart" class="rickshaw_graph"></div>
+		<div id="timeline" class="rickshaw_annotation_timeline"></div>
+	</div>
+	<div class="hero-unit timeline-message">
+		<h2>Rotate to view</h2>
 	</div>
 </div>
 	</script>
@@ -504,6 +511,7 @@
 	<script type="text/javascript" src="js/vendor/dc.min.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery.hammer.min.js"></script>
 	<script type="text/javascript" src="js/vendor/rickshaw.min.js"></script>
+	<script type="text/javascript" src="js/vendor/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/control/backbone.oauth.mobile.js"></script>
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
@@ -517,6 +525,7 @@
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
 	<script type="text/javascript" src="js/views/DailyLogView.js"></script>
 	<script type="text/javascript" src="js/views/EventInsightsView.js"></script>
+	<script type="text/javascript" src="js/views/TimelineView.js"></script>
 	
 	<script type="text/javascript" src="js/views/LoadingModal.js"></script>
 	<script type="text/javascript" src="js/views/AddEntryView.js"></script>

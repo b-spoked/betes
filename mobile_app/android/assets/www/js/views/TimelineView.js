@@ -106,7 +106,7 @@ window.TimelineView = Backbone.View
 				var time = new Rickshaw.Fixtures.Time();
 				var units;
 				if(fromDate&&toDate){
-					units = time.unit('6 hour');
+					units = time.unit('hour');
 				}else{
 					units = time.unit('week');
 				}

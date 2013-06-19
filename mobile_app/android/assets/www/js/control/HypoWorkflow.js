@@ -27,92 +27,62 @@ function HypoWorkflow(model) {
 	};
 
 	this.startHypoProcess = function() {
-		
+
 		var self = this;
 		var addWithLocation = function(p) {
-			self.addEntryWithLocation("hypo recorded", p.coords);
+			console.log("start hypo process w location");
+			//self.addEntryWithLocation("hypo recorded", p.coords);
 		};
 		var addWithoutLocation = function() {
-			self.addEntry("hypo recorded");
+			console.log("start hypo process");
+			//self.addEntry("hypo recorded");
 		};
-		
+
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
 
 		this.startRetestTimer();
-		this.alertContacts();
+		//this.alertContacts();
 		this.remindProcess();
 	};
 
 	this.endHypoProcess = function() {
 
-		
 		var self = this;
 		var addWithLocation = function(p) {
-			self.addEntryWithLocation("hypo treated", p.coords);
+			console.log("end hypo process w location");
+			//self.addEntryWithLocation("hypo treated", p.coords);
 		};
 		var addWithoutLocation = function() {
-			self.addEntry("hypo treated");
+			console.log("start hypo process");
+			//self.addEntry("hypo treated");
 		};
 
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
-		
-		this.alertContactsOK();
+
+		//this.alertContactsOK();
 		jQuery("#retest-reminder").hide();
 		jQuery("#process-detail").hide();
 		clearInterval(this.timer);
-	};
-
-	this.trackLocation = function() {
-		alert('start tracking location');
-	};
-
-	this.alertContacts = function() {
-
-		
-		var self = this;
-		var addWithLocation = function(p) {
-			self.addEntryWithLocation(
-					"Alerting contacts that your having a hypo", p.coords);
-		};
-		var addWithoutLocation = function() {
-			self.addEntry("Alerting contacts that your having a hypo");
-		};
-		
-		navigator.geolocation.getCurrentPosition(addWithLocation,
-				addWithoutLocation);
-	};
-
-	this.alertContactsOK = function() {
-
-		var self = this;
-		var addWithLocation = function(p) {
-			self.addEntryWithLocation("Alerting contacts that your OK",
-					p.coords);
-		};
-		var addWithoutLocation = function() {
-			self.addEntry("Alerting contacts that your OK");
-		};
-
-		navigator.geolocation.getCurrentPosition(addWithLocation,
-				addWithoutLocation);
 	};
 
 	this.remindRetest = function() {
 
 		var self = this;
 		var addWithLocation = function(p) {
-			self.addEntryWithLocation("Time to retest", p.coords);
+			console.log("retest with location");
+			//self.addEntryWithLocation("Time to retest", p.coords);
 		};
 		var addWithoutLocation = function() {
-			self.addEntry("Time to retest");
+			console.log("retest process");
+			//self.addEntry("Time to retest");
 		};
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
-		
+
 		jQuery("#retest-reminder").show();
-		navigator.notification.vibrate(1000);
+		navigator.notification.vibrate(5000);
 	};
 
 	this.remindProcess = function() {
@@ -122,17 +92,24 @@ function HypoWorkflow(model) {
 	this.startRetestTimer = function() {
 
 		var self = this;
+
 		var addWithLocation = function(p) {
-			self.addEntryWithLocation("start retest timer", p.coords);
+			console.log("start timer w loaction");
+			//self.addEntryWithLocation("start retest timer", p.coords);
 		};
+
 		var addWithoutLocation = function() {
-			self.addEntry("start retest timer");
+
+			console.log("start timer ");
+			//self.addEntry("start retest timer");
 		};
 
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
+
+		var fifteenMinutes = 900000;
 		// 15 mins
-		this.timer = setInterval(self.remindRetest, (15 x 60 x 1000));
+		self.timer = setInterval(self.remindRetest, fifteenMinutes);
 	};
 
 }

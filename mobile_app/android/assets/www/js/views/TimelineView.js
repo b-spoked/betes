@@ -4,7 +4,7 @@
  */
 var timelineToDate = new Date();
 var timelineFromDate = new Date();
-timelineFromDate.setDate(timelineToDate.getDate() - 3);
+timelineFromDate.setDate(timelineToDate.getDate() - 2);
 
 
 window.TimelineView = Backbone.View

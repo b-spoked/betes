@@ -2,14 +2,16 @@
  * Created by JetBrains PhpStorm. User: Jamie Date: 27/02/13 Time: 3:45 PM To
  * change this template use File | Settings | File Templates.
  */
+
+
+
 window.GlucoseInsightsView = Backbone.View
 		.extend({
 
 			events : {
-				"click #reset-log-period-chart" : "resetDateRange",
-				"click #reset-bs-range-chart" : "resetGlucoseRange",
-				"click #reset-quick-insights-chart" : "resetInsightsChart",
-				"click #show-all-results" : "showAll"
+				"click #week" : "showWeek",
+				"click #month" : "showMonth",
+				"click #all" : "showAll"
 			},
 
 			initialize : function() {
@@ -23,14 +25,29 @@ window.GlucoseInsightsView = Backbone.View
 				$(this.el).html(this.template(this.model.toJSON()));
 
 				_.defer(function(view) {
-					view.showFilterableDashboard(null, null, false);
+					view.showFilterableDashboard(null, null);
 				}, this);
 
 				return this;
 			},
+			showWeek : function(e) {
+				e.preventDefault();
+				var summaryToDate = new Date();
+				var summaryFromDate = new Date();
+				summaryFromDate.setDate(summaryToDate.getDate() - 7);
+				
+				this.showFilterableDashboard(summaryFromDate, summaryToDate);
+			},
+			showMonth : function(e) {
+				e.preventDefault();
+				var summaryToDate = new Date();
+				var summaryFromDate = new Date();
+				summaryFromDate.setDate(summaryToDate.getDate() - 31)
+				this.showFilterableDashboard(summaryFromDate, summaryToDate);
+			},
 			showAll : function(e) {
 				e.preventDefault();
-				this.showFilterableDashboard(null, null, true);
+				this.showFilterableDashboard(null, null);
 			},
 			hideLoadingDialog : function() {
 				var loadingDialog = new LoadingModal();
@@ -48,7 +65,7 @@ window.GlucoseInsightsView = Backbone.View
 				window.glucoseOverTime.filterAll();
 				dc.redrawAll();
 			},
-			showFilterableDashboard : function(startDate, endDate, showAll) {
+			showFilterableDashboard : function(startDate, endDate) {
 				this.hideLoadingDialog();
 
 				if (this.model.logEntries.length <= 0) {
@@ -56,7 +73,7 @@ window.GlucoseInsightsView = Backbone.View
 				}
 
 				//Data
-				var logBookData = this.getCleanedData(startDate, endDate, showAll);
+				var logBookData = this.getCleanedData(startDate, endDate);
 				
 				// Create the crossfilter for the relevant dimensions and groups.
 				var logBook = crossfilter(logBookData);
@@ -171,10 +188,14 @@ window.GlucoseInsightsView = Backbone.View
 			    	 .order(d3.ascending);
 
 			},
-			getCleanedData : function(fromDate, toDate, showAll) {
+			getCleanedData : function(fromDate, toDate) {
 
-				var data = this.model.logEntries.filterGlucoseLevels(null,null);
-				
+				var data;
+				if(fromDate && toDate){
+					data = this.model.logEntries.filterGlucoseLevels(fromDate, toDate);
+				}else{
+					data = this.model.logEntries.filterGlucoseLevels(null, null);
+				}
 
 				var logResults = new Array();
 				data.forEach(function(entry) {

@@ -2,11 +2,12 @@ function HypoWorkflow(model) {
 	this.timer = null;
 	this.model = model;
 
-	this.addEntryWithLocation = function(comment, coords) {
+	this.addEntryWithLocation = function(comment, level, coords) {
 
 		this.model.logEntries.create({
 			name : "Other",
 			resultDate : new Date(),
+			glucoseLevel: level,
 			comments : comment,
 			labels : 'hypo,low',
 			latitude : coords.latitude,
@@ -15,11 +16,12 @@ function HypoWorkflow(model) {
 		});
 	};
 
-	this.addEntry = function(comment) {
+	this.addEntry = function(comment,level) {
 
 		this.model.logEntries.create({
 			name : "Other",
 			resultDate : new Date(),
+			glucoseLevel: level,
 			comments : comment,
 			labels : 'hypo,low',
 			userId : app.appUser.get('sid')
@@ -31,11 +33,11 @@ function HypoWorkflow(model) {
 		var self = this;
 		var addWithLocation = function(p) {
 			console.log("start hypo process w location");
-			//self.addEntryWithLocation("hypo recorded", p.coords);
+			self.addEntryWithLocation("hypo recorded, given dummy level of 3.5",3.5, p.coords);
 		};
 		var addWithoutLocation = function() {
-			console.log("start hypo process");
-			//self.addEntry("hypo recorded");
+			//console.log("start hypo process");
+			self.addEntry("hypo recorded, given dummy level of 3.5",3.5);
 		};
 
 		navigator.geolocation.getCurrentPosition(addWithLocation,
@@ -50,37 +52,23 @@ function HypoWorkflow(model) {
 
 		var self = this;
 		var addWithLocation = function(p) {
-			console.log("end hypo process w location");
-			//self.addEntryWithLocation("hypo treated", p.coords);
+			//console.log("end hypo process w location");
+			self.addEntryWithLocation("hypo treated",4.5, p.coords);
 		};
 		var addWithoutLocation = function() {
-			console.log("start hypo process");
-			//self.addEntry("hypo treated");
+			//console.log("start hypo process");
+			self.addEntry("hypo treated",4.5);
 		};
 
 		navigator.geolocation.getCurrentPosition(addWithLocation,
 				addWithoutLocation);
 
-		//this.alertContactsOK();
 		jQuery("#retest-reminder").hide();
 		jQuery("#process-detail").hide();
 		clearInterval(this.timer);
 	};
 
 	this.remindRetest = function() {
-
-		var self = this;
-		var addWithLocation = function(p) {
-			console.log("retest with location");
-			//self.addEntryWithLocation("Time to retest", p.coords);
-		};
-		var addWithoutLocation = function() {
-			console.log("retest process");
-			//self.addEntry("Time to retest");
-		};
-		navigator.geolocation.getCurrentPosition(addWithLocation,
-				addWithoutLocation);
-
 		jQuery("#retest-reminder").show();
 		navigator.notification.vibrate(5000);
 	};
@@ -90,25 +78,7 @@ function HypoWorkflow(model) {
 	};
 
 	this.startRetestTimer = function() {
-
-		var self = this;
-
-		var addWithLocation = function(p) {
-			console.log("start timer w loaction");
-			//self.addEntryWithLocation("start retest timer", p.coords);
-		};
-
-		var addWithoutLocation = function() {
-
-			console.log("start timer ");
-			//self.addEntry("start retest timer");
-		};
-
-		navigator.geolocation.getCurrentPosition(addWithLocation,
-				addWithoutLocation);
-
 		var fifteenMinutes = 900000;
-		// 15 mins
 		self.timer = setInterval(self.remindRetest, fifteenMinutes);
 	};
 

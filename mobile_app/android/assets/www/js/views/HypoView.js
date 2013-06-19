@@ -40,7 +40,7 @@ window.HypoView = Backbone.View.extend({
 		this.$('#events-list').append(view.render().el);
 	},
 	startProcess : function(e) {
-		this.hypoWorkflow = new HypoWorkflow(this.model)
+		this.hypoWorkflow = HypoWorkflow(this.model)
 		this.hypoWorkflow.startHypoProcess();
 	},
 	finishProcess : function(e) {

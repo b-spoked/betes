@@ -2,12 +2,18 @@
  * Created by JetBrains PhpStorm. User: Jamie Date: 27/02/13 Time: 3:45 PM To
  * change this template use File | Settings | File Templates.
  */
+var timelineToDate = new Date();
+var timelineFromDate = new Date();
+timelineFromDate.setDate(timelineToDate.getDate() - 3);
+
+
 window.TimelineView = Backbone.View
 		.extend({
 			
 			events : {
-				"click #this-week" : "showThisWeek",
-				"click #last-week" : "showLastWeek"
+				"click #last-two" : "showThisTwo",
+				"click #previous-two" : "showPreviousTwo",
+				"click #all" : "showAll"
 			},
 
 			initialize : function() {
@@ -21,7 +27,7 @@ window.TimelineView = Backbone.View
 				$(this.el).html(this.template(this.model.toJSON()));
 
 				_.defer(function(view) {
-					view.showThisWeek();
+					view.showThisTwo();
 				}, this);
 
 				return this;
@@ -30,18 +36,27 @@ window.TimelineView = Backbone.View
 				var loadingDialog = new LoadingModal();
 				loadingDialog.hideDialog();
 			},
-			showThisWeek : function() {
-				today = new Date();
-				sevenDaysAgo = new Date();
-				sevenDaysAgo.setDate(today.getDate() - 7);
-				this.showTimeline(sevenDaysAgo,today);
+			showAll : function() {
+				this.showTimeline(null,null);
 			},
-			showLastWeek : function() {
-				sevenDaysAgo = new Date();
-				sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-				fourteenDaysAgo = new Date();
-				fourteenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-				this.showTimeline(fourteenDaysAgo,sevenDaysAgo);
+			showThisTwo : function() {
+				timelineToDate = new Date();
+				timelineFromDate = new Date();
+				timelineFromDate.setDate(timelineToDate.getDate() - 2);
+				
+				console.log("from: "+timelineFromDate);
+				console.log("to: "+timelineToDate);
+				
+				this.showTimeline(timelineFromDate,timelineToDate);
+			},
+			showPreviousTwo : function() {
+				timelineToDate.setDate(timelineFromDate.getDate());
+				timelineFromDate.setDate(timelineToDate.getDate() - 2);
+				
+				console.log("from: "+timelineFromDate);
+				console.log("to: "+timelineToDate);
+				
+				this.showTimeline(timelineFromDate,timelineToDate);
 			},
 			showTimeline : function(fromDate,toDate) {
 				this.hideLoadingDialog();
@@ -53,14 +68,13 @@ window.TimelineView = Backbone.View
 				document.getElementById("chart").innerHTML = "";
 				document.getElementById("timeline").innerHTML = "";
 				
-				var palette = new Rickshaw.Color.Palette( { scheme: 'classic9' } );
-				
 				//Date dimension range
 				var graph = new Rickshaw.Graph( {
 					element: document.getElementById("chart"),
 					width: 600,
-					height: 100,
+					height: 150,
 					renderer: 'line',
+					interpolation: 'linear',
 					series: [
 						{
 							color: 'black',
@@ -69,11 +83,13 @@ window.TimelineView = Backbone.View
 						},
 						{
 							color: 'red',
-							data: this.getHighLine(fromDate,toDate)
+							data: this.getHighLine(fromDate,toDate),
+							name: 'Upper Limit'
 			              }, 
 							{
 								color:'green',
-								data: this.getLowLine(fromDate,toDate)
+								data: this.getLowLine(fromDate,toDate),
+								name: 'Lower Limit'
 				              }
 					]
 				} );
@@ -87,17 +103,27 @@ window.TimelineView = Backbone.View
 					annotator.add(note.when, note.what);
 				});
 				
-				
-				var ticksTreatment = 'glow';
+				var time = new Rickshaw.Fixtures.Time();
+				var units;
+				if(fromDate&&toDate){
+					units = time.unit('6 hour');
+				}else{
+					units = time.unit('week');
+				}
 
-				var xAxis = new Rickshaw.Graph.Axis.Time( {
-					graph: graph
-				} );
+				var xAxis = new Rickshaw.Graph.Axis.Time({
+				    graph: graph,
+				    timeUnit: units
+				});
 
 				var yAxis = new Rickshaw.Graph.Axis.Y( {
 					graph: graph,
 					tickFormat: Rickshaw.Fixtures.Number.formatKMBT
 				} );
+				
+				var hover = new Rickshaw.Graph.HoverDetail({
+					graph:graph
+				});
 								
 				graph.render();
 
@@ -117,10 +143,6 @@ window.TimelineView = Backbone.View
 			getLowLine:function(fromDate,toDate){
 				var low = new Array();
 				
-				toDate = new Date();
-				fromDate = new Date();
-				fromDate.setDate(toDate.getDate() - 7);
-				
 				this.model.logEntries.filterGlucoseLevels(fromDate,toDate).forEach(function(entry) {
 					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
 					low.push({x:-epoch,y:4});
@@ -130,10 +152,6 @@ window.TimelineView = Backbone.View
 			},
 			getHighLine:function(fromDate,toDate){
 				var high = new Array();
-				
-				toDate = new Date();
-				fromDate = new Date();
-				fromDate.setDate(toDate.getDate() - 7);
 				
 				this.model.logEntries.filterGlucoseLevels(fromDate,toDate).forEach(function(entry) {
 					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
@@ -145,6 +163,7 @@ window.TimelineView = Backbone.View
 			},
 			getGlucoseNotes:function(fromDate,toDate){
 				var notes = new Array();
+				
 				
 				this.model.logEntries.filterPeriod(fromDate,toDate).forEach(function(entry) {
 					var epoch = new Date(entry.get("resultDate")).getTime()/1000;

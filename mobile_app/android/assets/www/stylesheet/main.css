@@ -32,6 +32,10 @@ table.home-buttons tr a {
   	}
 }
 
+.rickshaw_graph{
+	margin-top: 10px;
+}
+
 .rickshaw_annotation_timeline{
 	margin-top: 30px;	
 }

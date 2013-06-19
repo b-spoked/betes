@@ -78,10 +78,14 @@ window.LogBookEntries = Backbone.Collection.extend({
 	},
 	filterPeriod : function(fromDate, toDate) {
 
-		return _(this.filter(function(data) {
-			var recordDate = new Date(data.get('resultDate')).getTime();
-			return (recordDate <= toDate && recordDate >= fromDate);
-		}));
+		if(fromDate&&toDate){
+			return _(this.filter(function(data) {
+				var recordDate = new Date(data.get('resultDate')).getTime();
+				return (recordDate <= toDate && recordDate >= fromDate);
+			}));
+		}else{
+			return this;
+		}
 	},
 	filterString : function(letters) {
 		var pattern = new RegExp(letters, "gi");

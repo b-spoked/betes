@@ -1,0 +1,28 @@
+CREATE TABLE `user` (
+  `thirdPartyId` varchar(64) NOT NULL DEFAULT '',
+  `name` text NOT NULL,
+  `email` text NOT NULL,
+  `thumbnailPath` text NOT NULL,
+  `newsletter` tinyint(1) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `allowSharing` tinyint(1) NOT NULL,
+  `shareLinkId` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `thirdPartyId` (`thirdPartyId`)
+) ENGINE=InnoDB AUTO_INCREMENT=161 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `result` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL DEFAULT '',
+  `bsLevel` decimal(3,1) DEFAULT '0.0',
+  `insulinAmount` decimal(3,1) DEFAULT '0.0',
+  `resultDate` datetime NOT NULL,
+  `exerciseDuration` int(11) DEFAULT '0',
+  `exerciseIntensity` varchar(20) DEFAULT NULL,
+  `comments` text,
+  `labels` text,
+  `userId` bigint(11) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8;

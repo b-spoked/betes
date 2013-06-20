@@ -1,0 +1,30 @@
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+table.home-buttons {
+	width: 100%;
+}
+
+table.home-buttons tr a {
+	margin-bottom: 30px;
+}
+
+.rickshaw_graph{
+	margin-top: 10px;
+}
+
+.rickshaw_annotation_timeline{
+	margin-top: 30px;	
+}
+
+.rickshaw_annotation_timeline .annotation{
+	width: 20px;
+	height: 20px;
+	top: -10px;
+}
+
+.btn-toolbar{
+	margin:5px;
+}

@@ -9,6 +9,7 @@ window.GlucoseInsightsView = Backbone.View
 		.extend({
 
 			events : {
+				"click #day" : "showDay",
 				"click #week" : "showWeek",
 				"click #month" : "showMonth",
 				"click #all" : "showAll"
@@ -29,6 +30,14 @@ window.GlucoseInsightsView = Backbone.View
 				}, this);
 
 				return this;
+			},
+			showDay : function(e) {
+				e.preventDefault();
+				var summaryToDate = new Date();
+				var summaryFromDate = new Date();
+				summaryFromDate.setDate(summaryToDate.getDate() - 1);
+				
+				this.showFilterableDashboard(summaryFromDate, summaryToDate);
 			},
 			showWeek : function(e) {
 				e.preventDefault();

@@ -32,7 +32,7 @@ function HypoWorkflow(model) {
 
 		var self = this;
 		var addWithLocation = function(p) {
-			console.log("start hypo process w location");
+			//console.log("start hypo process w location");
 			self.addEntryWithLocation("hypo recorded, given dummy level of 3.5",3.5, p.coords);
 		};
 		var addWithoutLocation = function() {
@@ -44,7 +44,6 @@ function HypoWorkflow(model) {
 				addWithoutLocation);
 
 		this.startRetestTimer();
-		//this.alertContacts();
 		this.remindProcess();
 	};
 

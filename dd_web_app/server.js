@@ -13,14 +13,14 @@ app.configure(function () {
 });
 
 /* User */ 
-//app.get('/users/:id', user.findById);
+app.get('/users/:id', user.findUser);
 //app.get('/users', user.findByLinkId);
 app.post('/users', user.addUser);
 app.put('/users/:id', user.updateUser);
 app.put('/users/:id', user.deleteUser);
 
 /* User Diary */
-//app.get('/users/:userId/diary', user.findAllEntries);
+app.get('/users/:userId/diary', user.findUserDiary);
 app.post('/users/:userId/diary', user.addUserDiaryEntry);
 app.put('/users/:userId/diary/:id', user.updateUserDiaryEntry);
 app.delete('/users/:userId/diary/:id', user.deleteUserDiaryEntry);

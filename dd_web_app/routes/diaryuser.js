@@ -35,6 +35,20 @@ var UserDiary = new Schema({
 
 var UserDiaryModel = mongoose.model('UserDiary', UserDiary);  
 
+
+
+
+exports.findUser = function(req, res) {
+
+	return UserDiaryModel.findById(userId, function (err, user) {
+		if (!err) {
+			return res.send(user);
+	    } else {
+	    	return console.log(err);
+	    }
+	});
+};
+
 exports.addUser = function(req, res) {
 
 	  console.log(req.body);
@@ -93,6 +107,19 @@ exports.deleteUser = function(req, res) {
 	    });
 	  });
 
+};
+
+exports.findUserDiary = function(req, res) {
+
+	var userId = req.params.id;
+	
+	UserDiaryModel.findById(userId, function (err, user) {
+		  if (!err) {
+			  return res.send(user.diary);
+		  }else{
+			  return console.log(err);
+		  }
+	});
 };
 
 exports.addUserDiaryEntry = function(req, res) {

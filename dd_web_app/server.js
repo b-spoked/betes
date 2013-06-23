@@ -1,7 +1,7 @@
 var express = require('express'),
 	path = require('path'),
 	http = require('http'),
-    user = require('./routes/logbookuser');
+    user = require('./routes/diaryuser');
 
 var app = express();
 
@@ -13,22 +13,17 @@ app.configure(function () {
 });
 
 /* User */ 
-app.get('/users/:id', user.findById);
-app.get('/users', user.findByLinkId);
+//app.get('/users/:id', user.findById);
+//app.get('/users', user.findByLinkId);
 app.post('/users', user.addUser);
 app.put('/users/:id', user.updateUser);
+app.put('/users/:id', user.deleteUser);
 
-/* User Log Book */
-app.get('/users/:userId/logbook', user.findAllResults);
-app.post('/users/:userId/logbook', user.addResult);
-app.put('/users/:userId/logbook/:id', user.updateResult);
-app.delete('/users/:userId/logbook/:id', user.deleteResult);
-
-/* User Settings */
-app.get('/settings/:id', user.findAllSettings);
-app.post('/settings/:id', user.addSetting);
-app.put('/settings/:id', user.updateSetting);
-app.delete('/settings/:id', user.deleteSetting);
+/* User Diary */
+//app.get('/users/:userId/diary', user.findAllEntries);
+app.post('/users/:userId/diary', user.addUserDiaryEntry);
+app.put('/users/:userId/diary/:id', user.updateUserDiaryEntry);
+app.delete('/users/:userId/diary/:id', user.deleteUserDiaryEntry);
 
 http.createServer(app).listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));

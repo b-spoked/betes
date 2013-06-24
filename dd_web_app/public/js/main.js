@@ -1,14 +1,18 @@
 Backbone.OAuth.configs = {
     
-    Google: {
-      auth_url: 'https://accounts.google.com/o/oauth2/auth',
-      token_url: 'https://accounts.google.com/o/oauth2/token',
-      client_secret:'KIUxT6jSbQkFuPE7vnxywVB_',
-      client_id :'860380290684-05mbl7vgps042pq703ipb0vdu0rn9alq.apps.googleusercontent.com',
-      redirect_url: 'http://localhost',
-      scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
-    }
-  };
+	Facebook: {
+		auth_url: 'https://www.facebook.com/dialog/oauth',
+		client_id :'226520900725004',
+		redirect_url: 'http://insights-betes-log.herokuapp.com',
+		scope: 'email' 
+	},
+	Google: {
+		auth_url: 'https://accounts.google.com/o/oauth2/auth',
+		client_id :'860380290684-hckpgntj03rabg58g5ubcc1l7sf90mok.apps.googleusercontent.com',
+		redirect_url: 'http://betes-insights.herokuapp.com/',
+		scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
+	}
+};
 
 Backbone.View.prototype.close = function() {
 	console.log('Closing view ' + this);
@@ -148,7 +152,7 @@ var AppRouter = Backbone.Router.extend({
 		console.log('current user: '+JSON.stringify(currentUser));
 		if (currentUser && currentUser.get('authenticated')
 				) {
-//TODO			//this.showLoadingDialog();
+//TODO			this.showLoadingDialog();
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch({
 				data : { all : false },
@@ -158,8 +162,6 @@ var AppRouter = Backbone.Router.extend({
 				data : { all : false },
 				processData : true
 				});
-		}else{
-			this.appUser = new InsightsUser();
 		}
 	}
 });

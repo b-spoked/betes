@@ -36,8 +36,6 @@ var UserDiary = new Schema({
 var UserDiaryModel = mongoose.model('UserDiary', UserDiary);  
 
 
-
-
 exports.findUser = function(req, res) {
 
 	return UserDiaryModel.findById(userId, function (err, user) {
@@ -75,12 +73,12 @@ exports.updateUser = function(req, res) {
 	var userId = req.params.id;
 	console.log(req.body);
 	
-	return UserDiaryModel.findById(userId, function (err, user) {
-		user.name : req.body.name,
-		user.third_party_id : req.body.third_party_id,
-		user.email : req.body.email,
-		user.thumbnail_path : req.body.thumbnail_path,
-		user.diary: req.body.diary
+	UserDiaryModel.findById(userId, function (err, user) {
+		user.name = req.body.name;
+		user.third_party_id = req.body.third_party_id;
+		user.email = req.body.email;
+		user.thumbnail_path = req.body.thumbnail_path;
+		user.diary = req.body.diary;
 	    return user.save(function (err) {
 	      if (!err) {
 	        console.log("updated");
@@ -126,7 +124,7 @@ exports.addUserDiaryEntry = function(req, res) {
 
 	var userId = req.params.id;
 	
-	var entry{
+	var entry = {
 		name: req.body.name,
 		glucose_level: req.body.glucose_level,
 		entry_date: req.body.entry_date,

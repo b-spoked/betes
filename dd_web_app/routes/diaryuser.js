@@ -9,11 +9,11 @@ var Schema = mongoose.Schema;
  */
 var Entry = new Schema({
 	name: {type: String, trim: true },
-    glucose_level: Number,
-    entry_date: Date,
-    insulin_amount: Number,
-    exercise_duration: Number,
-    exercise_intensity: {type: String, trim: true },
+    glucoseLevel: Number,
+    resultDate: Date,
+    insulinAmount: Number,
+    exerciseDuration: Number,
+    exerciseIntensity: {type: String, trim: true },
     labels: {type: String, trim: true },
     comments: {type: String, trim: true },
     latitude: Number,
@@ -26,9 +26,9 @@ var Entry = new Schema({
  */
 var UserDiary = new Schema({
 	name : {type: String, trim: true },
-	third_party_id : { type: String, unique: true },
+	thirdPartyId : { type: String, unique: true },
 	email : String,
-	thumbnail_path : String,
+	thumbnailPath : String,
 	updated_at : { type: Date, default: Date.now },
     diary : [Entry],
 });
@@ -52,9 +52,9 @@ exports.addUser = function(req, res) {
 	  console.log(req.body);
 	  var user = new UserDiaryModel({
 		 name : req.body.name,
-		 third_party_id : req.body.third_party_id,
+		 thirdPartyId : req.body.thirdPartyId,
 		 email : req.body.email,
-		 thumbnail_path : req.body.thumbnail_path,
+		 thumbnailPath : req.body.thumbnailPath,
 		 diary: req.body.diary
 	  });
 	  user.save(function (err) {
@@ -75,9 +75,9 @@ exports.updateUser = function(req, res) {
 	
 	UserDiaryModel.findById(userId, function (err, user) {
 		user.name = req.body.name;
-		user.third_party_id = req.body.third_party_id;
+		user.thirdPartyId = req.body.thirdPartyId;
 		user.email = req.body.email;
-		user.thumbnail_path = req.body.thumbnail_path;
+		user.thumbnailPath = req.body.thumbnailPath;
 		user.diary = req.body.diary;
 	    return user.save(function (err) {
 	      if (!err) {
@@ -126,11 +126,11 @@ exports.addUserDiaryEntry = function(req, res) {
 	
 	var entry = {
 		name: req.body.name,
-		glucose_level: req.body.glucose_level,
-		entry_date: req.body.entry_date,
-		insulin_amount: req.body.insulin_amount,
-		exercise_duration: req.body.exercise_duration,
-		exercise_intensity: req.body.exercise_intensity,
+		glucoseLevel: req.body.glucoseLevel,
+		resultDate: req.body.resultDate,
+		insulinAmount: req.body.insulinAmount,
+		exerciseDuration: req.body.exerciseDuration,
+		exerciseIntensity: req.body.exerciseIntensity,
 		labels: req.body.labels,
 		comments: req.body.comments,
 		latitude: req.body.latitude,

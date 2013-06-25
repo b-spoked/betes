@@ -132,6 +132,33 @@
 	</div>
 </div>
 	</script>
+	<script type="text/template" id="upload-template">
+	<div id="upload-csv">
+		<div class="well text-center">
+        	<div class="images"></div>
+        	<div class="drop-wrapper">
+          		<div class="drop"></div>
+          		<div class="drop-message">Drop csv file here</div>
+        	</div>
+		</div>
+	</div>
+	</script>	
+      <script type="text/template" id="template-image">
+        <div class="item <%= state %>">
+          <div class="image" style="background-image: url( '<%= url %>' )"></div>
+          <div class="controls">
+            <a href="#delete" class="delete"><img src="./assets/delete.png" /></a>
+          </div>
+        </div>
+      </script>
+
+      <script type="text/template" id="template-image-uploading">
+        <div class="item <%= state %>">
+          <div class="image" style="background-image: url( '<%= file_url %>' )"></div>
+          <div class="progress"><div class="progress-bar" style="width:<%= progress %>%"></div></div>
+          <div class="state"><%= state %></div>
+        </div>
+      </script>
 	<script type="text/template" id="account-template">
 <div id="account">
 	<div class="container-fluid">
@@ -424,6 +451,8 @@
 	<script type="text/javascript" src="js/vendor/rickshaw.min.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
+	<script type="text/javascript" src="js/vendor/jquery.upload.js"></script>
+	<script type="text/javascript" src="js/vendor/bbassetsupload.js"></script>
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
 	<script type="text/javascript" src="js/models/InsightsUser.js"></script>
@@ -433,6 +462,7 @@
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
+	<script type="text/javascript" src="js/views/UploadView.js"></script>
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
 	<script type="text/javascript" src="js/views/TimelineView.js"></script>
 	

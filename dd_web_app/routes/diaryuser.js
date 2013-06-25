@@ -94,7 +94,7 @@ exports.updateUser = function(req, res) {
 exports.deleteUser = function(req, res) {
 
 	var userId = req.params.id;
-	return UserDiaryModel.findById(req.params.id, function (err, user) {
+	UserDiaryModel.findById(req.params.id, function (err, user) {
 	    return user.remove(function (err) {
 	      if (!err) {
 	        console.log("removed");
@@ -138,13 +138,17 @@ exports.addUserDiaryEntry = function(req, res) {
 	};
 	
 	UserDiaryModel.findById(userId, function (err, user) {
-		  if (!err) {
-		    user.diary.push(entry);
-		    user.save(function (err) {
-		      // do something
+		if (!err) {
+			user.diary.push(entry);
+			user.save(function (err) {
+				 if (!err) {
+					  return res.send(entry);
+				  }else{
+					  return console.log(err);
+				  }
 		    });
-		  }
-		});
+		}
+	});
 };
 
 exports.updateUserDiaryEntry = function(req, res) {

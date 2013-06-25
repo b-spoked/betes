@@ -26,7 +26,7 @@ window.InsightsUser = Backbone.Model.extend({
 		logSources : []
 	},
 
-	urlRoot : "http://insights-betes-log.herokuapp.com/insights-users",
+	urlRoot : "http://betes-insights.herokuapp.com/users",
 
 	initialize : function() {
 		_.bindAll(this);
@@ -38,14 +38,14 @@ window.InsightsUser = Backbone.Model.extend({
 			var logUrl;
 			
 			if(self.get('sid')){
-				logUrl = self.urlRoot+'/'+self.get('sid')+'/logbook/manual';
+				logUrl = self.urlRoot+'/'+self.get('sid')+'/diary';
 			}else{
-				logUrl = self.urlRoot+'/'+self.get('id')+'/logbook/manual';
+				logUrl = self.urlRoot+'/'+self.get('id')+'/diary';
 			}
 			return logUrl;
 		};
 		
-		this.settings = new UserSettings(this.get('settings'));
+		/*this.settings = new UserSettings(this.get('settings'));
 		
 		this.settings.url = function() {
 			
@@ -57,7 +57,7 @@ window.InsightsUser = Backbone.Model.extend({
 				settingsUrl = self.urlRoot+'/'+self.get('id')+'/settings';
 			}
 			return settingsUrl;
-		};
+		};*/
 		
 		
 
@@ -94,5 +94,5 @@ window.InsightsUserDetails = Backbone.Collection.extend({
 	initialize : function() {
 		this.storage = new Offline.Storage('insights-user', this);
 	},
-	url : '/insights-users'
+	url : '/users'
 });

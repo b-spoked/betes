@@ -451,8 +451,8 @@
 	<script type="text/javascript" src="js/vendor/rickshaw.min.js"></script>
 	<script type="text/javascript" src="js/vendor/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="js/vendor/backbone.oauth.js"></script>
-	<script type="text/javascript" src="js/vendor/jquery.upload.js"></script>
-	<script type="text/javascript" src="js/vendor/bbassetsupload.js"></script>
+	<!--  <script type="text/javascript" src="js/vendor/jquery.upload.js"></script>
+	<script type="text/javascript" src="js/vendor/bbassetsupload.js"></script>-->
 	
 	<script type="text/javascript" src="js/models/LogBookEntry.js"></script>
 	<script type="text/javascript" src="js/models/InsightsUser.js"></script>
@@ -462,7 +462,7 @@
 	<script type="text/javascript" src="js/views/HomeView.js"></script>
 	<script type="text/javascript" src="js/views/LoggedInHomeView.js"></script>
 	<script type="text/javascript" src="js/views/HypoView.js"></script>
-	<script type="text/javascript" src="js/views/UploadView.js"></script>
+	<!--  <script type="text/javascript" src="js/views/UploadView.js"></script>-->
 	<script type="text/javascript" src="js/views/HypoEntryView.js"></script>
 	<script type="text/javascript" src="js/views/TimelineView.js"></script>
 	
@@ -473,6 +473,12 @@
 	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript">
 		startApplication();
+		
+		var hash=window.location.hash;
+        window.close();
+		if(opener != null){
+            opener.OAuthRedirect(hash);
+        }
 	</script>
 
 </body>

@@ -1,16 +1,18 @@
 Backbone.OAuth.configs = {
-    
-	Facebook: {
-		auth_url: 'https://www.facebook.com/dialog/oauth',
-		client_id :'226520900725004',
-		redirect_url: 'http://betes-insights.herokuapp.com',
-		scope: 'email' 
+
+	Facebook : {
+		auth_url : 'https://www.facebook.com/dialog/oauth',
+		client_id : '226520900725004',
+		redirect_url : 'http://insights-betes-log.herokuapp.com',
+		scope : 'email'
+
 	},
-	Google: {
-		auth_url: 'https://accounts.google.com/o/oauth2/auth',
-		client_id :'860380290684-hckpgntj03rabg58g5ubcc1l7sf90mok.apps.googleusercontent.com',
-		redirect_url: 'http://betes-insights.herokuapp.com',
-		scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
+
+	Google : {
+		auth_url : 'https://accounts.google.com/o/oauth2/auth',
+		client_id : '860380290684-hckpgntj03rabg58g5ubcc1l7sf90mok.apps.googleusercontent.com',
+		redirect_url : 'http://betes-insights.herokuapp.com',
+		scope : 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
 	}
 };
 
@@ -26,13 +28,14 @@ Backbone.View.prototype.close = function() {
 var AppRouter = Backbone.Router.extend({
 
 	routes : {
-		"": "showHome",
+		"" : "showHome",
 		"summary" : "showGlucoseInsights",
 		"account" : "showAccount",
 		"add" : "addEvent",
 		"hypo" : "showHypo",
 		"timeline" : "showTimeline",
-		"upload" : "uploadResults"
+		"upload" : "uploadResults",
+		"access_token/:authCode":"logonUser"
 	},
 
 	initialize : function() {
@@ -44,6 +47,10 @@ var AppRouter = Backbone.Router.extend({
 		var $modalEl = $("#modal-dialog");
 		$modalEl.html(loadingDialog.el);
 		loadingDialog.showDialog();
+	},
+	logonUser: function(userLogonCode){
+		//access_token=ya29.AHES6ZS_mFZPygrcmM0hhmhLDbwAiBLwW0-RKNbX1W2Z-rOjviVhOJo&token_type=Bearer&expires_in=3600
+		alert(userLogonCode);
 	},
 	showTimeline : function() {
 		if (app.appUser) {
@@ -101,7 +108,7 @@ var AppRouter = Backbone.Router.extend({
 		}
 	},
 	shareLogBook : function(usersLinkId) {
-		
+
 		app.appUser = new InsightsUser();
 		var self = this;
 
@@ -112,12 +119,14 @@ var AppRouter = Backbone.Router.extend({
 			processData : true,
 			success : function(results) {
 				self.showLoadingDialog();
-				app.appUser.logEntries.fetch({success: function(){
-					
-					app.showView(new LogbookView({
-						model : app.appUser
-					}));
-		        }});
+				app.appUser.logEntries.fetch({
+					success : function() {
+
+						app.showView(new LogbookView({
+							model : app.appUser
+						}));
+					}
+				});
 			}
 		});
 
@@ -154,21 +163,24 @@ var AppRouter = Backbone.Router.extend({
 		var currentUser, users;
 
 		users = new InsightsUserDetails();
-//TODO ?? why this way
+		//TODO ?? why this way
 		currentUser = new InsightsUser(users.storage.findAll()[0]);
-		console.log('current user: '+JSON.stringify(currentUser));
-		if (currentUser && currentUser.get('authenticated')
-				) {
-//TODO			this.showLoadingDialog();
+		console.log('current user: ' + JSON.stringify(currentUser));
+		if (currentUser && currentUser.get('authenticated')) {
+			//TODO			this.showLoadingDialog();
 			this.appUser = currentUser;
 			this.appUser.logEntries.fetch({
-				data : { all : false },
+				data : {
+					all : false
+				},
 				processData : true
-				});
+			});
 			this.appUser.settings.fetch({
-				data : { all : false },
+				data : {
+					all : false
+				},
 				processData : true
-				});
+			});
 		}
 	}
 });

@@ -72,8 +72,8 @@
 
       Storage.prototype.setItem = function(key, value) {
         try {
-        	console.log('key: '+key);
-        	console.log('value: '+value);
+        	//console.log('key: '+key);
+        	//console.log('value: '+value);
           return window.localStorage.setItem(key, value);
         } catch (e) {
           if (e.name === 'QUOTA_EXCEEDED_ERR') {
@@ -89,9 +89,9 @@
       };
 
       Storage.prototype.getItem = function(key) {
-    	  console.log('get: '+key);
+    	  //console.log('get: '+key);
          var item = window.localStorage.getItem(key);
-         console.log('item: '+JSON.stringify(item));
+         //console.log('item: '+JSON.stringify(item));
          return item;
       };
 

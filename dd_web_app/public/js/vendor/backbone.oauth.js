@@ -35,9 +35,7 @@
     _.extend(this, options);
 
     // Make the onRedirect function publicy available.
-    //_.bind(this.onRedirect, this);
     window.OAuthRedirect = _.bind(this.onRedirect, this);
-    //window.OAuthRedirect = this.onRedirect;
   };
 
   // Inject methods and properties.
@@ -53,7 +51,6 @@
         + '&response_type=token';
       if (this.scope) url += '&scope=' + this.scope;
       if (this.state) url += '&state=' + this.state;
-      
       return url;
     },
 
@@ -70,7 +67,7 @@
     // that the dialog auth process has finished. It has to be checked, if
     // the auth was successful or not.
     onRedirect: function(hash) {
-      var params = parseHash(hash);
+      var params = parseHash(location.hash);
       if (this.authSuccess(params)) {
         this.onSuccess(params);
       } else {
@@ -84,11 +81,8 @@
     },
 
     // These following methods have to be implemented by the OAuth application.
-    onError: function(params) {
-    },
-    
-    onSuccess: function(params) {
-    }
+    onError: function() {},
+    onSuccess: function() {}
 
   });
 

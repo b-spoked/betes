@@ -5,6 +5,22 @@
  * Time: 3:45 PM
  * To change this template use File | Settings | File Templates.
  */
+Backbone.OAuth.configs = {
+    Facebook: {
+      auth_url: 'https://www.facebook.com/dialog/oauth',
+      client_id :'226520900725004',
+      redirect_url: 'http://insights-betes-log.herokuapp.com',
+      scope: 'email' 
+      
+    },
+    Google: {
+      auth_url: 'https://accounts.google.com/o/oauth2/auth',
+      client_id :'860380290684-cpmb7giqsq8dm0o08u30gg3pmit2u277.apps.googleusercontent.com',
+      redirect_url: 'http://insights-betes-log.herokuapp.com',
+      scope: 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
+    }
+  };
+
 window.HomeView = Backbone.View
 		.extend({
 
@@ -29,7 +45,7 @@ window.HomeView = Backbone.View
 		    	var users = new InsightsUserDetails();
 		    	users.reset();
 		    	users.create(loggedInUser);
-		    	//console.log("added user: "+JSON.stringify(loggedInUser))
+		    	console.log("added user: "+JSON.stringify(loggedInUser))
 		    },
 		    loginWithFB: function() {
 		    	
@@ -62,6 +78,8 @@ window.HomeView = Backbone.View
 		    },
 		    loginWithGoogle: function() {
 		    	var self = this;
+		    	console.log('Logging in with google');
+
 		        _.extend(Backbone.OAuth.configs.Google, {
 
 		            onSuccess: function(params) {

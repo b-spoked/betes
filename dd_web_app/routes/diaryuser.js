@@ -54,8 +54,7 @@ exports.addUser = function(req, res) {
 		 name : req.body.name,
 		 thirdPartyId : req.body.thirdPartyId,
 		 email : req.body.email,
-		 thumbnailPath : req.body.thumbnailPath,
-		 diary: req.body.diary
+		 thumbnailPath : req.body.thumbnailPath
 	  });
 	  user.save(function (err) {
 	    if (!err) {

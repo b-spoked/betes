@@ -475,6 +475,7 @@
 		startApplication();
 		
 		var hash=window.location.hash;
+        console.log("hash: "+hash);
         window.close();
 		if(opener != null){
             opener.OAuthRedirect(hash);

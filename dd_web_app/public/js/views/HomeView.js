@@ -53,7 +53,7 @@ window.HomeView = Backbone.View
 		        _.extend(Backbone.OAuth.configs.Facebook, {
 
 		            onSuccess: function(params) {
-		                console.log('FB ' + params.access_token);
+		               // console.log('FB ' + params.access_token);
 
 		                // Get the user's data from Facebook's graph api.
 		                $.ajax('https://graph.facebook.com/me?access_token=' + params.access_token, {
@@ -78,12 +78,12 @@ window.HomeView = Backbone.View
 		    },
 		    loginWithGoogle: function() {
 		    	var self = this;
-		    	console.log('Logging in with google');
+		    	//console.log('Logging in with google');
 
 		        _.extend(Backbone.OAuth.configs.Google, {
 
 		            onSuccess: function(params) {
-		                console.log('Google token: ' + params.access_token);
+		                //console.log('Google token: ' + params.access_token);
 
 		                // Get the user's data from the Google api.
 		                $.ajax('https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + params.access_token, {

@@ -19,14 +19,16 @@ window.InsightsUser = Backbone.Model.extend({
 		newsletter : false,
 		thumbnailPath : '',
 		authenticated : false,
-		allowSharing : false,
-		shareLinkId : null,
-		logEntries : [],
-		settings: [],
-		logSources : []
+		logEntries : []
 	},
 
 	urlRoot : "http://betes-insights.herokuapp.com/users",
+	
+	parse: function(response) {
+		var attrs = {};
+		attrs.id = response._id;
+		return attrs;
+	},
 
 	initialize : function() {
 		_.bindAll(this);
@@ -35,13 +37,13 @@ window.InsightsUser = Backbone.Model.extend({
 
 		this.logEntries.url = function() {
 			
-			var logUrl;
+			var logUrl = self.urlRoot+'/';
 			
-			if(self.get('sid')){
-				logUrl = self.urlRoot+'/'+self.get('sid')+'/diary';
-			}else{
+			if(self.get('sid')!='new'){
+				logUrl += self.get('sid')+'/diary';
+			}/*else if(self.get('id') != 'new'){
 				logUrl = self.urlRoot+'/'+self.get('id')+'/diary';
-			}
+			}*/
 			return logUrl;
 		};
 		
@@ -90,9 +92,10 @@ window.InsightsUser = Backbone.Model.extend({
 });
 
 window.InsightsUserDetails = Backbone.Collection.extend({
+	
 	model : InsightsUser,
 	initialize : function() {
-		this.storage = new Offline.Storage('insights-user', this);
+		this.storage = new Offline.Storage('insights-user', this, {autoPush: true});
 	},
 	url : '/users'
 });

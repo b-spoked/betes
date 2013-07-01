@@ -30,15 +30,19 @@ var UserDiary = new Schema({
 	email : String,
 	thumbnailPath : String,
 	updated_at : { type: Date, default: Date.now },
-    diary : [Entry],
+	logEntries : [Entry]
 });
 
-var UserDiaryModel = mongoose.model('UserDiary', UserDiary);  
+var User = mongoose.model('UserDiary', UserDiary);  
 
 
 exports.findUser = function(req, res) {
+	
+	var userId = req.params.id;
+	
+	if(!userId)return;
 
-	return UserDiaryModel.findById(userId, function (err, user) {
+	return User.findById(userId, function (err, user) {
 		if (!err) {
 			return res.send(user);
 	    } else {
@@ -49,60 +53,47 @@ exports.findUser = function(req, res) {
 
 exports.addUser = function(req, res) {
 
-	  console.log(req.body);
-	  var user = new UserDiaryModel({
-		 name : req.body.name,
-		 thirdPartyId : req.body.thirdPartyId,
-		 email : req.body.email,
-		 thumbnailPath : req.body.thumbnailPath
-	  });
-	  user.save(function (err) {
-	    if (!err) {
-	      return console.log("created");
-	    } else {
-	      return console.log(err);
-	    }
-	  });
-	  return res.send(user);
-
+	//console.log(req.body);
+	
+	var user = {
+		name : req.body.name,
+		thirdPartyId : req.body.thirdPartyId,
+		email : req.body.email,
+		thumbnailPath : req.body.thumbnailPath
+	};
+	
+	User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, user, { upsert: true }, function (err, object) {
+		if (err) return handleError(err);
+		console.log('added ['+req.body.thirdPartyId+']');
+		return res.send(object);
+	});
+	
 };
 
 exports.updateUser = function(req, res) {
 
-	var userId = req.params.id;
-	console.log(req.body);
-	
-	UserDiaryModel.findById(userId, function (err, user) {
-		user.name = req.body.name;
-		user.thirdPartyId = req.body.thirdPartyId;
-		user.email = req.body.email;
-		user.thumbnailPath = req.body.thumbnailPath;
-		user.diary = req.body.diary;
-	    return user.save(function (err) {
-	      if (!err) {
-	        console.log("updated");
-	      } else {
-	        console.log(err);
-	      }
-	      return res.send(user);
-	    });
-	  });
+	var user = {
+			name : req.body.name,
+			thirdPartyId : req.body.thirdPartyId,
+			email : req.body.email,
+			thumbnailPath : req.body.thumbnailPath
+		};
+		
+		User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, user, { upsert: true }, function (err, object) {
+			if (err) return handleError(err);
+			console.log('updated ['+req.body.thirdPartyId+']');
+			return res.send(object);
+		});
 
 };
 
 exports.deleteUser = function(req, res) {
 
-	var userId = req.params.id;
-	UserDiaryModel.findById(req.params.id, function (err, user) {
-	    return user.remove(function (err) {
-	      if (!err) {
-	        console.log("removed");
-	        return res.send('');
-	      } else {
-	        console.log(err);
-	      }
-	    });
-	  });
+	User.findOneAndRemove({ thirdPartyId: req.body.thirdPartyId }, function (err) {
+		if (err) return handleError(err);
+		console.log('removed ['+req.body.thirdPartyId+']');
+		return res.send('');
+	});
 
 };
 
@@ -110,9 +101,11 @@ exports.findUserDiary = function(req, res) {
 
 	var userId = req.params.id;
 	
-	UserDiaryModel.findById(userId, function (err, user) {
+	if(!userId)return;
+	
+	User.findById(userId, function (err, user) {
 		  if (!err) {
-			  return res.send(user.diary);
+			  return res.send(user.logEntries);
 		  }else{
 			  return console.log(err);
 		  }
@@ -122,6 +115,8 @@ exports.findUserDiary = function(req, res) {
 exports.addUserDiaryEntry = function(req, res) {
 
 	var userId = req.params.id;
+	
+	if(!userId)return;
 	
 	var entry = {
 		name: req.body.name,
@@ -136,9 +131,9 @@ exports.addUserDiaryEntry = function(req, res) {
 		longitude: req.body.longitude
 	};
 	
-	UserDiaryModel.findById(userId, function (err, user) {
+	User.findById(userId, function (err, user) {
 		if (!err) {
-			user.diary.push(entry);
+			user.logEntries.push(entry);
 			user.save(function (err) {
 				 if (!err) {
 					  return res.send(entry);
@@ -154,9 +149,9 @@ exports.updateUserDiaryEntry = function(req, res) {
 
 	var userId = req.params.id;
 	
-	UserDiaryModel.findById(userId, function (err, user) {
+	User.findById(userId, function (err, user) {
 		  if (!err) {
-		    user.diary[0].remove();
+		    user.logEntries[0].remove();
 		    user.save(function (err) {
 		      // do something
 		    });
@@ -170,9 +165,9 @@ exports.deleteUserDiaryEntry = function(req, res) {
 var userId = req.params.id;
 var entryId = req.params.entry_id;
 	
-	UserDiaryModel.findById(userId, function (err, user) {
+	User.findById(userId, function (err, user) {
 		  if (!err) {
-			  user.diary.id(entryId).remove();
+			  user.logEntries.id(entryId).remove();
 		    user.save(function (err) {
 		      // do something
 		    });

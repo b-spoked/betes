@@ -45,6 +45,7 @@ window.HomeView = Backbone.View
 		    	var users = new InsightsUserDetails();
 		    	users.reset();
 		    	users.create(loggedInUser);
+		    	//users.storage.sync.push();
 		    	console.log("added user: "+JSON.stringify(loggedInUser))
 		    },
 		    loginWithFB: function() {
@@ -64,7 +65,8 @@ window.HomeView = Backbone.View
 		                            name:data.name,
 		                            email:data.email,
 		                            thumbnailPath:data.picture,
-		                            authenticated:true
+		                            authenticated:true,
+		                            logEntries:[]
 		                        });
 		                    }
 		                });
@@ -93,7 +95,8 @@ window.HomeView = Backbone.View
 		                            name:data.name,
 		                            email:data.email,
 		                            thumbnailPath:data.picture,
-		                            authenticated:true
+		                            authenticated:true,
+		                            logEntries:[]
 		                        });
 		                    	self.refreshAfterLogin();
 		                    },

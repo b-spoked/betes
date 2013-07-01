@@ -169,18 +169,14 @@ var AppRouter = Backbone.Router.extend({
 		if (currentUser && currentUser.get('authenticated')) {
 			//TODO			this.showLoadingDialog();
 			this.appUser = currentUser;
-			this.appUser.logEntries.fetch({
-				data : {
-					all : false
-				},
-				processData : true
-			});
-			this.appUser.settings.fetch({
-				data : {
-					all : false
-				},
-				processData : true
-			});
+			if(this.appUser.get('sid') && this.appUser.get('sid')!='new'){
+				this.appUser.logEntries.fetch({
+					data : {
+						all : false
+					},
+					processData : true
+				});
+			}
 		}
 	}
 });

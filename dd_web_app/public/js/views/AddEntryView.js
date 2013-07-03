@@ -28,7 +28,7 @@ window.AddEntryView = Backbone.View.extend({
         $('#entry-date').val(local.toJSON().substring(0, 19).replace('T', ' '));
     },
     loadLogBook:function(){
-    	Backbone.history.navigate('#/counts');
+    	Backbone.history.navigate('#/timeline');
     	window.location.reload();
     },
     saveNewEntry: function(e) {
@@ -48,42 +48,6 @@ window.AddEntryView = Backbone.View.extend({
         });
     	
     	this.loadLogBook();
-    	
-    	
-    	/*var self = this;
-    	
-    	var withLocation = function(p) {
-    		self.model.logEntries.create( {
-                name: $("#entry-name").val().trim(),
-                glucoseLevel: $("#entry-level").val().trim(),
-                resultDate: $("#entry-date").val().trim(),
-                insulinAmount: $("#entry-insulin").val().trim(),
-                exerciseDuration: $("#entry-exercise-duration").val().trim(),
-                exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
-                labels: $("#entry-labels").val().trim(),
-                comments: $("#entry-comments").val().trim(),
-                latitude:p.coords.latitude,
-                longitude:p.coords.longitude,
-                userId : self.model.get('sid')
-            });
-    		self.loadLogBook();
-        };
-        var withoutLocation = function() {
-        	self.model.logEntries.create( {
-                name: $("#entry-name").val().trim(),
-                glucoseLevel: $("#entry-level").val().trim(),
-                resultDate: $("#entry-date").val().trim(),
-                insulinAmount: $("#entry-insulin").val().trim(),
-                exerciseDuration: $("#entry-exercise-duration").val().trim(),
-                exerciseIntensity: $("#entry-exercise-intensity").val().trim(),
-                labels: $("#entry-labels").val().trim(),
-                comments: $("#entry-comments").val().trim(),
-                userId : self.model.get('sid')
-            });
-
-    		self.loadLogBook();
-        };
-        navigator.geolocation.getCurrentPosition(withLocation, withoutLocation);*/
     	   
     }
 });

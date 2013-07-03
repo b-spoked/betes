@@ -27,7 +27,7 @@ window.TimelineView = Backbone.View
 				$(this.el).html(this.template(this.model.toJSON()));
 
 				_.defer(function(view) {
-					view.showThisTwo();
+					view.showThisWeek();
 				}, this);
 
 				return this;

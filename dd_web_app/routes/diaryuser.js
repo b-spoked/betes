@@ -4,6 +4,10 @@ mongoose.connect(process.env.MONGOHQ_URL);
 
 var Schema = mongoose.Schema;
 
+var toJSON = mongoose.Document.prototype.toJSON;
+
+
+
 /**
  * Dairy entry
  */
@@ -20,6 +24,14 @@ var Entry = new Schema({
     longitude: Number,
     updated_at :{ type: Date, default: Date.now }
 });
+/**
+ * Override so we can add id field for offline and backbone support
+ */
+Entry.methods.toJSON = function (opts) {
+	var ret = toJSON.apply(this, arguments);
+	ret["id"] = ret["_id"]; 
+	return ret;
+};
 
 /**
  * This is the user document
@@ -32,6 +44,14 @@ var UserDiary = new Schema({
 	updated_at : { type: Date, default: Date.now },
 	logEntries : [Entry]
 });
+/**
+ * Override so we can add id field for offline and backbone support
+ */
+UserDiary.methods.toJSON = function (opts) {
+	var ret = toJSON.apply(this, arguments);
+	ret["id"] = ret["_id"]; 
+	return ret;
+};
 
 var User = mongoose.model('UserDiary', UserDiary);  
 
@@ -44,7 +64,7 @@ exports.findUser = function(req, res) {
 
 	return User.findById(userId, function (err, user) {
 		if (!err) {
-			return res.send(user);
+			return res.send(user.toJSON());
 	    } else {
 	    	return console.log(err);
 	    }
@@ -53,36 +73,38 @@ exports.findUser = function(req, res) {
 
 exports.addUser = function(req, res) {
 
-	//console.log(req.body);
+	// console.log(req.body);
 	
-	var user = {
+	var userDetails = {
 		name : req.body.name,
 		thirdPartyId : req.body.thirdPartyId,
 		email : req.body.email,
 		thumbnailPath : req.body.thumbnailPath
 	};
 	
-	User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, user, { upsert: true }, function (err, object) {
+	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, userDetails, { upsert: true }, function (err, user) {
 		if (err) return handleError(err);
-		console.log('added ['+req.body.thirdPartyId+']');
-		return res.send(object);
+		// console.log('added ['+req.body.thirdPartyId+']');
+		//console.log(user.toJSON());
+		res.send(user.toJSON());
 	});
 	
 };
 
 exports.updateUser = function(req, res) {
 
-	var user = {
+	var userDetails = {
 			name : req.body.name,
 			thirdPartyId : req.body.thirdPartyId,
 			email : req.body.email,
 			thumbnailPath : req.body.thumbnailPath
 		};
 		
-		User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, user, { upsert: true }, function (err, object) {
+	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, userDetails, { upsert: true }, function (err, user) {
 			if (err) return handleError(err);
-			console.log('updated ['+req.body.thirdPartyId+']');
-			return res.send(object);
+			// console.log('updated ['+req.body.thirdPartyId+']');
+			//console.log(user.toJSON());
+			return res.send(user.toJSON());
 		});
 
 };
@@ -135,11 +157,11 @@ exports.addUserDiaryEntry = function(req, res) {
 		if (!err) {
 			user.logEntries.push(entry);
 			user.save(function (err) {
-				 if (!err) {
-					  return res.send(entry);
-				  }else{
-					  return console.log(err);
-				  }
+				if (!err) {
+					return res.send(entry);
+				}else{
+					return console.log(err);
+				}
 		    });
 		}
 	});
@@ -148,12 +170,32 @@ exports.addUserDiaryEntry = function(req, res) {
 exports.updateUserDiaryEntry = function(req, res) {
 
 	var userId = req.params.id;
+	var entryId = req.params.entryId;
+	
+	if(!userId || !entryId)return;
+	
+	var entry = {
+		name: req.body.name,
+		glucoseLevel: req.body.glucoseLevel,
+		resultDate: req.body.resultDate,
+		insulinAmount: req.body.insulinAmount,
+		exerciseDuration: req.body.exerciseDuration,
+		exerciseIntensity: req.body.exerciseIntensity,
+		labels: req.body.labels,
+		comments: req.body.comments,
+		latitude: req.body.latitude,
+		longitude: req.body.longitude
+	};
 	
 	User.findById(userId, function (err, user) {
 		  if (!err) {
-		    user.logEntries[0].remove();
+		    user.logEntries[entryId].remove();
 		    user.save(function (err) {
-		      // do something
+		    	if (!err) {
+					return res.send(entry);
+				}else{
+					return console.log(err);
+				}
 		    });
 		  }
 		});
@@ -162,14 +204,20 @@ exports.updateUserDiaryEntry = function(req, res) {
 
 exports.deleteUserDiaryEntry = function(req, res) {
 
-var userId = req.params.id;
-var entryId = req.params.entry_id;
+	var userId = req.params.id;
+	var entryId = req.params.entryId;
+
+	if(!userId || !entryId)return;
 	
 	User.findById(userId, function (err, user) {
 		  if (!err) {
 			  user.logEntries.id(entryId).remove();
 		    user.save(function (err) {
-		      // do something
+		    	if (!err) {
+					return res.send('');
+				}else{
+					return console.log(err);
+				}
 		    });
 		  }
 		});

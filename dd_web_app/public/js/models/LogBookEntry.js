@@ -8,6 +8,7 @@
 window.LogBookEntry = Backbone.Model.extend({
 	
 	defaults : {
+		_id:0,
 		name: "",
         glucoseLevel: 0,
         resultDate: "",
@@ -21,9 +22,10 @@ window.LogBookEntry = Backbone.Model.extend({
         userId : ""
 	},
 	parse: function(response) {
-		var attrs = {};
-		attrs.id = response._id;
-		return attrs;
+		console.log(response);
+		response.id = response._id;
+		
+		return response;
 	}
 });
 

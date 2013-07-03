@@ -15,20 +15,13 @@ window.InsightsUser = Backbone.Model.extend({
 	defaults : {
 		name : '',
 		thirdPartyId:0,
-		email : 'na',
-		newsletter : false,
+		email : '',
 		thumbnailPath : '',
 		authenticated : false,
 		logEntries : []
 	},
 
 	urlRoot : "http://betes-insights.herokuapp.com/users",
-	
-	parse: function(response) {
-		var attrs = {};
-		attrs.id = response._id;
-		return attrs;
-	},
 
 	initialize : function() {
 		_.bindAll(this);

@@ -49,7 +49,6 @@ var AppRouter = Backbone.Router.extend({
 		loadingDialog.showDialog();
 	},
 	logonUser: function(userLogonCode){
-		//access_token=ya29.AHES6ZS_mFZPygrcmM0hhmhLDbwAiBLwW0-RKNbX1W2Z-rOjviVhOJo&token_type=Bearer&expires_in=3600
 		alert(userLogonCode);
 	},
 	showTimeline : function() {
@@ -121,7 +120,6 @@ var AppRouter = Backbone.Router.extend({
 				self.showLoadingDialog();
 				app.appUser.logEntries.fetch({
 					success : function() {
-
 						app.showView(new LogbookView({
 							model : app.appUser
 						}));
@@ -165,17 +163,12 @@ var AppRouter = Backbone.Router.extend({
 		users = new InsightsUserDetails();
 		//TODO ?? why this way
 		currentUser = new InsightsUser(users.storage.findAll()[0]);
-		console.log('current user: ' + JSON.stringify(currentUser));
+		//console.log('current user: ' + JSON.stringify(currentUser));
 		if (currentUser && currentUser.get('authenticated')) {
 			//TODO			this.showLoadingDialog();
 			this.appUser = currentUser;
 			if(this.appUser.get('sid') && this.appUser.get('sid')!='new'){
-				this.appUser.logEntries.fetch({
-					data : {
-						all : false
-					},
-					processData : true
-				});
+				this.appUser.logEntries.fetch();
 			}
 		}
 	}

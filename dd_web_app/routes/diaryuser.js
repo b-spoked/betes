@@ -54,7 +54,7 @@ UserDiary.methods.toJSON = function (opts) {
 };
 
 var User = mongoose.model('UserDiary', UserDiary);  
-
+var DiaryEntry = mongoose.model('Entry', Entry);  
 
 exports.findUser = function(req, res) {
 	
@@ -121,11 +121,11 @@ exports.deleteUser = function(req, res) {
 
 exports.findUserDiary = function(req, res) {
 
-	var userId = req.params.id;
+	var userId = req.params.userId;
 	
 	if(!userId)return;
 	
-	User.findById(userId, function (err, user) {
+	return User.findById(userId, function (err, user) {
 		  if (!err) {
 			  return res.send(user.logEntries);
 		  }else{
@@ -136,11 +136,11 @@ exports.findUserDiary = function(req, res) {
 
 exports.addUserDiaryEntry = function(req, res) {
 
-	var userId = req.params.id;
+	var userId = req.params.userId;
 	
 	if(!userId)return;
 	
-	var entry = {
+	var entry = new DiaryEntry({
 		name: req.body.name,
 		glucoseLevel: req.body.glucoseLevel,
 		resultDate: req.body.resultDate,
@@ -151,30 +151,43 @@ exports.addUserDiaryEntry = function(req, res) {
 		comments: req.body.comments,
 		latitude: req.body.latitude,
 		longitude: req.body.longitude
-	};
+	});
 	
-	User.findById(userId, function (err, user) {
+	return User.findById(userId, function (err, user) {
 		if (!err) {
 			user.logEntries.push(entry);
 			user.save(function (err) {
 				if (!err) {
-					return res.send(entry);
+					return res.send(entry.toJSON());
 				}else{
 					return console.log(err);
 				}
 		    });
 		}
 	});
+	
+	return User.findOneAndUpdate(userId, function (err, user) {
+		if (err) return handleError(err);
+		
+		user.logEntries.push(entry);
+		user.save(function (err) {
+			if (!err) {
+				return res.send(entry.toJSON());
+			}else{
+				return console.log(err);
+			}
+	    });
+	});
 };
 
 exports.updateUserDiaryEntry = function(req, res) {
 
-	var userId = req.params.id;
-	var entryId = req.params.entryId;
+	var userId = req.params.userId;
+	var entryId = req.params.id;
 	
-	if(!userId || !entryId)return;
+	if(!userId || !entryId) return;
 	
-	var entry = {
+	var entry = new DiaryEntry({
 		name: req.body.name,
 		glucoseLevel: req.body.glucoseLevel,
 		resultDate: req.body.resultDate,
@@ -185,21 +198,16 @@ exports.updateUserDiaryEntry = function(req, res) {
 		comments: req.body.comments,
 		latitude: req.body.latitude,
 		longitude: req.body.longitude
-	};
+	});
 	
-	User.findById(userId, function (err, user) {
-		  if (!err) {
-		    user.logEntries[entryId].remove();
-		    user.save(function (err) {
-		    	if (!err) {
-					return res.send(entry);
-				}else{
-					return console.log(err);
-				}
-		    });
-		  }
-		});
-
+	return User.update({_id: userId, 'logEntries._id': entryId}, entry, function(err, result) {
+		if (!err) {
+			return res.send(result.toJSON());
+		}else{
+			return console.log(err);
+		}
+	});
+	
 };
 
 exports.deleteUserDiaryEntry = function(req, res) {

@@ -34,9 +34,8 @@ window.InsightsUser = Backbone.Model.extend({
 			
 			if(self.get('sid')!='new'){
 				logUrl += self.get('sid')+'/diary';
-			}/*else if(self.get('id') != 'new'){
-				logUrl = self.urlRoot+'/'+self.get('id')+'/diary';
-			}*/
+			}
+			
 			return logUrl;
 		};
 		

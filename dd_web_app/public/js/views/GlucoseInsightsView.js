@@ -11,7 +11,13 @@ window.GlucoseInsightsView = Backbone.View
 			events : {
 				"click #week" : "showWeek",
 				"click #month" : "showMonth",
-				"click #all" : "showAll"
+				"click #all" : "showAll",
+				"click #filter-low" : "filterLow",
+				"click #filter-high" : "filterHigh",
+				"click #filter-allgood" : "filterAllGood",
+				"click #filter-overnight" : "filterOvernight",
+				"click #filter-weekendday" : "filterWeekendDay",
+				"click #filter-weekday" : "filterWeekDay"
 			},
 
 			initialize : function() {
@@ -48,6 +54,48 @@ window.GlucoseInsightsView = Backbone.View
 			showAll : function(e) {
 				e.preventDefault();
 				this.showFilterableDashboard(null, null);
+			},
+			filterLow : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.timeInRangeChart.filter("below \n(<4)");
+				dc.renderAll();
+			},
+			filterHigh : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.timeInRangeChart.filter("above \n(>8)");
+				dc.renderAll();
+			},
+			filterAllGood : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.timeInRangeChart.filter("in \n(4-8)");
+				dc.renderAll();
+			},
+			filterOvernight : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.hourOfDayChart.filter([ 5, 9 ]);
+				dc.renderAll();
+			},
+			filterWeekDay : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.dayOfWeekChart.filter([ "Mon","Fri" ]);
+				dc.renderAll();
+			},
+			filterWeekendDay : function(e) {
+				e.preventDefault();
+				this.resetAllCharts();
+				window.dayOfWeekChart.filter([ "Sat", "Sun" ]);
+				dc.renderAll();
+			},
+			resetAllCharts : function() {
+				window.dayOfWeekChart.filterAll();
+				window.hourOfDayChart.filterAll();
+				window.timeInRangeChart.filterAll();
+				window.daySummaryChart.filterAll();
 			},
 			hideLoadingDialog : function() {
 				var loadingDialog = new LoadingModal();
@@ -187,6 +235,100 @@ window.GlucoseInsightsView = Backbone.View
 			    	 .sortBy(function(d){ return d.resultDate; })
 			    	 .order(d3.ascending);
 
+			},
+			showFilteredTimeline : function(fromDate,toDate) {
+				this.hideLoadingDialog();
+
+				if (this.model.logEntries.length <= 0) {
+					return false;
+				}
+				
+				document.getElementById("chart").innerHTML = "";
+				document.getElementById("timeline").innerHTML = "";
+				
+				//Date dimension range
+				var graph = new Rickshaw.Graph( {
+					element: document.getElementById("chart"),
+					width: 900,
+					height: 300,
+					renderer: 'line',
+					interpolation: 'linear',
+					series: [
+						{
+							color: 'black',
+							data: this.getGlucoseData(fromDate,toDate),
+							name: 'Glucose'
+						},
+						{
+							color: 'red',
+							data: this.getHighLine(fromDate,toDate),
+							name: 'Upper Limit'
+			              }, 
+							{
+								color:'green',
+								data: this.getLowLine(fromDate,toDate),
+								name: 'Lower Limit'
+				              }
+					]
+				} );
+				
+				var annotator = new Rickshaw.Graph.Annotate( {
+					graph: graph,
+					element: document.getElementById("timeline")
+				} );
+				
+				this.getGlucoseNotes(fromDate,toDate).forEach(function(note) {
+					annotator.add(note.when, note.what);
+				});
+				
+				var time = new Rickshaw.Fixtures.Time();
+				var units;
+				if(fromDate&&toDate){
+					units = time.unit('day');
+				}else{
+					units = time.unit('week');
+				}
+
+				var xAxis = new Rickshaw.Graph.Axis.Time({
+				    graph: graph,
+				    timeUnit: units
+				});
+
+				var yAxis = new Rickshaw.Graph.Axis.Y( {
+					graph: graph,
+					tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+				} );
+				
+				var hover = new Rickshaw.Graph.HoverDetail({
+					graph:graph
+				});
+								
+				graph.render();
+
+			},
+			getGlucoseNotes:function(fromDate,toDate){
+				var notes = new Array();
+				
+				
+				this.model.logEntries.filterPeriod(fromDate,toDate).forEach(function(entry) {
+					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
+					var note = "";
+					if(entry.get("insulinAmount")){	
+						note += entry.get("insulinAmount")+" u ";
+					}else if(entry.get("exerciseDuration")){
+
+						note +=  entry.get("exerciseDuration")+" mins ";
+						note +=  "@ "+entry.get("exerciseIntensity");
+					}
+					if(entry.get("comments")){
+						note += entry.get("comments");
+					}
+					if(note){
+						notes.push({when:-epoch,what:note});
+					}
+				});
+				
+				return notes;
 			},
 			getCleanedData : function(fromDate, toDate) {
 

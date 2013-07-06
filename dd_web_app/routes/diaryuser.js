@@ -71,6 +71,12 @@ exports.findUser = function(req, res) {
 	});
 };
 
+exports.notUsed = function(req, res) {
+	
+	return res.send(false);
+	    
+};
+
 exports.addUser = function(req, res) {
 
 	// console.log(req.body);

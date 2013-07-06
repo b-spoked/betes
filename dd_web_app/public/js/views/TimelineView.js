@@ -71,9 +71,9 @@ window.TimelineView = Backbone.View
 				//Date dimension range
 				var graph = new Rickshaw.Graph( {
 					element: document.getElementById("chart"),
-					width: 800,
+					width: 900,
 					height: 300,
-					renderer: 'line',
+					renderer: 'scatter',
 					interpolation: 'linear',
 					series: [
 						{
@@ -85,12 +85,12 @@ window.TimelineView = Backbone.View
 							color: 'red',
 							data: this.getHighLine(fromDate,toDate),
 							name: 'Upper Limit'
-			              }, 
-							{
-								color:'green',
-								data: this.getLowLine(fromDate,toDate),
-								name: 'Lower Limit'
-				              }
+			            }, 
+						{
+							color:'green',
+							data: this.getLowLine(fromDate,toDate),
+							name: 'Lower Limit'
+				        }
 					]
 				} );
 				
@@ -106,7 +106,7 @@ window.TimelineView = Backbone.View
 				var time = new Rickshaw.Fixtures.Time();
 				var units;
 				if(fromDate&&toDate){
-					units = time.unit('hour');
+					units = time.unit('day');
 				}else{
 					units = time.unit('week');
 				}

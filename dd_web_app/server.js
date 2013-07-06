@@ -14,7 +14,7 @@ app.configure(function () {
 
 /* User */ 
 app.get('/users/:id', user.findUser);
-//app.get('/users', user.findByLinkId);
+app.get('/users', user.notUsed);
 app.post('/users', user.addUser);
 app.put('/users/:id', user.updateUser);
 app.put('/users/:id', user.deleteUser);

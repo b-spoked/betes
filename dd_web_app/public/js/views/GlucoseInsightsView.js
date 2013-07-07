@@ -59,43 +59,49 @@ window.GlucoseInsightsView = Backbone.View
 				e.preventDefault();
 				this.resetAllCharts();
 				window.timeInRangeChart.filter("below \n(<4)");
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			filterHigh : function(e) {
 				e.preventDefault();
 				this.resetAllCharts();
 				window.timeInRangeChart.filter("above \n(>8)");
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			filterAllGood : function(e) {
 				e.preventDefault();
 				this.resetAllCharts();
 				window.timeInRangeChart.filter("in \n(4-8)");
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			filterOvernight : function(e) {
 				e.preventDefault();
 				this.resetAllCharts();
 				window.hourOfDayChart.filter([ 5, 9 ]);
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			filterWeekDay : function(e) {
 				e.preventDefault();
 				this.resetAllCharts();
 				window.dayOfWeekChart.filter([ "Mon","Fri" ]);
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			filterWeekendDay : function(e) {
 				e.preventDefault();
 				this.resetAllCharts();
 				window.dayOfWeekChart.filter([ "Sat", "Sun" ]);
+				this.showFilteredTimeline(null,null);
 				dc.renderAll();
 			},
 			resetAllCharts : function() {
 				window.dayOfWeekChart.filterAll();
 				window.hourOfDayChart.filterAll();
 				window.timeInRangeChart.filterAll();
-				window.daySummaryChart.filterAll();
+				//window.daySummaryChart.filterAll();
 			},
 			hideLoadingDialog : function() {
 				var loadingDialog = new LoadingModal();
@@ -107,6 +113,7 @@ window.GlucoseInsightsView = Backbone.View
 			},
 			resetGlucoseRange : function(e) {
 				window.glucoseRangeChart.filterAll();
+				
 				dc.redrawAll();
 			},
 			resetInsightsChart : function(e) {
@@ -121,18 +128,20 @@ window.GlucoseInsightsView = Backbone.View
 				}
 
 				//Data
-				var logBookData = this.getCleanedData(startDate, endDate);
+				var logBookData = this.getGlucoseData(startDate, endDate);
 				
 				// Create the crossfilter for the relevant dimensions and groups.
-				var logBook = crossfilter(logBookData);
-				var timePeriod = logBook.dimension(function(d) {
+				app.logBook = crossfilter(logBookData);
+				var timePeriod = app.logBook.dimension(function(d) {
 					return d.resultDate;
 				});
 				
-				this.createGlucoseTimeInRangeChart(logBook);
-				this.createDayOfWeekChart(logBook);
-				this.createHourOfDayChart(logBook);
-				this.createSummaryTableChart(timePeriod);
+				this.createGlucoseTimeInRangeChart(app.logBook);
+				this.createDayOfWeekChart(app.logBook);
+				this.createHourOfDayChart(app.logBook);
+				//this.createSummaryTableChart(timePeriod);
+
+				this.showFilteredTimeline();
 				
 
 				dc.renderAll();
@@ -251,24 +260,14 @@ window.GlucoseInsightsView = Backbone.View
 					element: document.getElementById("chart"),
 					width: 900,
 					height: 300,
-					renderer: 'line',
+					renderer: 'scatterplot',
 					interpolation: 'linear',
 					series: [
 						{
 							color: 'black',
-							data: this.getGlucoseData(fromDate,toDate),
+							data: this.getTimelineData(fromDate,toDate),
 							name: 'Glucose'
-						},
-						{
-							color: 'red',
-							data: this.getHighLine(fromDate,toDate),
-							name: 'Upper Limit'
-			              }, 
-							{
-								color:'green',
-								data: this.getLowLine(fromDate,toDate),
-								name: 'Lower Limit'
-				              }
+						}
 					]
 				} );
 				
@@ -330,7 +329,23 @@ window.GlucoseInsightsView = Backbone.View
 				
 				return notes;
 			},
-			getCleanedData : function(fromDate, toDate) {
+			getTimelineData:function(fromDate,toDate){
+				var glucose = new Array();
+				
+				var results = app.logBook.dimension(function(d) {
+					return d.resultDate;
+				}).top(Infinity);
+				
+				results.forEach(function(entry) {
+					var epoch = new Date(entry.resultDate).getTime()/1000;
+					var glucoseAmount = parseFloat(entry.glucoseLevel);
+					
+					glucose.push({x:-epoch,y:glucoseAmount});
+				});
+				
+				return glucose;
+			},
+			getGlucoseData : function(fromDate, toDate) {
 
 				var data;
 				if(fromDate && toDate){

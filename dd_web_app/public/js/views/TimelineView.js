@@ -73,7 +73,7 @@ window.TimelineView = Backbone.View
 					element: document.getElementById("chart"),
 					width: 900,
 					height: 300,
-					renderer: 'scatter',
+					renderer: 'line',
 					interpolation: 'linear',
 					series: [
 						{

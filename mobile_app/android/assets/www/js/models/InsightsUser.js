@@ -15,18 +15,13 @@ window.InsightsUser = Backbone.Model.extend({
 	defaults : {
 		name : '',
 		thirdPartyId:0,
-		email : 'na',
-		newsletter : false,
+		email : '',
 		thumbnailPath : '',
 		authenticated : false,
-		allowSharing : false,
-		shareLinkId : null,
-		logEntries : [],
-		settings: [],
-		logSources : []
+		logEntries : []
 	},
 
-	urlRoot : "http://insights-betes-log.herokuapp.com/insights-users",
+	urlRoot : "http://betes-insights.herokuapp.com/users",
 
 	initialize : function() {
 		_.bindAll(this);
@@ -35,31 +30,14 @@ window.InsightsUser = Backbone.Model.extend({
 
 		this.logEntries.url = function() {
 			
-			var logUrl;
+			var logUrl = self.urlRoot+'/';
 			
-			if(self.get('sid')){
-				logUrl = self.urlRoot+'/'+self.get('sid')+'/logbook/manual';
-			}else{
-				logUrl = self.urlRoot+'/'+self.get('id')+'/logbook/manual';
+			if(self.get('sid')!='new'){
+				logUrl += self.get('sid')+'/diary';
 			}
+			
 			return logUrl;
 		};
-		
-		this.settings = new UserSettings(this.get('settings'));
-		
-		this.settings.url = function() {
-			
-			var settingsUrl;
-			
-			if(self.get('sid')){
-				settingsUrl = self.urlRoot+'/'+self.get('sid')+'/settings';
-			}else{
-				settingsUrl = self.urlRoot+'/'+self.get('id')+'/settings';
-			}
-			return settingsUrl;
-		};
-		
-		
 
 	},
 	highs : function() {
@@ -90,9 +68,10 @@ window.InsightsUser = Backbone.Model.extend({
 });
 
 window.InsightsUserDetails = Backbone.Collection.extend({
+	
 	model : InsightsUser,
 	initialize : function() {
-		this.storage = new Offline.Storage('insights-user', this);
+		this.storage = new Offline.Storage('insights-user', this, {autoPush: true});
 	},
-	url : '/insights-users'
+	url : '/users'
 });

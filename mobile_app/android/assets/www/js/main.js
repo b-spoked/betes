@@ -10,8 +10,10 @@ Backbone.OAuth.configs = {
     }
   };
 
+document.addEventListener("online", syncData, false);
+
 Backbone.View.prototype.close = function() {
-	console.log('Closing view ' + this);
+	//console.log('Closing view ' + this);
 	if (this.beforeClose) {
 		this.beforeClose();
 	}
@@ -156,19 +158,11 @@ var AppRouter = Backbone.Router.extend({
 		users = new InsightsUserDetails();
 //TODO ?? why this way
 		currentUser = new InsightsUser(users.storage.findAll()[0]);
-		console.log('current user: '+JSON.stringify(currentUser));
-		if (currentUser && currentUser.get('authenticated')
-				) {
+		//console.log('current user: '+JSON.stringify(currentUser));
+		if (currentUser && currentUser.get('authenticated')) {
 //TODO			//this.showLoadingDialog();
 			this.appUser = currentUser;
-			this.appUser.logEntries.fetch({
-				data : { all : false },
-				processData : true
-				});
-			this.appUser.settings.fetch({
-				data : { all : false },
-				processData : true
-				});
+			this.appUser.logEntries.fetch();
 		}
 	}
 });
@@ -176,4 +170,24 @@ var AppRouter = Backbone.Router.extend({
 function startApplication() {
 	app = new AppRouter();
 	Backbone.history.start();
+}
+
+function syncData(){
+
+	console.log('try to sync data');
+	if(app){
+		console.log('syncing data');
+		//users = new InsightsUserDetails();
+		//users.storage.sync.push();
+		
+		//app.appUser.fetch();
+		var users = new InsightsUserDetails();
+    	users.reset();
+    	users.create(app.appUser);
+    	
+		//app.appUser.save();
+		console.log(JSON.stringify(app.appUser));
+		//app.appUser.logEntries.storage.sync.push();
+		
+	}
 }

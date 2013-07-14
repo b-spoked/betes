@@ -17,7 +17,7 @@ Backbone.OAuth.configs = {
 };
 
 Backbone.View.prototype.close = function() {
-	console.log('Closing view ' + this);
+	//console.log('Closing view ' + this);
 	if (this.beforeClose) {
 		this.beforeClose();
 	}
@@ -33,7 +33,7 @@ var AppRouter = Backbone.Router.extend({
 		"account" : "showAccount",
 		"add" : "addEvent",
 		"hypo" : "showHypo",
-		"timeline" : "showTimeline",
+		"timeline" : "showGlucoseInsights",
 		"upload" : "uploadResults",
 		"access_token/:authCode":"logonUser"
 	},

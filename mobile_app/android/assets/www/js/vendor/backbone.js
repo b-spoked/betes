@@ -412,13 +412,17 @@
     // model differs from its current attributes, they will be overriden,
     // triggering a `"change"` event.
     fetch: function(options) {
+    	console.log("fetch ");
+  	  console.log("options: "+JSON.stringify(options)); 
       options = options ? _.clone(options) : {};
       if (options.parse === void 0) options.parse = true;
       var success = options.success;
       options.success = function(model, resp, options) {
+    	      	  
         if (!model.set(model.parse(resp, options), options)) return false;
         if (success) success(model, resp, options);
       };
+      
       return this.sync('read', this, options);
     },
 
@@ -454,6 +458,7 @@
       if (options.parse === void 0) options.parse = true;
       success = options.success;
       options.success = function(model, resp, options) {
+   console.log('response: '+JSON.stringify(resp));  	  
         // Ensure attributes are restored during synchronous saves.
         model.attributes = attributes;
         var serverAttrs = model.parse(resp, options);
@@ -1380,6 +1385,7 @@
   // Useful when interfacing with server-side languages like **PHP** that make
   // it difficult to read the body of `PUT` requests.
   Backbone.sync = function(method, model, options) {
+	  console.log("model: "+JSON.stringify(model));
     var type = methodMap[method];
 
     // Default options, unless specified.
@@ -1427,12 +1433,14 @@
 
     var success = options.success;
     options.success = function(resp) {
+    	console.log("fetch resp: "+JSON.stringify(resp));   	
       if (success) success(model, resp, options);
       model.trigger('sync', model, resp, options);
     };
 
     var error = options.error;
     options.error = function(xhr) {
+    	console.log("fetch error: "+JSON.stringify(xhr));
       if (error) error(model, xhr, options);
       model.trigger('error', model, xhr, options);
     };
@@ -1440,6 +1448,7 @@
     // Make the request, allowing the user to override any Ajax options.
     var xhr = options.xhr = Backbone.ajax(_.extend(params, options));
     model.trigger('request', model, xhr, options);
+    console.log("fetch xhr: "+JSON.stringify(xhr));
     return xhr;
   };
 

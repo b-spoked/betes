@@ -39,6 +39,7 @@
         }
       },
       onLine: function() {
+    	  console.log("is online? "+navigator.onLine);
         return navigator.onLine !== false;
       }
     };
@@ -72,8 +73,6 @@
 
       Storage.prototype.setItem = function(key, value) {
         try {
-        	console.log('key: '+key);
-        	console.log('value: '+value);
           return window.localStorage.setItem(key, value);
         } catch (e) {
           if (e.name === 'QUOTA_EXCEEDED_ERR') {
@@ -89,9 +88,7 @@
       };
 
       Storage.prototype.getItem = function(key) {
-    	  console.log('get: '+key);
          var item = window.localStorage.getItem(key);
-         console.log('item: '+JSON.stringify(item));
          return item;
       };
 
@@ -265,7 +262,11 @@
 
       Sync.prototype.ajax = function(method, model, options) {
         if (Offline.onLine()) {
+        	console.log('online using backbone sync');     	
           this.prepareOptions(options);
+          console.log('model: '+JSON.stringify(model));  
+          console.log('options: '+JSON.stringify(method));
+          
           return Backbone.ajaxSync(method, model, options);
         } else {
           return this.storage.setItem('offline', 'true');
@@ -303,6 +304,7 @@
       };
 
       Sync.prototype.incremental = function(options) {
+   console.log('sync incremental'); 	  
         var _this = this;
         if (options == null) {
           options = {};
@@ -334,6 +336,7 @@
         }
         return this.ajax('read', this.collection.items, _.extend({}, options, {
           success: function(model, response, opts) {
+        	  console.log('response: '+JSON.stringify(response));
             var item, _i, _len;
             _this.collection.destroyDiff(response);
             for (_i = 0, _len = response.length; _i < _len; _i++) {

@@ -113,7 +113,6 @@ window.GlucoseInsightsView = Backbone.View
 			},
 			resetGlucoseRange : function(e) {
 				window.glucoseRangeChart.filterAll();
-				
 				dc.redrawAll();
 			},
 			resetInsightsChart : function(e) {
@@ -147,6 +146,8 @@ window.GlucoseInsightsView = Backbone.View
 				dc.renderAll();
 			},
 			createDayOfWeekChart : function(logBook) {
+				
+				var self = this;
 
 				window.dayOfWeekChart = dc.pieChart("#day-of-week-chart");
 
@@ -171,12 +172,24 @@ window.GlucoseInsightsView = Backbone.View
 				});
 
 				var dayOfWeekGroup = dayOfWeek.group();
-				dayOfWeekChart.width(220).height(220).radius(100)
-						.innerRadius(20).dimension(dayOfWeek).group(
-								dayOfWeekGroup);
+				
+				dayOfWeekChart
+					.width(220)
+					.height(220)
+					.radius(100)
+					.innerRadius(20)
+					.dimension(dayOfWeek)
+					.group(dayOfWeekGroup)
+					.on("filtered", 
+							function(chart, filter){
+							self.showFilteredTimeline(null,null);
+						});
 
 			},
 			createHourOfDayChart : function(logBook) {
+				
+				var self = this;
+				
 				var hourOfDay = logBook.dimension(function(d) {
 					var hour = d.resultDate.getHours();
 					return hour + 1;
@@ -184,16 +197,25 @@ window.GlucoseInsightsView = Backbone.View
 				
 				window.hourOfDayChart = dc.barChart("#hour-of-day-chart");
 
-				hourOfDayChart.width(320).height(120).dimension(hourOfDay).group(hourOfDayGroup).elasticY(true)
-						.centerBar(true).gap(1).round(dc.round.floor).x(
-								d3.scale.linear().domain([ 0, 24 ])).renderlet(
+				hourOfDayChart.width(320).height(220).dimension(hourOfDay).group(hourOfDayGroup).elasticY(true)
+						.centerBar(true)
+						.gap(1)
+						.round(dc.round.floor).x(d3.scale.linear()
+						.domain([ 0, 24 ]))
+						.renderlet(
 								function(chart) {
-									chart.select("g.y")
-											.style("display", "none");
-								}).renderHorizontalGridLines(true);
+									chart.select("g.y").style("display", "none");
+						})
+						.renderHorizontalGridLines(true)
+						.on("filtered", 
+							function(chart, filter){
+							self.showFilteredTimeline(null,null);
+						});
 
 			},
 			createGlucoseTimeInRangeChart : function(logBook) {
+				
+				var self = this;
 
 				window.timeInRangeChart = dc.pieChart("#time-in-range-chart");
 				
@@ -217,14 +239,18 @@ window.GlucoseInsightsView = Backbone.View
 				window.timeInRangeChart
 					.width(220)
 					.height(220)
-					.radius(110)
+					.radius(100)
+					.innerRadius(20)
 					.dimension(range)
 					.group(rangeGroup)
 					.label(function (d) {
 						return d.data.key;
+					}).on("filtered", 
+							function(chart, filter){
+						self.showFilteredTimeline(null,null);
 					});
 			},
-			createSummaryTableChart : function(timePeriod) {
+			/*createSummaryTableChart : function(timePeriod) {
 
 				window.daySummaryChart = dc.dataTable("#day-summary-chart");
 				
@@ -244,7 +270,7 @@ window.GlucoseInsightsView = Backbone.View
 			    	 .sortBy(function(d){ return d.resultDate; })
 			    	 .order(d3.ascending);
 
-			},
+			},*/
 			showFilteredTimeline : function(fromDate,toDate) {
 				this.hideLoadingDialog();
 
@@ -258,8 +284,8 @@ window.GlucoseInsightsView = Backbone.View
 				//Date dimension range
 				var graph = new Rickshaw.Graph( {
 					element: document.getElementById("chart"),
-					width: 900,
 					height: 300,
+					padding: { top:0.02, right:0.01, bottom:0.01, left:0.02},
 					renderer: 'scatterplot',
 					interpolation: 'linear',
 					series: [

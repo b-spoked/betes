@@ -6,6 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 window.LogBookEntry = Backbone.Model.extend({
+	
 	defaults : {
 		name: "",
         glucoseLevel: 0,
@@ -24,7 +25,7 @@ window.LogBookEntry = Backbone.Model.extend({
 window.LogBookEntries = Backbone.Collection.extend({
 	model : LogBookEntry,
 	initialize : function() {
-		this.storage = new Offline.Storage('insights-logbook', this);
+		this.storage = new Offline.Storage('insights-logbook', this, {autoPush: true});
 	},
 	fetch : function(options) {
 		this.trigger('fetch', this, options);

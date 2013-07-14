@@ -39,8 +39,8 @@ Entry.methods.toJSON = function (opts) {
 var UserDiary = new Schema({
 	name : {type: String, trim: true },
 	thirdPartyId : { type: String, unique: true },
-	email : String,
-	thumbnailPath : String,
+	email : {type: String, trim: true },
+	thumbnailPath : {type: String, trim: true },
 	updated_at : { type: Date, default: Date.now },
 	logEntries : [Entry]
 });
@@ -57,18 +57,22 @@ var User = mongoose.model('UserDiary', UserDiary);
 var DiaryEntry = mongoose.model('Entry', Entry);  
 
 exports.findUser = function(req, res) {
-	
+	 console.log(req.body);
 	var userId = req.params.id;
-	
 	if(!userId)return;
-
-	return User.findById(userId, function (err, user) {
-		if (!err) {
-			return res.send(user.toJSON());
-	    } else {
-	    	return console.log(err);
-	    }
-	});
+	console.log("user: "+userId);
+	
+	if (userId.match(/^[0-9a-fA-F]{24}$/)) {
+	
+		return User.findById(userId, function (err, user) {
+			if (!err) {
+				return res.send(user.toJSON());
+			} else {
+				return console.log(err);
+			}
+		});
+	}
+	return res.send(false);
 };
 
 exports.notUsed = function(req, res) {
@@ -79,19 +83,22 @@ exports.notUsed = function(req, res) {
 
 exports.addUser = function(req, res) {
 
-	// console.log(req.body);
+	 console.log(req.body);
 	
-	var userDetails = {
+	var upsertData = {
 		name : req.body.name,
 		thirdPartyId : req.body.thirdPartyId,
 		email : req.body.email,
-		thumbnailPath : req.body.thumbnailPath
+		thumbnailPath : req.body.thumbnailPath,
+		updated_at: new Date()
 	};
 	
-	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, userDetails, { upsert: true }, function (err, user) {
-		if (err) return handleError(err);
+	// var upsertData = userDetails.toObject();
+	
+	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, upsertData, { upsert: true }, function (err, user) {
+		if (err) return res.send(err);
 		// console.log('added ['+req.body.thirdPartyId+']');
-		//console.log(user.toJSON());
+		// console.log(user.toJSON());
 		res.send(user.toJSON());
 	});
 	
@@ -99,17 +106,23 @@ exports.addUser = function(req, res) {
 
 exports.updateUser = function(req, res) {
 
-	var userDetails = {
+	 console.log(req.body);
+	
+	var upsertData = {
 			name : req.body.name,
 			thirdPartyId : req.body.thirdPartyId,
 			email : req.body.email,
-			thumbnailPath : req.body.thumbnailPath
+			thumbnailPath : req.body.thumbnailPath,
+			updated_at: new Date()
 		};
-		
-	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, userDetails, { upsert: true }, function (err, user) {
-			if (err) return handleError(err);
+	
+
+	// var upsertData = userDetails.toObject();
+	
+	return User.findOneAndUpdate({ thirdPartyId: req.body.thirdPartyId }, upsertData , { upsert: true }, function (err, user) {
+			if (err) return res.send(err);
 			// console.log('updated ['+req.body.thirdPartyId+']');
-			//console.log(user.toJSON());
+			// console.log(user.toJSON());
 			return res.send(user.toJSON());
 		});
 
@@ -118,7 +131,7 @@ exports.updateUser = function(req, res) {
 exports.deleteUser = function(req, res) {
 
 	User.findOneAndRemove({ thirdPartyId: req.body.thirdPartyId }, function (err) {
-		if (err) return handleError(err);
+		if (err) return res.send(err);
 		console.log('removed ['+req.body.thirdPartyId+']');
 		return res.send('');
 	});

@@ -181,13 +181,22 @@ function syncData(){
 		//users.storage.sync.push();
 		
 		//app.appUser.fetch();
-		var users = new InsightsUserDetails();
+		/*var users = new InsightsUserDetails();
     	users.reset();
     	users.create(app.appUser);
-    	
+    	users.storage.sync.push();
 		//app.appUser.save();
-		console.log(JSON.stringify(app.appUser));
-		//app.appUser.logEntries.storage.sync.push();
+		//console.log(JSON.stringify(app.appUser));
+		app.appUser.logEntries.storage.sync.push();*/
+		
+		/*app.appUser.fetch({
+			success : function(results) {
+				console.log('user done: '+JSON.stringify(results));
+				
+			}
+		});*/
+		
+		app.appUser.logEntries.storage.sync.push();
 		
 	}
 }

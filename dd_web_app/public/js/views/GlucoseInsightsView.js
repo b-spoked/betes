@@ -17,7 +17,8 @@ window.GlucoseInsightsView = Backbone.View
 				"click #filter-allgood" : "filterAllGood",
 				"click #filter-overnight" : "filterOvernight",
 				"click #filter-weekendday" : "filterWeekendDay",
-				"click #filter-weekday" : "filterWeekDay"
+				"click #filter-weekday" : "filterWeekDay",
+				"keyup .filter-entries" : "filterEntries"
 			},
 
 			initialize : function() {
@@ -35,6 +36,10 @@ window.GlucoseInsightsView = Backbone.View
 				}, this);
 
 				return this;
+			},
+			filterEntries : function(e) {
+				var searchString = $(".filter-logbook").val();
+				this.addAll(this.model.logEntries.filterEntries(searchString));
 			},
 			showWeek : function(e) {
 				e.preventDefault();
@@ -282,12 +287,12 @@ window.GlucoseInsightsView = Backbone.View
 				document.getElementById("timeline").innerHTML = "";
 				
 				//Date dimension range
-				var graph = new Rickshaw.Graph( {
+				var graph = new Rickshaw.Graph({
 					element: document.getElementById("chart"),
-					height: 300,
+					height: 200,
 					padding: { top:0.02, right:0.01, bottom:0.01, left:0.02},
 					renderer: 'scatterplot',
-					interpolation: 'linear',
+					stroke: true,
 					series: [
 						{
 							color: 'black',
@@ -295,7 +300,7 @@ window.GlucoseInsightsView = Backbone.View
 							name: 'Glucose'
 						}
 					]
-				} );
+				});
 				
 				var annotator = new Rickshaw.Graph.Annotate( {
 					graph: graph,
@@ -307,16 +312,17 @@ window.GlucoseInsightsView = Backbone.View
 				});
 				
 				var time = new Rickshaw.Fixtures.Time();
+				
 				var units;
 				if(fromDate&&toDate){
-					units = time.unit('day');
+					units = time.unit('6 hour');
 				}else{
 					units = time.unit('week');
 				}
 
 				var xAxis = new Rickshaw.Graph.Axis.Time({
 				    graph: graph,
-				    timeUnit: units
+				    timeUnit: '6 hour'
 				});
 
 				var yAxis = new Rickshaw.Graph.Axis.Y( {
@@ -333,43 +339,56 @@ window.GlucoseInsightsView = Backbone.View
 			},
 			getGlucoseNotes:function(fromDate,toDate){
 				var notes = new Array();
-				
+				var self = this;
 				
 				this.model.logEntries.filterPeriod(fromDate,toDate).forEach(function(entry) {
-					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
-					var note = "";
-					if(entry.get("insulinAmount")){	
-						note += entry.get("insulinAmount")+" u ";
-					}else if(entry.get("exerciseDuration")){
-
-						note +=  entry.get("exerciseDuration")+" mins ";
-						note +=  "@ "+entry.get("exerciseIntensity");
-					}
-					if(entry.get("comments")){
-						note += entry.get("comments");
-					}
-					if(note){
-						notes.push({when:-epoch,what:note});
+					
+					if(entry.get("resultDate")){
+						var epoch = self.getEpoch(entry.get("resultDate"));
+						var note = "";
+						if(entry.get("insulinAmount")){	
+							note += entry.get("insulinAmount")+" u ";
+						}else if(entry.get("exerciseDuration")){
+	
+							note +=  entry.get("exerciseDuration")+" mins ";
+							note +=  "@ "+entry.get("exerciseIntensity");
+						}
+						if(entry.get("comments")){
+							note += entry.get("comments");
+						}
+						if(note){
+							notes.push({when:epoch,what:note});
+						}
 					}
 				});
-				
-				return notes;
+
+				console.log(JSON.stringify(notes));
+				return notes.reverse();
 			},
 			getTimelineData:function(fromDate,toDate){
 				var glucose = new Array();
+				var self = this;
 				
 				var results = app.logBook.dimension(function(d) {
 					return d.resultDate;
 				}).top(Infinity);
 				
 				results.forEach(function(entry) {
-					var epoch = new Date(entry.resultDate).getTime()/1000;
+					
+					var epoch = self.getEpoch(entry.resultDate);
 					var glucoseAmount = parseFloat(entry.glucoseLevel);
 					
-					glucose.push({x:-epoch,y:glucoseAmount});
+					glucose.push({x:epoch,y:glucoseAmount});
 				});
+
+				console.log(JSON.stringify(glucose));
+				return glucose.reverse();
+			},
+			getEpoch: function(dateString){
 				
-				return glucose;
+				var formatedDateString = moment(dateString).format("M/D/YY hh:mm"),
+				myDate = new Date(formatedDateString);
+				return Math.round(myDate.getTime()/1000.0);
 			},
 			getGlucoseData : function(fromDate, toDate) {
 
@@ -382,7 +401,9 @@ window.GlucoseInsightsView = Backbone.View
 
 				var logResults = new Array();
 				data.forEach(function(entry) {
-					logResults.push(entry.toJSON());
+					if(entry.get("resultDate")){
+						logResults.push(entry.toJSON());
+					}
 				});
 
 				logResults

@@ -73,7 +73,7 @@ window.TimelineView = Backbone.View
 					element: document.getElementById("chart"),
 					width: 600,
 					height: 150,
-					renderer: 'line',
+					renderer: 'scatterplot',
 					interpolation: 'linear',
 					series: [
 						{
@@ -128,45 +128,54 @@ window.TimelineView = Backbone.View
 				graph.render();
 
 			},
+			getEpoch: function(dateString){
+				
+				var formatedDateString = moment(dateString).format("M/D/YY hh:mm"),
+				myDate = new Date(formatedDateString);
+				return Math.round(myDate.getTime()/1000.0);
+			},
 			getGlucoseData:function(fromDate,toDate){
 				var glucose = new Array();
+				var self = this;
 				
 				this.model.logEntries.filterGlucoseLevels(fromDate,toDate).forEach(function(entry) {
-					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
+					var epoch = self.getEpoch(entry.get("resultDate"));
 					var glucoseAmount = parseFloat(entry.get("glucoseLevel"));
 					
-					glucose.push({x:-epoch,y:glucoseAmount});
+					glucose.push({x:epoch,y:glucoseAmount});
 				});
 				
-				return glucose;
+				return glucose.reverse();
 			},
 			getLowLine:function(fromDate,toDate){
 				var low = new Array();
+				var self = this;
 				
 				this.model.logEntries.filterGlucoseLevels(fromDate,toDate).forEach(function(entry) {
-					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
-					low.push({x:-epoch,y:4});
+					var epoch = self.getEpoch(entry.get("resultDate"));
+					low.push({x:epoch,y:4});
 				});
 				
-				return low;
+				return low.reverse();
 			},
 			getHighLine:function(fromDate,toDate){
 				var high = new Array();
+				var self = this;
 				
 				this.model.logEntries.filterGlucoseLevels(fromDate,toDate).forEach(function(entry) {
-					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
-					high.push({x:-epoch,y:8});
+					var epoch = self.getEpoch(entry.get("resultDate"));
+					high.push({x:epoch,y:8});
 				});
 				
-				return high;
+				return high.reverse();
 				
 			},
 			getGlucoseNotes:function(fromDate,toDate){
 				var notes = new Array();
-				
+				var self = this;
 				
 				this.model.logEntries.filterPeriod(fromDate,toDate).forEach(function(entry) {
-					var epoch = new Date(entry.get("resultDate")).getTime()/1000;
+					var epoch = self.getEpoch(entry.get("resultDate"));
 					var note = "";
 					if(entry.get("insulinAmount")){	
 						note += entry.get("insulinAmount")+" u ";
@@ -179,10 +188,10 @@ window.TimelineView = Backbone.View
 						note += entry.get("comments");
 					}
 					if(note){
-						notes.push({when:-epoch,what:note});
+						notes.push({when:epoch,what:note});
 					}
 				});
 				
-				return notes;
+				return notes.reverse();
 			}
 		});

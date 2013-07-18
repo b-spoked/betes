@@ -179,10 +179,10 @@ window.GlucoseInsightsView = Backbone.View
 				var dayOfWeekGroup = dayOfWeek.group();
 				
 				dayOfWeekChart
-					.width(220)
-					.height(220)
-					.radius(100)
-					.innerRadius(20)
+				.width(180)
+				.height(180)
+				.radius(80)
+				.innerRadius(20)
 					.dimension(dayOfWeek)
 					.group(dayOfWeekGroup)
 					.on("filtered", 
@@ -202,7 +202,7 @@ window.GlucoseInsightsView = Backbone.View
 				
 				window.hourOfDayChart = dc.barChart("#hour-of-day-chart");
 
-				hourOfDayChart.width(320).height(220).dimension(hourOfDay).group(hourOfDayGroup).elasticY(true)
+				hourOfDayChart.width(320).height(180).dimension(hourOfDay).group(hourOfDayGroup).elasticY(true)
 						.centerBar(true)
 						.gap(1)
 						.round(dc.round.floor).x(d3.scale.linear()
@@ -242,9 +242,9 @@ window.GlucoseInsightsView = Backbone.View
 		            
 				 
 				window.timeInRangeChart
-					.width(220)
-					.height(220)
-					.radius(100)
+					.width(180)
+					.height(180)
+					.radius(80)
 					.innerRadius(20)
 					.dimension(range)
 					.group(rangeGroup)
@@ -302,6 +302,8 @@ window.GlucoseInsightsView = Backbone.View
 					]
 				});
 				
+				
+				
 				var annotator = new Rickshaw.Graph.Annotate( {
 					graph: graph,
 					element: document.getElementById("timeline")
@@ -324,11 +326,15 @@ window.GlucoseInsightsView = Backbone.View
 				    graph: graph,
 				    timeUnit: '6 hour'
 				});
+				
+				xAxis.render();
 
 				var yAxis = new Rickshaw.Graph.Axis.Y( {
 					graph: graph,
 					tickFormat: Rickshaw.Fixtures.Number.formatKMBT
 				} );
+				
+				yAxis.render();
 				
 				var hover = new Rickshaw.Graph.HoverDetail({
 					graph:graph
